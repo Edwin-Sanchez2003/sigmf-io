@@ -63,12 +63,12 @@ private:
     Endianness endianness;      // the byte order of the current dataset instance.
 
     // Maps that store constant information about data types.
-    static const std::unordered_map<std::string, SampleFormat> stringSampleFormatMap = {
-        { "r", SampleFormat::REAL },
-        { "c", SampleFormat::COMPLEX }
+    static const std::unordered_map<char, SampleFormat> STRING_SAMPLE_FORMAT_MAP = {
+        { 'r', SampleFormat::REAL },
+        { 'c', SampleFormat::COMPLEX }
     };
 
-    static const std::unordered_map<std::string, SampleType> stringSampleTypeMap = {
+    static const std::unordered_map<std::string, SampleType> STRING_SAMPLE_TYPE_MAP = {
         { "f32", SampleType::FLOAT_32 },
         { "f64", SampleType::FLOAT_64 },
         { "i16", SampleType::INT_16 },
@@ -79,7 +79,7 @@ private:
         { "u8", SampleType::UBYTE }
     };
 
-    static const std::unordered_map<std::string, SampleFormat> stringSampleFormatMap = {
+    static const std::unordered_map<std::string, SampleFormat> STRING_ENDIANNESS_MAP = {
         { "_le", Endianness::LITTLE },
         { "_be", Endianness::BIG }
     };
