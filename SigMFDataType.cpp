@@ -18,5 +18,6 @@ SigMFDataType::SigMFDataType(std::string rawDataType)
 
     // next, handle byte sample types (2 chars)
 
+
     // next, handle remaining sample types (3 chars)
 }
