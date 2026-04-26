@@ -54,7 +54,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(kissfft)
 # ─────────────────────────────────────────────────────────────────────────────
 
-add_executable(BurstRFBackend main.cpp)
+add_executable(BurstRFBackend main.cpp
+    SigMFDataType.h SigMFDataType.cpp)
 
 target_link_libraries(BurstRFBackend
     PRIVATE libsigmf                # libsigmf target
