@@ -1,6 +1,8 @@
 #ifndef SIGMFDATALOADER_H
 #define SIGMFDATALOADER_H
 
+#include <mio/mmap.hpp>
+
 #include <vector>
 #include <string>
 #include <cstdint>
@@ -33,8 +35,16 @@ public:
 
     SigMFDataType getDataType() const { return this->dataType; }
 
+    // Due to mio memory map implementation, we need to avoid copy construction.
+    // Non-copyable, movable
+    SigMFDataset(const SigMFDataset&)            = delete;
+    SigMFDataset& operator=(const SigMFDataset&) = delete;
+    SigMFDataset(SigMFDataset&&)                 = default;
+    SigMFDataset& operator=(SigMFDataset&&)      = default;
+
 private:
     SigMFDataType dataType;
+    mio::mmap_source mmap;
 };
 
 #endif // SIGMFDATALOADER_H

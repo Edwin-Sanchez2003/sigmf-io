@@ -54,6 +54,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(kissfft)
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ── FetchContent for mio (cross-platform memory mapping) ─────────────────────
+FetchContent_Declare(
+    mio
+    GIT_REPOSITORY https://github.com/vimpunk/mio.git
+    GIT_TAG        8b6b7d878c89e81614d05edca7936de41ccdd2da # Pin to a commit hash.
+    GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(mio)
+# ─────────────────────────────────────────────────────────────────────────────
+
 add_executable(BurstRFBackend main.cpp
     SigMFDataType.h SigMFDataType.cpp
     SigMFDataset.h SigMFDataset.cpp)
@@ -62,6 +72,7 @@ target_link_libraries(BurstRFBackend
     PRIVATE libsigmf                # libsigmf target
             flatbuffers             # flatbuffers is needed at link time per their README
             kissfft::kissfft-float  # kissfft for std::complex<double>
+            mio::mio                # mio for cross-platform memory mapping
 )
 
 # libsigmf generates headers into the build tree; this makes them findable

@@ -1,5 +1,8 @@
 #include "SigMFDataset.h"
 
+#include <mio/mmap.hpp>
+
+#include <cstdint>
 #include <filesystem>
 #include <stdexcept>
 
@@ -26,4 +29,11 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
             "SigMFDataset: trailingBytes value must be greater than or equal to zero. Given trailingBytes: '" + std::to_string(trailingBytes) + "'.");
 
     // create a memory map given the dataset path.
+    std::error_code errorCode;
+    mmap.map(datasetPath, errorCode);
+    if (errorCode)
+        throw std::runtime_error("Failed to map file: " + errorCode.message());
+
+    // data is a pointer to the first byte of the file in memory.
+    const uint8_t* data = reinterpret_cast<const uint8_t*>(mmap.data());
 }
