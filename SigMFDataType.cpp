@@ -81,6 +81,13 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
     }
 }
 
+
+std::string SigMFDataType::getRawDataType() const
+{
+    return this->rawDataType;
+}
+
+
 SigMFDataType::SampleFormat SigMFDataType::getSampleFormat() const
 {
     return this->sampleFormat;
