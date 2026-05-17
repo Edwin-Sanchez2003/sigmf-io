@@ -1,4 +1,5 @@
 #include "SigMFDataset.h"
+#include "SigMFDataType.h"
 
 #include <mio/mmap.hpp>
 
@@ -33,7 +34,42 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
     mmap.map(datasetPath, errorCode);
     if (errorCode)
         throw std::runtime_error("Failed to map file: " + errorCode.message());
+}
 
-    // data is a pointer to the first byte of the file in memory.
-    const uint8_t* data = reinterpret_cast<const uint8_t*>(mmap.data());
+
+// Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
+std::vector<std::complex<double>> SigMFDataset::getSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel)
+{
+    // check that bounds are valid
+    if (sampleStart < 0 || sampleCount < 0) {
+        throw std::out_of_range(
+            "Invalid Indices | sampleStart: " + std::to_string(sampleStart) +
+            ", sampleCount: " + std::to_string(sampleCount)
+        );
+    }
+
+    // check that channel is greater than or equal to one
+    if (channel < 1)
+        throw std::runtime_error("Channel index must be at least one! Channel index: '" + std::to_string(channel) + "'.");
+
+    // get the RF data as a std::vector<std::complex<double>>
+    switch (this->dataType.getSampleType()) {
+        case SigMFDataType::SampleType::FLOAT_32: return loadSamples<float>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::FLOAT_64: return loadSamples<double>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::INT_16:   return loadSamples<int16_t>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::INT_32:   return loadSamples<int32_t>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::UINT_16:  return loadSamples<uint16_t>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::UINT_32:  return loadSamples<uint32_t>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::BYTE:    return loadSamples<int8_t>(sampleStart, sampleCount, channel);
+        case SigMFDataType::SampleType::UBYTE:   return loadSamples<uint8_t>(sampleStart, sampleCount, channel);
+        default:
+            throw std::runtime_error("Unsupported SigMFDataType::SampleType!");
+    }
+}
+
+// Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
+// This version assumes a channel of 1.
+std::vector<std::complex<double>> SigMFDataset::getSamples(int64_t sampleStart, int64_t sampleCount)
+{
+    return getSamples(sampleStart, sampleCount, 1);
 }
