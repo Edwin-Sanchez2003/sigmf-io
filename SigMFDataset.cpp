@@ -14,24 +14,28 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
     // validate datasetPath exists.
     if (std::filesystem::exists(datasetPath) == false)
         throw std::runtime_error("SigMFDataset: Dataset file path '" + datasetPath + "' does not exist!");
+    this->datasetPath = datasetPath;
 
     // validate offset is greater than or equal to zero.
     if (offset < 0)
         throw std::runtime_error("SigMFDataset: offset value must be greater than or equal to zero. Given offset: '" + std::to_string(offset) + "'.");
+    this->offset = offset;
 
     // validate numChannels is greater than or equal to one.
     if (numChannels < 1)
         throw std::runtime_error(
             "SigMFDataset: numChannels value must be greater than or equal to one. Given numChannels: '" + std::to_string(numChannels) + "'.");
+    this->numChannels = numChannels;
 
     // validate trailingBytes is greater than or equal to zero.
     if (trailingBytes < 0)
         throw std::runtime_error(
             "SigMFDataset: trailingBytes value must be greater than or equal to zero. Given trailingBytes: '" + std::to_string(trailingBytes) + "'.");
+    this->trailingBytes = trailingBytes;
 
     // create a memory map given the dataset path.
     std::error_code errorCode;
-    mmap.map(datasetPath, errorCode);
+    this->mmap.map(datasetPath, errorCode);
     if (errorCode)
         throw std::runtime_error("Failed to map file: " + errorCode.message());
 }
@@ -48,9 +52,14 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(int64_t sampleStart, 
         );
     }
 
+    // TODO: make sure that sampleStart + sampleCount (accounting for the channel as well)
+    // is less than or equal to the dataset size (otherwise we will overflow).
+
     // check that channel is greater than or equal to one
     if (channel < 1)
         throw std::runtime_error("Channel index must be at least one! Channel index: '" + std::to_string(channel) + "'.");
+    else if (channel > this->numChannels)
+        throw std::runtime_error("Channel index must be less than or equal to numChannels! numChannels: '" + std::to_string(this->numChannels) + "', Channel index: '" + std::to_string(channel)+ "'.");
 
     // get the RF data as a std::vector<std::complex<double>>
     switch (this->dataType.getSampleType()) {

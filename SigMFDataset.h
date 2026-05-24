@@ -51,7 +51,11 @@ public:
     SigMFDataset& operator=(SigMFDataset&&)      = default;
 
 private:
+    std::string datasetPath;
     SigMFDataType dataType;
+    int64_t offset;
+    int64_t numChannels;
+    int64_t trailingBytes;
     mio::mmap_source mmap;
 
     // Swaps byte order - necessary when file type endianness does not match
@@ -72,10 +76,15 @@ private:
     template<typename T>
     std::vector<std::complex<double>> loadSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel) const
     {
+        const int64_t primitivesPerSample = this->dataType.getPrimitivesPerSample();
         // first, cast to the file pointer to the type as specified by the template,
-        // and offset by sample_idx_start
-        // data is a pointer to the first byte of the file in memory.
-        const T* offsetPtr = reinterpret_cast<const T*>(mmap.data()) + (sampleStart * this->dataType.getPrimitivesPerSample());
+        // and offset by sampleStart. data is a pointer to the first byte of the file in memory.
+
+        // For interleaved channels, each "frame" holds numChannels samples side by side.
+        // offsetPtr points to the first primitive of `channel` at frame `sampleStart`.
+        const T* offsetPtr = reinterpret_cast<const T*>(mmap.data())
+                             + (sampleStart * this->numChannels * primitivesPerSample)
+                             + ((channel - 1) * primitivesPerSample);
 
         // Handle endianness - swap bytes if file is big-endian and machine is
         // little-endian, or if file is little-endian and machine is big-endian
@@ -93,32 +102,30 @@ private:
 
         // initialize return vector of sample data
         std::vector<std::complex<double>> out;
+        out.reserve(sampleCount);
 
         // Handle Complex & Real Data Types
         if (dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX) {
-            out.reserve(sampleCount);
-
-            // Fast path: cf64_le on a little-endian machine — file layout is already
-            // identical to std::complex<double>, so skip the conversion loop entirely.
+            // Fast path: cf64_le on a little-endian machine, single channel only
+            // (multi-channel layout is interleaved so memcpy is not applicable).
             if constexpr (std::is_same_v<T, double>) {
-                if (fileIsLE && machineIsLE)
+                if (fileIsLE && machineIsLE && this->numChannels == 1)
                 {
                     out.resize(sampleCount);
                     std::memcpy(out.data(), offsetPtr, sampleCount * sizeof(std::complex<double>));
                     return out;
                 }
             }
-
-            // General path: convert element by element
+            // General path: stride by numChannels to skip over the other channels' primitives.
+            const int64_t stride = 2 * this->numChannels;
             for (int64_t i = 0; i < sampleCount; ++i) {
-                double I = static_cast<double>(toNative(offsetPtr[i * 2]));
-                double Q = static_cast<double>(toNative(offsetPtr[i * 2 + 1]));
+                double I = static_cast<double>(toNative(offsetPtr[i * stride]));
+                double Q = static_cast<double>(toNative(offsetPtr[i * stride + 1]));
                 out.emplace_back(I, Q);
             }
         } else { // Real Numbers
-            out.reserve(sampleCount);
             for (int64_t i = 0; i < sampleCount; ++i) {
-                double I = static_cast<double>(toNative(offsetPtr[i]));
+                double I = static_cast<double>(toNative(offsetPtr[i * this->numChannels]));
                 out.emplace_back(I, 0.0);
             }
         }
