@@ -7,7 +7,11 @@ int main()
 {
     /*
      * TODO:
-     * * SigMFDataset class should handle size.
+     * * SigMFDataset class should handle footer_bytes.
+     * * SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.) Update interface
+     *   to use captures instead of sampleStart & sampleCount. Since each capture can have header_bytes, you have to account for those when
+     *   you load IQ data from the file - this means a sampleStart & sampleCount range needs to understand what captures it spans across to
+     *   identify the header_bytes.
      * * Support Dataset .size() function -> a function of header_bytes, footer_bytes, and file size. Should also have a convenience
      *   function to support channelSize(int64_t) to get the size of a certain channel (handle edge case of incomplete channel streams -
      *   one channel as one more sample than the others, etc).
