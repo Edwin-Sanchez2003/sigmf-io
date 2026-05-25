@@ -26,8 +26,8 @@ class SigMFDataset
 public:
     // Construct a SigMFDataset object as an interface with the data on disk, with the minimum required information
     // to interpret the data on disk.
-    SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t offset, int64_t numChannels, int64_t trailingBytes);
-    // TODO: Include constructors that use default values for offset, numChannels, and trailingBytes.
+    SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes);
+    // TODO: Include constructors that use default values for numChannels and trailingBytes.
 
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
     std::vector<std::complex<double>> getSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel);
@@ -43,6 +43,8 @@ public:
 
     SigMFDataType getDataType() const { return this->dataType; }
 
+    // TODO: Getters/setters for other member variables that need them...
+
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
     SigMFDataset(const SigMFDataset&)            = delete;
@@ -53,7 +55,6 @@ public:
 private:
     std::string datasetPath;
     SigMFDataType dataType;
-    int64_t offset;
     int64_t numChannels;
     int64_t trailingBytes;
     mio::mmap_source mmap;

@@ -7,8 +7,13 @@ int main()
 {
     /*
      * TODO:
-     * * Update SigMFDataset class to handle channels.
+     * * SigMFDataset class should handle size.
+     * * Support Dataset .size() function -> a function of header_bytes, footer_bytes, and file size. Should also have a convenience
+     *   function to support channelSize(int64_t) to get the size of a certain channel (handle edge case of incomplete channel streams -
+     *   one channel as one more sample than the others, etc).
      * * Implement SigMFRecording class.
+     * * offset is NOT needed by the SigMFDataset class -> SigMFRecording class should manage offset. In this case, 'offset'
+     * means the global indexing of the annotations. SigMFRecording will interact with annotations, so it will handle offsets.
      * * Setup SigMFRecording class to be the main public interface of which to interact with a SigMF Dataset & Metadata.
      *  -> A SigMFDataset doesn't know of it's own header bytes; you need metadata to do that (in fact, you need the meta
      *    data in order to interact with most of a SigMFDataset.

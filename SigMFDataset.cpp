@@ -8,18 +8,13 @@
 #include <stdexcept>
 
 
-SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t offset, int64_t numChannels, int64_t trailingBytes)
+SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes)
     : dataType(dataType)
 {
     // validate datasetPath exists.
     if (std::filesystem::exists(datasetPath) == false)
         throw std::runtime_error("SigMFDataset: Dataset file path '" + datasetPath + "' does not exist!");
     this->datasetPath = datasetPath;
-
-    // validate offset is greater than or equal to zero.
-    if (offset < 0)
-        throw std::runtime_error("SigMFDataset: offset value must be greater than or equal to zero. Given offset: '" + std::to_string(offset) + "'.");
-    this->offset = offset;
 
     // validate numChannels is greater than or equal to one.
     if (numChannels < 1)
