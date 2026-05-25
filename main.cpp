@@ -31,10 +31,11 @@ int main()
      * complete data in order to support the SigMF format. Maybe not that bad, we will see...
      * * Consider error handling after complete - need robust error messages to make SigMF dataset interactions easy/simple.
      * * Consider speed after complete - may require re-writing SigMFDataset interface to be template class in general to support
-     * the DataType. This way we can have a new function to load data for every supported DataType, which would be optimal speed
-     * for data loading, rather than only having an interface for std::complex<double>. Along with this, we should offer a conversion
-     * to any supported data type for user's convenience so they can quickly convert between data types as needed, or to pick one data
-     * type to do everything in (when the user is not worried about time/space efficiency).
+     * the DataType (templatizing getSamples with DataTypes).This way we can have a new function to load data for every supported
+     * DataType, which would be optimal speed for data loading, rather than only having an interface for std::complex<double>.
+     * Along with this, we should offer a conversion to any supported data type for user's convenience so they can quickly convert
+     * between data types as needed, or to pick one data type to do everything in (when the user is not worried about time/space
+     * efficiency).
      * * Maybe once complete, provide a Python Wrapper? And a path to provide wrappers for other languages?
      */
 

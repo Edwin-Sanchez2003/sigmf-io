@@ -41,7 +41,6 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
         return;
     }
 
-
     // Parse multi-char type + endianness: e.g. "f32_le", "u16_be", "i32_le"
     // Find the endianness suffix
     if(rest.size() < 3)
