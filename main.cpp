@@ -24,9 +24,21 @@ int main()
      * * implement SigMFCollections.
      * * validate C++ interface works for all valid SigMF Datasets, Collection, and even Non-Conforming Datasets.
      * * clean up public interface & setup test cases?
+     *
+     * Something to figure out: Should this interface be for LOADING SigMFRecordings, or BUILDING SigMF Recordings? Or Both?
+     * If Both, we need to reconcile the problem of RAII - if things have to be "complete" to be initialized, then this may place
+     * a significant burden on the user when building a SigMF dataset - they will need to make sure they provide all correct &
+     * complete data in order to support the SigMF format. Maybe not that bad, we will see...
+     * * Consider error handling after complete - need robust error messages to make SigMF dataset interactions easy/simple.
+     * * Consider speed after complete - may require re-writing SigMFDataset interface to be template class in general to support
+     * the DataType. This way we can have a new function to load data for every supported DataType, which would be optimal speed
+     * for data loading, rather than only having an interface for std::complex<double>. Along with this, we should offer a conversion
+     * to any supported data type for user's convenience so they can quickly convert between data types as needed, or to pick one data
+     * type to do everything in (when the user is not worried about time/space efficiency).
+     * * Maybe once complete, provide a Python Wrapper? And a path to provide wrappers for other languages?
      */
 
-    SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 0, 1, 0);
+    SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);
 
     std::cout << sigmfData.getDataType().getRawDataType() << '\n';
     for(const auto& sample: sigmfData.getSamples(0, 100))
