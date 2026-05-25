@@ -37,6 +37,7 @@ int main()
      * between data types as needed, or to pick one data type to do everything in (when the user is not worried about time/space
      * efficiency).
      * * Maybe once complete, provide a Python Wrapper? And a path to provide wrappers for other languages?
+     * * Maybe make it a header-only library? one include?
      */
 
     SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);

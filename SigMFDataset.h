@@ -59,6 +59,7 @@ private:
     int64_t trailingBytes;
     mio::mmap_source mmap;
 
+private:
     // Swaps byte order - necessary when file type endianness does not match
     // the endianness of the machine it's running on.
     template<typename T>
