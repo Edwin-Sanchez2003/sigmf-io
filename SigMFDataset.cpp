@@ -37,24 +37,27 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 
 
 // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
-std::vector<std::complex<double>> SigMFDataset::getSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel)
+std::vector<std::complex<double>> SigMFDataset::getSamples(
+    int64_t sampleStart, int64_t sampleCount, int64_t channel)
 {
-    // check that bounds are valid
-    if (sampleStart < 0 || sampleCount < 0) {
-        throw std::out_of_range(
-            "Invalid Indices | sampleStart: " + std::to_string(sampleStart) +
-            ", sampleCount: " + std::to_string(sampleCount)
-        );
-    }
-
-    // TODO: make sure that sampleStart + sampleCount (accounting for the channel as well)
-    // is less than or equal to the dataset size (otherwise we will overflow).
-
-    // check that channel is greater than or equal to one
+    // check that channel is greater than or equal to one, and that it's less than or equal to numChannels.
     if (channel < 1)
         throw std::runtime_error("Channel index must be at least one! Channel index: '" + std::to_string(channel) + "'.");
     else if (channel > this->numChannels)
         throw std::runtime_error("Channel index must be less than or equal to numChannels! numChannels: '" + std::to_string(this->numChannels) + "', Channel index: '" + std::to_string(channel)+ "'.");
+
+    // check that bounds are valid
+    if (sampleStart < 0) {
+        throw std::out_of_range("Invalid sampleStart: " + std::to_string(sampleStart));
+    }
+
+    // if negative, sets sampleCount to entire channel size.
+    if (sampleCount < 0) {
+        sampleCount = this->size(channel);
+    }
+
+    // TODO: make sure that sampleStart + sampleCount (accounting for the channel as well)
+    // is less than or equal to the dataset size (otherwise we will overflow).
 
     // get the RF data as a std::vector<std::complex<double>>
     switch (this->dataType.getSampleType()) {
@@ -69,11 +72,4 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(int64_t sampleStart, 
         default:
             throw std::runtime_error("Unsupported SigMFDataType::SampleType!");
     }
-}
-
-// Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
-// This version assumes a channel of 1.
-std::vector<std::complex<double>> SigMFDataset::getSamples(int64_t sampleStart, int64_t sampleCount)
-{
-    return getSamples(sampleStart, sampleCount, 1);
 }

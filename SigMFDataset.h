@@ -26,24 +26,22 @@ class SigMFDataset
 public:
     // Construct a SigMFDataset object as an interface with the data on disk, with the minimum required information
     // to interpret the data on disk.
-    SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes);
-    // TODO: Include constructors that use default values for numChannels and trailingBytes.
+    SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels = 1, int64_t trailingBytes = 0);
 
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
-    std::vector<std::complex<double>> getSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel);
-
-    // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
-    // This version assumes a channel of 1.
-    std::vector<std::complex<double>> getSamples(int64_t sampleStart, int64_t sampleCount);
+    // This is convenient when your dataset is contiguous samples (ie. there are no header_bytes in any captures).
+    std::vector<std::complex<double>> getSamples(int64_t sampleStart = 0, int64_t sampleCount = -1, int64_t channel = 1);
 
     // TODO: gets the size of the dataset
     // for this function to exist, you must iterate over every capture in the metadata to identify header_bytes
     // for Non-Conforming SigMF Datasets. Only then can you calculate the total samples in the dataset.
     // int64_t size() const;
 
+    /* Getters & Setters */
+    std::string getDatasetPath() const { return this->datasetPath; }
     SigMFDataType getDataType() const { return this->dataType; }
-
-    // TODO: Getters/setters for other member variables that need them...
+    int64_t numChannels() const { return this->numChannels; }
+    int64_t trailingBytes() const { return this->trailingBytes; }
 
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
@@ -53,11 +51,11 @@ public:
     SigMFDataset& operator=(SigMFDataset&&)      = default;
 
 private:
-    std::string datasetPath;
-    SigMFDataType dataType;
-    int64_t numChannels;
-    int64_t trailingBytes;
-    mio::mmap_source mmap;
+    std::string datasetPath;    // Path to the dataset file to be interacted with on disk.
+    SigMFDataType dataType;     // The SigMF Datatype; tells us how to read data from disk.
+    int64_t numChannels;        // The number of interleaved streams of samples in this SigMFDataset.
+    int64_t trailingBytes;      // The number of bytes at the end of the file that are NOT samples (NCDs).
+    mio::mmap_source mmap;      // The Memory Mapping instance used to read data from disk at runtime.
 
 private:
     // Swaps byte order - necessary when file type endianness does not match

@@ -7,6 +7,7 @@ int main()
 {
     /*
      * TODO:
+     * * Implement int64_t size() on SigMFDataset class.
      * * SigMFDataset class should handle footer_bytes.
      * * SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.) Update interface
      *   to use captures instead of sampleStart & sampleCount. Since each capture can have header_bytes, you have to account for those when
