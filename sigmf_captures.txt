@@ -1,0 +1,51 @@
+#include "sigmf_core_generated.h"
+#include "sigmf.h"
+#include "sigmf_helpers.h"
+#include <iostream>
+#include <fstream>
+#include <cstdint>
+
+int main(int argc, char* argv[]) {
+
+    std::ifstream meta_fstream(argv[1]);
+
+    // metadata_file_to_json returns a shared_ptr to a SigMF record.
+    // The record is templated on your namespace types:
+    //   Global    -> sigmf::Global<sigmf::core::DescrT>
+    //   Capture   -> sigmf::Capture<sigmf::core::DescrT>
+    //   Annotation-> sigmf::Annotation<sigmf::core::DescrT>
+    std::shared_ptr<sigmf::SigMF<sigmf::core::DescrT>> record =
+        sigmf::metadata_file_to_json(meta_fstream);
+
+    // --- Global fields ---
+    sigmf::core::GlobalT global_core = record->global.access<sigmf::core::GlobalT>();
+
+    // datatype is a std::string (always present; required by spec)
+    std::string datatype = global_core.datatype;
+
+    // num_channels and trailing_bytes are std::optional scalars in v1.0
+    uint64_t num_channels    = global_core.num_channels.value_or(1);
+    uint64_t trailing_bytes  = global_core.trailing_bytes.value_or(0);
+
+    std::cout << "datatype:      " << datatype      << "\n";
+    std::cout << "num_channels:  " << num_channels  << "\n";
+    std::cout << "trailing_bytes:" << trailing_bytes << "\n";
+
+    // --- Capture segments ---
+    // record->captures is a std::vector of sigmf::Capture<sigmf::core::DescrT>
+    for (sigmf::Capture<sigmf::core::DescrT> & cap : record->captures) {
+
+        sigmf::core::CaptureT cap_core = cap.access<sigmf::core::CaptureT>();
+
+        // sample_start is std::optional<uint64_t>; default 0 per spec
+        uint64_t sample_start = cap_core.sample_start.value_or(0);
+
+        // header_bytes is std::optional<uint32_t>; default 0 per spec
+        uint32_t header_bytes = cap_core.header_bytes.value_or(0);
+
+        std::cout << "  capture sample_start=" << sample_start
+                  << " header_bytes="          << header_bytes << "\n";
+    }
+
+    return 0;
+}

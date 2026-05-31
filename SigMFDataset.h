@@ -43,6 +43,10 @@ public:
     int64_t numChannels() const { return this->numChannels; }
     int64_t trailingBytes() const { return this->trailingBytes; }
 
+    // Returns the number of samples in the dataset.
+    // Must factor in header_bytes, footer_bytes, and channel.
+    int64_t getSize(std::vector<SigMFCapture> captures, int64_t channel = 1) const;
+
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
     SigMFDataset(const SigMFDataset&)            = delete;

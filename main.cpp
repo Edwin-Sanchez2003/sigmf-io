@@ -2,6 +2,7 @@
 
 #include "SigMFDataType.h"
 #include "SigMFDataset.h"
+#include "sigmf.h"
 
 int main()
 {
@@ -47,4 +48,7 @@ int main()
     for(const auto& sample: sigmfData.getSamples(0, 100))
         std::cout << sample.real() << " + " << sample.imag() << "i\n";
     return 0;
+
+
+    sigmf::Capture;
 }
