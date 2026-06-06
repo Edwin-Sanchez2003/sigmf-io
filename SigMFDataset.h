@@ -32,11 +32,6 @@ public:
     // This is convenient when your dataset is contiguous samples (ie. there are no header_bytes in any captures).
     std::vector<std::complex<double>> getSamples(int64_t sampleStart = 0, int64_t sampleCount = -1, int64_t channel = 1);
 
-    // TODO: gets the size of the dataset
-    // for this function to exist, you must iterate over every capture in the metadata to identify header_bytes
-    // for Non-Conforming SigMF Datasets. Only then can you calculate the total samples in the dataset.
-    // int64_t size() const;
-
     /* Getters & Setters */
     std::string getDatasetPath() const { return this->datasetPath; }
     SigMFDataType getDataType() const { return this->dataType; }
@@ -45,7 +40,7 @@ public:
 
     // Returns the number of samples in the dataset.
     // Must factor in header_bytes, footer_bytes, and channel.
-    int64_t getSize(std::vector<SigMFCapture> captures, int64_t channel = 1) const;
+    int64_t size(std::vector<SigMFCapture> captures, int64_t channel = 1) const;
 
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
@@ -77,6 +72,7 @@ private:
 
     // loads a chunk of file bytes to a vector of complex doubles, given
     // a type T that represents the type used to store samples in the file.
+    // TODO: loadSamples needs to handle Non-Conforming Dataset cases!!! (header_bytes, trailing_bytes).
     template<typename T>
     std::vector<std::complex<double>> loadSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel) const
     {

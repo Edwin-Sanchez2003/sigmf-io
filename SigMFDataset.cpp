@@ -40,6 +40,9 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 std::vector<std::complex<double>> SigMFDataset::getSamples(
     int64_t sampleStart, int64_t sampleCount, int64_t channel)
 {
+    // get the channel's size - used later.
+    int64_t channelSize = this->size(channel);
+
     // check that channel is greater than or equal to one, and that it's less than or equal to numChannels.
     if (channel < 1)
         throw std::runtime_error("Channel index must be at least one! Channel index: '" + std::to_string(channel) + "'.");
@@ -53,11 +56,19 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(
 
     // if negative, sets sampleCount to entire channel size.
     if (sampleCount < 0) {
-        sampleCount = this->size(channel);
+        sampleCount = channelSize;
     }
+
+    // NOTE: sampleStart = 0, sampleCount = 0 passes through silently - returns an empty array.
 
     // TODO: make sure that sampleStart + sampleCount (accounting for the channel as well)
     // is less than or equal to the dataset size (otherwise we will overflow).
+    // written this way to avoid integer overflow (sampleCount + sampleStart).
+    if (sampleCount > (channelSize - sampleStart)) {
+        throw std::out_of_range(
+            "Invalid sample range. sampleStart + sampleCount: '" + std::to_string(sampleStart + sampleCount) +
+            "', Channel: '" + std::to_string(channel) + "', size: '" + std::to_string(channelSize) + "'.");
+    }
 
     // get the RF data as a std::vector<std::complex<double>>
     switch (this->dataType.getSampleType()) {
@@ -72,4 +83,17 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(
         default:
             throw std::runtime_error("Unsupported SigMFDataType::SampleType!");
     }
+}
+
+
+// Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
+// requested channel.captures array can be an empty vector if dataset is contiguous (no header bytes).
+int64_t SigMFDataset::size(std::vector<SigMFCapture> captures, int64_t channel = 1) const
+{
+    // add up header bytes across all captures to get total # of header bytes.
+
+    // add trailing_byte count.
+
+    // take total dataset size on disk, subtract header_bytes + trailing_bytes, divide by the number of channels.
+
 }

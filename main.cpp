@@ -9,7 +9,7 @@ int main()
     /*
      * TODO:
      * * Implement int64_t size() on SigMFDataset class.
-     * * SigMFDataset class should handle footer_bytes.
+     * * SigMFDataset class should handle trailing_bytes.
      * * SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.) Update interface
      *   to use captures instead of sampleStart & sampleCount. Since each capture can have header_bytes, you have to account for those when
      *   you load IQ data from the file - this means a sampleStart & sampleCount range needs to understand what captures it spans across to
@@ -40,6 +40,8 @@ int main()
      * efficiency).
      * * Maybe once complete, provide a Python Wrapper? And a path to provide wrappers for other languages?
      * * Maybe make it a header-only library? one include?
+     * * Question: Should this be thread-safe??? If we're dealing with threading, and people can build datasets as well as write
+     *             to them, we could get race conditions for checking for computed values. Overall, could be messy.
      */
 
     SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);
