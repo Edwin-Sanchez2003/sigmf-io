@@ -9,7 +9,7 @@
 #include "sigmf.h"
 
 // define SigMFCapture as the object type in a captures array.
-using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
+using SigMFCapture = sigmf::Capture<sigmf::core::DescrT>;
 
 
 SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes)

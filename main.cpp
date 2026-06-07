@@ -4,7 +4,7 @@
 #include "SigMFDataset.h"
 #include "sigmf.h"
 
-using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
+using SigMFCapture = sigmf::Capture<sigmf::core::DescrT>;
 
 int main()
 {
