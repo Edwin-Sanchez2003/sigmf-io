@@ -51,6 +51,11 @@ int main()
      * two constructors - one where we build a "fake" recording object & give it the bare-minimum dataset metadata, and one where we pass
      * in a real sigmf metadata reference pointer... This would keep the interface simple inside, but allow changes that reflect across objects
      * that are related??? I don't know...
+     * Question: Should we bail on libsigmf? Honestly a headache to maintain coupling. No clear data type to interact with - how do I know
+     * what I'm working with??? Tradeoff is it could get messy to read json data into C++, and then I have to build classes for the respective
+     * data types... may still be better than figuring out wtf this is: using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
+     * I honestly like the std::optional<> usage though, as it forces you to handle when values are missing. This is good practice, but the
+     * template hell is hard to follow...
      */
 
     SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);
