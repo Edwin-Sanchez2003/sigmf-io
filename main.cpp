@@ -4,6 +4,8 @@
 #include "SigMFDataset.h"
 #include "sigmf.h"
 
+using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
+
 int main()
 {
     /*
@@ -42,15 +44,21 @@ int main()
      * * Maybe make it a header-only library? one include?
      * * Question: Should this be thread-safe??? If we're dealing with threading, and people can build datasets as well as write
      *             to them, we could get race conditions for checking for computed values. Overall, could be messy.
+     * * Hard question: Should SigMFDataset objects be self-encapsulating? for instance, trailing_bytes is needed for a lot of calculations,
+     * so it would make sense to store it as a member variable. However, that value can change if you're building a SigMFdataset object,
+     * and so now you're managing it at the record-level (metadata-level) and in the Dataset object. This sucks. So maybe it should become
+     * a function input wherever it's needed when working with a Dataset??? Maybe you should have a pointer to a Recording object? Maybe
+     * two constructors - one where we build a "fake" recording object & give it the bare-minimum dataset metadata, and one where we pass
+     * in a real sigmf metadata reference pointer... This would keep the interface simple inside, but allow changes that reflect across objects
+     * that are related??? I don't know...
      */
 
     SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);
 
     std::cout << sigmfData.getDataType().getRawDataType() << '\n';
-    for(const auto& sample: sigmfData.getSamples(0, 100))
+    std::vector<SigMFCapture> captures;
+    captures.clear();
+    for(const std::complex<double>& sample: sigmfData.getSamples(captures, 0, 100))
         std::cout << sample.real() << " + " << sample.imag() << "i\n";
     return 0;
-
-
-    sigmf::Capture;
 }

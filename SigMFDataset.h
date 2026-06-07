@@ -10,6 +10,9 @@
 #include <cstring>
 #include <algorithm>
 #include "SigMFDataType.h"
+#include "sigmf.h"
+
+using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
 
 /*
  * SigMFDataset
@@ -30,17 +33,18 @@ public:
 
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
     // This is convenient when your dataset is contiguous samples (ie. there are no header_bytes in any captures).
-    std::vector<std::complex<double>> getSamples(int64_t sampleStart = 0, int64_t sampleCount = -1, int64_t channel = 1);
+    std::vector<std::complex<double>> getSamples(
+        std::vector<SigMFCapture>& captures, int64_t sampleStart = 0, int64_t sampleCount = -1, int64_t channel = 1);
 
     /* Getters & Setters */
     std::string getDatasetPath() const { return this->datasetPath; }
     SigMFDataType getDataType() const { return this->dataType; }
-    int64_t numChannels() const { return this->numChannels; }
-    int64_t trailingBytes() const { return this->trailingBytes; }
+    int64_t getNumChannels() const { return this->numChannels; }
+    int64_t getTrailingBytes() const { return this->trailingBytes; }
 
     // Returns the number of samples in the dataset.
     // Must factor in header_bytes, footer_bytes, and channel.
-    int64_t size(std::vector<SigMFCapture> captures, int64_t channel = 1) const;
+    int64_t size(std::vector<SigMFCapture>& captures, const int64_t channel = 1) const;
 
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable

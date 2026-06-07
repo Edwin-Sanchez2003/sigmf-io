@@ -116,3 +116,9 @@ size_t SigMFDataType::getPrimitivesPerSample() const
 {
     return (this->getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX) ? 2 : 1;
 }
+
+
+size_t SigMFDataType::getBytesPerSample() const
+{
+    return this->primitiveByteCount * getPrimitivesPerSample();
+}

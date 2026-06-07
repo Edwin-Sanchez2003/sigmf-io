@@ -6,6 +6,10 @@
 #include <cstdint>
 #include <filesystem>
 #include <stdexcept>
+#include "sigmf.h"
+
+// define SigMFCapture as the object type in a captures array.
+using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
 
 
 SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes)
@@ -38,10 +42,10 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 
 // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
 std::vector<std::complex<double>> SigMFDataset::getSamples(
-    int64_t sampleStart, int64_t sampleCount, int64_t channel)
+    std::vector<SigMFCapture>& captures, int64_t sampleStart, int64_t sampleCount, int64_t channel)
 {
     // get the channel's size - used later.
-    int64_t channelSize = this->size(channel);
+    int64_t channelSize = this->size(captures, channel);
 
     // check that channel is greater than or equal to one, and that it's less than or equal to numChannels.
     if (channel < 1)
@@ -87,13 +91,43 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(
 
 
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
-// requested channel.captures array can be an empty vector if dataset is contiguous (no header bytes).
-int64_t SigMFDataset::size(std::vector<SigMFCapture> captures, int64_t channel = 1) const
+// requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
+int64_t SigMFDataset::size(std::vector<SigMFCapture>& captures, const int64_t channel) const
 {
+    // check that the given channel is within bounds
+    if(
+        channel < 1 ||                  // channels are 1-based indexed.
+        channel > this->numChannels     // make sure channel exists.
+    ) {
+        throw std::runtime_error(
+            "Channel index is out-of-bounds. channel: '" + std::to_string(channel) + "', numChannels: '" + std::to_string(this->numChannels));
+    }
+
+    int64_t nonSampleBytes = 0;
+
     // add up header bytes across all captures to get total # of header bytes.
+    for(SigMFCapture& capture: captures)
+    {
+        sigmf::core::CaptureT& cap = capture.access<sigmf::core::CaptureT>();
+        nonSampleBytes += cap.header_bytes.value_or(0);
+    }
 
     // add trailing_byte count.
+    nonSampleBytes += this->trailingBytes;
 
     // take total dataset size on disk, subtract header_bytes + trailing_bytes, divide by the number of channels.
+    int64_t diskSizeBytes  = static_cast<int64_t>(this->mmap.size());
+    int64_t bytesPerSample = static_cast<int64_t>(this->dataType.getBytesPerSample());
+    int64_t sampleBytes    = diskSizeBytes - nonSampleBytes; // number of bytes that are actually samples on disk.
+    int64_t totalSamples   = sampleBytes / bytesPerSample;  //  number of actual samples on disk.
 
+    // "frame" - refers to a single index of samples across all channels
+    // (ie. the sum of all of the samples at index N across all channels).
+    int64_t totalFrames      = totalSamples / this->numChannels;
+
+    // The last "frame" may be incomplete - some channels may have 1 more than others.
+    int64_t remainderSamples = totalSamples % this->numChannels;
+
+    // Channels are 1-indexed; channel <= remainder get one extra sample
+    return totalFrames + ((channel <= remainderSamples) ? 1 : 0);
 }

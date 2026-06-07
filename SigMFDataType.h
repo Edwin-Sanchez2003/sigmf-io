@@ -53,6 +53,7 @@ public:
     // helpers for interpreting data on disk.
     size_t getPrimitiveByteCount() const;     // How many bytes is one primitive.
     size_t getPrimitivesPerSample() const;    // How many primitives make up a single sample.
+    size_t getBytesPerSample() const;         // How many bytes make up a single sample.
 
 // Hidden member variables.
 private:
