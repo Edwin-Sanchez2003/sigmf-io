@@ -92,7 +92,7 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(
 
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
 // requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
-int64_t SigMFDataset::size(std::vector<SigMFCapture>& captures, const int64_t channel) const
+int64_t SigMFDataset::size(const std::vector<SigMFCapture>& captures, const int64_t channel) const
 {
     // check that the given channel is within bounds
     if(
@@ -103,12 +103,14 @@ int64_t SigMFDataset::size(std::vector<SigMFCapture>& captures, const int64_t ch
             "Channel index is out-of-bounds. channel: '" + std::to_string(channel) + "', numChannels: '" + std::to_string(this->numChannels));
     }
 
+    // stores how many bytes are not samples (header/trailing bytes for Non-Conforming Datasets).
     int64_t nonSampleBytes = 0;
 
     // add up header bytes across all captures to get total # of header bytes.
-    for(SigMFCapture& capture: captures)
+    for(const SigMFCapture& capture: captures)
     {
-        sigmf::core::CaptureT& cap = capture.access<sigmf::core::CaptureT>();
+        // const_cast -> stupid hack to allow for const function arguments, which allows for default empty vector...
+        const sigmf::core::CaptureT& cap = const_cast<SigMFCapture&>(capture).access<sigmf::core::CaptureT>();
         nonSampleBytes += cap.header_bytes.value_or(0);
     }
 
@@ -122,7 +124,7 @@ int64_t SigMFDataset::size(std::vector<SigMFCapture>& captures, const int64_t ch
     int64_t totalSamples   = sampleBytes / bytesPerSample;  //  number of actual samples on disk.
 
     // "frame" - refers to a single index of samples across all channels
-    // (ie. the sum of all of the samples at index N across all channels).
+    // (ie. the group of all of the samples at index N across all channels).
     int64_t totalFrames      = totalSamples / this->numChannels;
 
     // The last "frame" may be incomplete - some channels may have 1 more than others.
