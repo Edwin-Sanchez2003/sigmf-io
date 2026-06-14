@@ -42,8 +42,10 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 
 // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
 std::vector<std::complex<double>> SigMFDataset::getSamples(
-    std::vector<SigMFCapture>& captures, int64_t sampleStart, int64_t sampleCount, int64_t channel)
+    const std::vector<SigMFCapture>& captures, const int64_t sampleStart, int64_t sampleCount, const int64_t channel)
 {
+    // NOTE: sampleStart = 0, sampleCount = 0 passes through silently - returns an empty array.
+
     // get the channel's size - used later.
     int64_t channelSize = this->size(captures, channel);
 
@@ -63,9 +65,7 @@ std::vector<std::complex<double>> SigMFDataset::getSamples(
         sampleCount = channelSize;
     }
 
-    // NOTE: sampleStart = 0, sampleCount = 0 passes through silently - returns an empty array.
-
-    // TODO: make sure that sampleStart + sampleCount (accounting for the channel as well)
+    // Make sure that sampleStart + sampleCount (accounting for the channel as well)
     // is less than or equal to the dataset size (otherwise we will overflow).
     // written this way to avoid integer overflow (sampleCount + sampleStart).
     if (sampleCount > (channelSize - sampleStart)) {

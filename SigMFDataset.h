@@ -34,7 +34,7 @@ public:
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
     // This is convenient when your dataset is contiguous samples (ie. there are no header_bytes in any captures).
     std::vector<std::complex<double>> getSamples(
-        std::vector<SigMFCapture>& captures, int64_t sampleStart = 0, int64_t sampleCount = -1, int64_t channel = 1);
+        const std::vector<SigMFCapture>& captures = {}, const int64_t sampleStart = 0, int64_t sampleCount = -1, const int64_t channel = 1);
 
     /* Getters & Setters */
     std::string getDatasetPath() const { return this->datasetPath; }
@@ -78,7 +78,7 @@ private:
     // a type T that represents the type used to store samples in the file.
     // TODO: loadSamples needs to handle Non-Conforming Dataset cases!!! (header_bytes, trailing_bytes).
     template<typename T>
-    std::vector<std::complex<double>> loadSamples(int64_t sampleStart, int64_t sampleCount, int64_t channel) const
+    std::vector<std::complex<double>> loadSamples(const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const
     {
         const int64_t primitivesPerSample = this->dataType.getPrimitivesPerSample();
         // first, cast to the file pointer to the type as specified by the template,
