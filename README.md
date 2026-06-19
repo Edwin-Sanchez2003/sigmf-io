@@ -7,6 +7,10 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
  * SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.)  -> This means updating loadSamples() to use captures, if given, to offset samples from their sample bytes.
  * Update interface to use captures instead of sampleStart & sampleCount. Since each capture can have header_bytes, you have to account for those when you load IQ data from the file - this means a sampleStart & sampleCount range needs to understand what captures it spans across to identify the header_bytes.
  * Support Dataset .size() function -> a function of header_bytes, footer_bytes, and file size. Should also have a convenience function to support channelSize(int64_t) to get the size of a certain channel (handle edge case of incomplete channel streams - one channel as one more sample than the others, etc).
+ * Need to enforce data types and boundaries for metadata fields, when included.
+    - Allow for user to enforce the format strictly.
+    - Allow the user to disable strict enforcement (runtime-errors will then be used if a param is attempted to be read but doesn't exist).
+    
  * Implement SigMFRecording class.
  * offset is NOT needed by the SigMFDataset class -> SigMFRecording class should manage offset. In this case, 'offset'means the global indexing of the annotations. SigMFRecording will interact with annotations, so it will handle offsets.
  * Setup SigMFRecording class to be the main public interface of which to interact with a SigMF Dataset & Metadata.
@@ -27,3 +31,6 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
  * Question: Should we bail on libsigmf? Honestly a headache to maintain coupling. No clear data type to interact with - how do I know what I'm working with??? Tradeoff is it could get messy to read json data into C++, and then I have to build classes for the respective data types... may still be better than figuring out wtf this is: using SigMFCapture = sigmf::VariadicDataClass<sigmf::core::CaptureT>;
  * I honestly like the std::optional<> usage though, as it forces you to handle when values are missing. This is good practice, but the template hell is hard to follow...
  * Consider eventually moving to Eigen for efficient vectors? Or maybe some other one... to avoid complexity of implementing to handle complex vs. real / primitive data type / endianness.
+ * API to allow a user to treat a NCD as a runtime SigMF dataset. You don't have to necessarily generate .sigmf-meta files, you can use the interface to describe only the needed information, then let the program run in memory.
+ * Extension Builder - make a tool to help add SigMF specification extensions for the project - a GUI interface lets you build the structure & requirements (data types, required vs. optional fields). This will enable groups to do the specifics of their work easily.
+    * Also allow users to ingest an existing file & build a specification from it. This means reading a file, infering the data types, and suggesting the rules automatically. This will help with custom-made specs that were written first and defined rigidly later.
