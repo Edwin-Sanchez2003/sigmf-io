@@ -5,7 +5,7 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
  * ~Implement int64_t size() on SigMFDataset class.~
  * ~SigMFDataset class should handle trailing_bytes.~ -> Since SigMFDataset.size() already factors in trailing_bytes, and this is the value used to
  * ~SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.)  -> This means updating loadSamples() to use captures, if given, to offset samples from their sample bytes.~
- * SigMFDataset class loadSamples should also return any supported data type as the vector. This means the user should be able to specify what data type is on disk (using a SigMFDataType) and then also specify what data type to load into the vector.
+ * SigMFDataset class loadSamples should also return any supported data type as the vector. This means the user should be able to specify what data type is on disk (using a SigMFDataType) and then also specify what data type to load into the vector (so the template function should have two template parameters - one for the data on disk, one for the .
     - TODO: write README.md file on SigMFDataset Spec rules - and what needs to be thought about when loading data from disk... (header_bytes, capture/annotation order, etc.)...
  * Make loadSamples the public interface to getting data out of a SigMFDataset object?
  * Implement bracket indexing for SigMFDatasets - can treat it like a std::vector or something similar (std::iterable?). Implement that interface on it to make it more compatible with other tools??? May require re-defining the interface...
