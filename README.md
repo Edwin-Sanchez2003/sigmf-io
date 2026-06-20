@@ -3,8 +3,11 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 ## NotesTODO:
  * ~Implement int64_t size() on SigMFDataset class.~
- * SigMFDataset class should handle trailing_bytes.
- * SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.)  -> This means updating loadSamples() to use captures, if given, to offset samples from their sample bytes.
+ * ~SigMFDataset class should handle trailing_bytes.~ -> Since SigMFDataset.size() already factors in trailing_bytes, and this is the value used to
+ * ~SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.)  -> This means updating loadSamples() to use captures, if given, to offset samples from their sample bytes.~
+ * Make loadSamples the public interface to getting data out of a SigMFDataset object?
+ * Implement bracket indexing for SigMFDatasets - can treat it like a std::vector or something similar (std::iterable?). Implement that interface on it to make it more compatible with other tools??? May require re-defining the interface...
+ * does memory mapping do anything right now? - we create a vector in-memory and then load samples when the vector is initialized (doesn't this defeat the purpose)? need to double-check to see if this is even worth the effort/dependency...
  * Update interface to use captures instead of sampleStart & sampleCount. Since each capture can have header_bytes, you have to account for those when you load IQ data from the file - this means a sampleStart & sampleCount range needs to understand what captures it spans across to identify the header_bytes.
  * Support Dataset .size() function -> a function of header_bytes, footer_bytes, and file size. Should also have a convenience function to support channelSize(int64_t) to get the size of a certain channel (handle edge case of incomplete channel streams - one channel as one more sample than the others, etc).
  * Need to enforce data types and boundaries for metadata fields, when included.
@@ -34,3 +37,6 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
  * API to allow a user to treat a NCD as a runtime SigMF dataset. You don't have to necessarily generate .sigmf-meta files, you can use the interface to describe only the needed information, then let the program run in memory.
  * Extension Builder - make a tool to help add SigMF specification extensions for the project - a GUI interface lets you build the structure & requirements (data types, required vs. optional fields). This will enable groups to do the specifics of their work easily.
     * Also allow users to ingest an existing file & build a specification from it. This means reading a file, infering the data types, and suggesting the rules automatically. This will help with custom-made specs that were written first and defined rigidly later.
+* Update the interfaces to each class to implement different contruction options (copy, move, const, static, etc.) so that the user can make the most of each function.
+* Maybe make SigMFDataType enums castable to strings, for error handling clarity...
+* Make sure spec is validated - captures & annotations should be sorted before used. Captures should never overlap!

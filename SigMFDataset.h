@@ -76,66 +76,182 @@ private:
 
     // loads a chunk of file bytes to a vector of complex doubles, given
     // a type T that represents the type used to store samples in the file.
-    // TODO: loadSamples needs to handle Non-Conforming Dataset cases!!! (header_bytes, trailing_bytes).
+    // TODO: loadSamples needs to handle Non-Conforming Dataset cases!!! (header_bytes).
+    // NOTE: This function assumes valid inputs - maybe move input validation logic to this function...
     template<typename T>
-    std::vector<std::complex<double>> loadSamples(const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const
+    std::vector<std::complex<double>> loadSamples(const std::vector<SigMFCapture>& captures, const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const
     {
         const int64_t primitivesPerSample = this->dataType.getPrimitivesPerSample();
-        // first, cast to the file pointer to the type as specified by the template,
-        // and offset by sampleStart. data is a pointer to the first byte of the file in memory.
+        const int64_t bytesPerFrame       = primitivesPerSample * static_cast<int64_t>(sizeof(T))
+                                      * this->numChannels;
+        const int64_t bytesPerSample      = primitivesPerSample * static_cast<int64_t>(sizeof(T));
+        const int64_t channelByteOffset   = (channel - 1) * bytesPerSample;
 
-        // For interleaved channels, each "frame" holds numChannels samples side by side.
-        // offsetPtr points to the first primitive of `channel` at frame `sampleStart`.
-        const T* offsetPtr = reinterpret_cast<const T*>(mmap.data())
-                             + (sampleStart * this->numChannels * primitivesPerSample)
-                             + ((channel - 1) * primitivesPerSample);
+        // Helper: given a byte offset into the mmap, return a typed pointer into it.
+        auto ptrAt = [&](int64_t byteOff) -> const T* {
+            return reinterpret_cast<const T*>(
+                reinterpret_cast<const uint8_t*>(mmap.data()) + byteOff);
+        };
 
-        // Handle endianness - swap bytes if file is big-endian and machine is
-        // little-endian, or if file is little-endian and machine is big-endian
-        bool fileIsLE = (dataType.getEndianness() == SigMFDataType::Endianness::LITTLE);
+        // Helper: given an absolute sample index, return the byte offset of the first
+        // primitive of `channel` for that sample, accounting for all header bytes in
+        // all captures that precede (or own) that sample.
+        // `captureIndex` is the index into `captures` that contains `absIdx`.
+        // `cumulativeHeaderBytesAtCapture` is the sum of header_bytes for captures[0..captureIndex].
+        auto sampleByteOffset = [&](int64_t absIdx,
+                                    int64_t cumulativeHeaderBytesAtCapture) -> int64_t {
+            return absIdx * bytesPerFrame + cumulativeHeaderBytesAtCapture + channelByteOffset;
+        };
+
+        // Handle endianness.
+        bool fileIsLE    = (dataType.getEndianness() == SigMFDataType::Endianness::LITTLE);
         bool machineIsLE = ([]() {
             uint16_t x = 1;
             return *reinterpret_cast<uint8_t*>(&x) == 1;
         })();
-
         auto toNative = [&](T val) -> T {
             if (fileIsLE != machineIsLE)
                 return byteSwap(val);
             return val;
         };
 
-        // initialize return vector of sample data
+        // Initialize return vector.
         std::vector<std::complex<double>> out;
         out.reserve(sampleCount);
 
-        // Handle Complex & Real Data Types
-        if (dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX) {
-            // Fast path: cf64_le on a little-endian machine, single channel only
-            // (multi-channel layout is interleaved so memcpy is not applicable).
-            if constexpr (std::is_same_v<T, double>) {
-                if (fileIsLE && machineIsLE && this->numChannels == 1)
+        // -------------------------------------------------------------------------
+        // Fast path: no captures metadata => no header bytes anywhere.
+        // -------------------------------------------------------------------------
+        if (captures.empty())
+        {
+            const T* offsetPtr = ptrAt(sampleByteOffset(sampleStart, 0));
+
+            if (dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+            {
+                if constexpr (std::is_same_v<T, double>)
                 {
-                    out.resize(sampleCount);
-                    std::memcpy(out.data(), offsetPtr, sampleCount * sizeof(std::complex<double>));
-                    return out;
+                    if (fileIsLE && machineIsLE && this->numChannels == 1)
+                    {
+                        out.resize(sampleCount);
+                        std::memcpy(out.data(), offsetPtr, sampleCount * sizeof(std::complex<double>));
+                        return out;
+                    }
+                }
+                const int64_t stride = 2 * this->numChannels;
+                for (int64_t i = 0; i < sampleCount; ++i)
+                {
+                    double I = static_cast<double>(toNative(offsetPtr[i * stride]));
+                    double Q = static_cast<double>(toNative(offsetPtr[i * stride + 1]));
+                    out.emplace_back(I, Q);
                 }
             }
-            // General path: stride by numChannels to skip over the other channels' primitives.
-            const int64_t stride = 2 * this->numChannels;
-            for (int64_t i = 0; i < sampleCount; ++i) {
-                double I = static_cast<double>(toNative(offsetPtr[i * stride]));
-                double Q = static_cast<double>(toNative(offsetPtr[i * stride + 1]));
-                out.emplace_back(I, Q);
+            else
+            {
+                for (int64_t i = 0; i < sampleCount; ++i)
+                {
+                    double I = static_cast<double>(toNative(offsetPtr[i * this->numChannels]));
+                    out.emplace_back(I, 0.0);
+                }
             }
-        } else { // Real Numbers
-            for (int64_t i = 0; i < sampleCount; ++i) {
-                double I = static_cast<double>(toNative(offsetPtr[i * this->numChannels]));
-                out.emplace_back(I, 0.0);
+            return out;
+        }
+
+        // -------------------------------------------------------------------------
+        // General path: walk captures, reading one segment at a time.
+        //
+        // Each capture owns samples [capSampleStart, capSampleEnd).
+        // Within the file those samples are preceded by capHeaderBytes non-sample bytes.
+        // We read only the slice of samples that falls within [sampleStart, sampleStart+sampleCount),
+        // advancing `samplesRead` until the request is satisfied.
+        // -------------------------------------------------------------------------
+        const bool isComplex = (dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX);
+        const int64_t stride = 2 * this->numChannels; // only used for complex
+
+        int64_t samplesRead            = 0;
+        int64_t cumulativeHeaderBytes  = 0;
+        bool    started                = false;
+
+        for (std::size_t i = 0; i < captures.size() && samplesRead < sampleCount; ++i)
+        {
+            const sigmf::core::CaptureT& cap =
+                const_cast<SigMFCapture&>(captures[i]).access<sigmf::core::CaptureT>();
+
+            const int64_t capSampleStart = static_cast<int64_t>(cap.sample_start.value_or(0));
+            const int64_t capHeaderBytes = static_cast<int64_t>(cap.header_bytes.value_or(0));
+
+            // Determine the exclusive end of this capture's sample range.
+            const int64_t capSampleEnd = (i + 1 < captures.size())
+                                             ? static_cast<int64_t>(const_cast<SigMFCapture&>(captures[i + 1]).access<sigmf::core::CaptureT>().sample_start.value_or(0))
+                                             : INT64_MAX;
+
+            // Accumulate this capture's header bytes before computing any pointer into it.
+            cumulativeHeaderBytes += capHeaderBytes;
+
+            // Skip captures that end before our request begins.
+            if (capSampleEnd <= sampleStart)
+                continue;
+
+            // Stop if this capture starts after our request ends.
+            if (capSampleStart >= sampleStart + sampleCount)
+                break;
+
+            started = true;
+
+            // Clamp to the intersection of [sampleStart+samplesRead, sampleStart+sampleCount)
+            // and [capSampleStart, capSampleEnd).
+            const int64_t segStart = std::max(sampleStart + samplesRead, capSampleStart);
+            const int64_t segEnd   = std::min(sampleStart + sampleCount, capSampleEnd);
+            const int64_t segCount = segEnd - segStart;
+
+            const T* segPtr = ptrAt(sampleByteOffset(segStart, cumulativeHeaderBytes));
+
+            if (isComplex)
+            {
+                for (int64_t si = 0; si < segCount; ++si)
+                {
+                    double I = static_cast<double>(toNative(segPtr[si * stride]));
+                    double Q = static_cast<double>(toNative(segPtr[si * stride + 1]));
+                    out.emplace_back(I, Q);
+                }
+            }
+            else
+            {
+                for (int64_t si = 0; si < segCount; ++si)
+                {
+                    double I = static_cast<double>(toNative(segPtr[si * this->numChannels]));
+                    out.emplace_back(I, 0.0);
+                }
+            }
+
+            samplesRead += segCount;
+        }
+
+        // If sampleStart didn't fall in any capture, fall back to no-header behaviour.
+        if (!started)
+        {
+            const T* offsetPtr = ptrAt(sampleByteOffset(sampleStart, 0));
+            if (isComplex)
+            {
+                for (int64_t i = 0; i < sampleCount; ++i)
+                {
+                    double I = static_cast<double>(toNative(offsetPtr[i * stride]));
+                    double Q = static_cast<double>(toNative(offsetPtr[i * stride + 1]));
+                    out.emplace_back(I, Q);
+                }
+            }
+            else
+            {
+                for (int64_t i = 0; i < sampleCount; ++i)
+                {
+                    double I = static_cast<double>(toNative(offsetPtr[i * this->numChannels]));
+                    out.emplace_back(I, 0.0);
+                }
             }
         }
 
         return out;
     }
+
 };
 
 #endif // SIGMFDATALOADER_H
