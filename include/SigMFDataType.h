@@ -25,7 +25,7 @@ public:
 
     // Tells us what the primitive is that is written to disk.
     enum class SampleType {
-        FLOAT_32,
+        float,
         FLOAT_64,
         INT_16,
         INT_32,
