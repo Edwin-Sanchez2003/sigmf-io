@@ -120,8 +120,16 @@ int64_t SigMFDataset::size(const std::vector<SigMFCapture>& captures, const int6
     // add trailing_byte count.
     nonSampleBytes += this->trailingBytes;
 
-    // take total dataset size on disk, subtract header_bytes + trailing_bytes, divide by the number of channels.
+    // get the total file size, in bytes.
     int64_t diskSizeBytes  = static_cast<int64_t>(this->mmap.size());
+
+    // guard against mal-formed metadata - nonSampleBytes add up to more bytes than what are on disk.
+    if(nonSampleBytes > diskSizeBytes) {
+        throw std::runtime_error("Non-sample byte count exceeds file size — metadata may be malformed. nonSampleBytes: '" +
+                                 std::to_string(nonSampleBytes) + "', diskSizeBytes: '" + std::to_string(diskSizeBytes) + "'.");
+    }
+
+    // take total dataset size on disk, subtract header_bytes + trailing_bytes, divide by the number of channels.
     int64_t bytesPerSample = static_cast<int64_t>(this->dataType.getBytesPerSample());
     int64_t sampleBytes    = diskSizeBytes - nonSampleBytes; // number of bytes that are actually samples on disk.
     int64_t totalSamples   = sampleBytes / bytesPerSample;  //  number of actual samples on disk.
