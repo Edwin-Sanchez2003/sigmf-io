@@ -64,9 +64,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(mio)
 # ─────────────────────────────────────────────────────────────────────────────
 
-add_executable(BurstRFBackend main.cpp
-    SigMFDataType.h SigMFDataType.cpp
-    SigMFDataset.h SigMFDataset.cpp)
+add_executable(BurstRFBackend src/main.cpp
+    src/SigMFDataType.cpp
+    src/SigMFDataset.cpp
+)
 
 target_link_libraries(BurstRFBackend
     PRIVATE libsigmf                # libsigmf target
@@ -79,6 +80,7 @@ target_link_libraries(BurstRFBackend
 target_include_directories(BurstRFBackend
     PRIVATE
         ${CMAKE_BINARY_DIR}/include
+        ${CMAKE_SOURCE_DIR}/include
 )
 
 include(GNUInstallDirs)
