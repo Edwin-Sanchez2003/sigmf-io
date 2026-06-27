@@ -17,3 +17,14 @@ int main()
         std::cout << sample.real() << " + " << sample.imag() << "i\n";
     return 0;
 }
+
+
+// Return a vector of samples, given the desired data type.
+std::vector<std::complex<double>> SigMFDataset::getSamples(
+    const std::vector<SigMFCapture>& captures,
+    const int64_t sampleStart,
+    int64_t sampleCount,
+    const int64_t channel
+) {
+
+}

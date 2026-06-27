@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36">
   <diagram name="BrainStorming" id="gXdXRD-hxSofAkPK0ilU">
-    <mxGraphModel dx="6671" dy="4273" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="6447" dy="4218" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -280,7 +280,7 @@
         <mxCell id="HEY7IZIS7RxNxtXOzFUf-21" parent="HEY7IZIS7RxNxtXOzFUf-5" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ getSamples(&lt;span style=&quot;color: rgb(51, 51, 51);&quot;&gt;std::vector&amp;lt;SigMFCapture&amp;gt;&amp;amp; captures,&amp;nbsp;&lt;/span&gt;int64_t&amp;nbsp;sampleStart, int64_t&amp;nbsp;sampleCount, int64_t&amp;nbsp;channel): std::vector&amp;lt;std::complex&amp;lt;double&amp;gt;&amp;gt;" vertex="1">
           <mxGeometry height="26" width="870" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="xhd_DwO9SQiEmucfImrC-52" parent="HEY7IZIS7RxNxtXOzFUf-5" style="text;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontColor=#333333;" value="+ getSamples(SigMFAnnotation annotation): std::vector&amp;lt;std::complex&amp;lt;double&amp;gt;&amp;gt;" vertex="1">
+        <mxCell id="xhd_DwO9SQiEmucfImrC-52" parent="HEY7IZIS7RxNxtXOzFUf-5" style="text;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontColor=#333333;" value="&lt;strike&gt;+ getSamples(SigMFAnnotation annotation): std::vector&amp;lt;std::complex&amp;lt;double&amp;gt;&amp;gt;&lt;/strike&gt;&amp;nbsp;-&amp;gt; Place in SigMFRecording class. Dataset class should be MVP interface?" vertex="1">
           <mxGeometry height="26" width="870" y="216" as="geometry" />
         </mxCell>
         <mxCell id="xhd_DwO9SQiEmucfImrC-51" parent="HEY7IZIS7RxNxtXOzFUf-5" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -751,9 +751,6 @@
         </mxCell>
         <mxCell id="qkVBq6RJds2DqXQby8u5-44" parent="qkVBq6RJds2DqXQby8u5-45" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Frame 5" vertex="1">
           <mxGeometry height="30" width="60" x="970" y="108.5" as="geometry" />
-        </mxCell>
-        <mxCell id="KDYoo9fH9NEQH26Aq3NJ-1" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Today TODO&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Fix header_bytes &amp;amp; trailing_bytes loading in SigMF dataset.&lt;/li&gt;&lt;li&gt;upload repo to github.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="120" width="340" x="-1130" y="-2930" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
