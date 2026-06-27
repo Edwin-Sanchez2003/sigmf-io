@@ -40,58 +40,11 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 }
 
 
-// Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
-std::vector<std::complex<double>> SigMFDataset::getSamples(
-    const std::vector<SigMFCapture>& captures, const int64_t sampleStart, int64_t sampleCount, const int64_t channel)
-{
-    // NOTE: sampleStart = 0, sampleCount = 0 passes through silently - returns an empty array.
-
-    // check that channel is greater than or equal to one, and that it's less than or equal to numChannels.
-    if (channel < 1)
-        throw std::runtime_error("Channel index must be at least one! Channel index: '" + std::to_string(channel) + "'.");
-    else if (channel > this->numChannels)
-        throw std::runtime_error("Channel index must be less than or equal to numChannels! numChannels: '" + std::to_string(this->numChannels) + "', Channel index: '" + std::to_string(channel)+ "'.");
-
-    // get the channel's size - used later.
-    int64_t channelSize = this->size(captures, channel);
-
-    // check that bounds are valid
-    if (sampleStart < 0) {
-        throw std::out_of_range("Invalid sampleStart - must be greater than or equal to zero: '" + std::to_string(sampleStart) + "'.");
-    } else if (sampleStart >= channelSize) {
-        throw std::out_of_range("Invalid sampleStart - must be less than the number of samples in the channel. sampleStart: '" +
-                                std::to_string(sampleStart) + "', channelSize: '" + std::to_string(channelSize) + "'.");
-    }
-
-    // if negative, sets sampleCount to all samples in the channel including and after sampleStart.
-    if (sampleCount < 0) {
-        sampleCount = channelSize - sampleStart;
-    }
-
-    // Make sure that sampleStart + sampleCount (accounting for the channel as well)
-    // is less than or equal to the dataset size (otherwise we will overflow/ingest trailing_bytes).
-    // written this way to avoid integer overflow (sampleCount + sampleStart).
-    if (sampleCount > (channelSize - sampleStart)) {
-        throw std::out_of_range(
-            "Invalid sample range. sampleStart + sampleCount: '" + std::to_string(sampleStart + sampleCount) +
-            "', Channel: '" + std::to_string(channel) + "', size: '" + std::to_string(channelSize) + "'.");
-    }
-
-    // get the RF data as a std::vector<std::complex<double>>
-    switch (this->dataType.getSampleType()) {
-        case SigMFDataType::SampleType::FLOAT_32: return loadSamples<float>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::FLOAT_64: return loadSamples<double>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::INT_16:   return loadSamples<int16_t>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::INT_32:   return loadSamples<int32_t>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::UINT_16:  return loadSamples<uint16_t>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::UINT_32:  return loadSamples<uint32_t>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::BYTE:    return loadSamples<int8_t>(captures, sampleStart, sampleCount, channel);
-        case SigMFDataType::SampleType::UBYTE:   return loadSamples<uint8_t>(captures, sampleStart, sampleCount, channel);
-        default:
-            throw std::runtime_error("Unsupported SigMFDataType::SampleType!");
-    }
-}
-
+/*
+ *  1. validate sampleStart, sampleCount, and channel.
+ *  2. loadSamples from disk, using SigMFDataType, into a std::vector.
+ *  3. convert that vector to the data type the user calls.
+ */
 
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
 // requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
