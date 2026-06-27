@@ -96,3 +96,65 @@ std::vector<OutputT> dispatch(SampleType src, const void* data, size_t n);
 ```
 
 That way the type safety you wanted is enforced at the boundary, before any runtime dispatch happens.
+
+---
+
+Let me make sure I know what order to do things in:
+
+1. First, validate fields/user function input parameters (sample index, size, channel, etc.) - SigMF-related requirements.
+2. Next, using the runtime-dispatched data type, load the data from disk into a std::vector (accounting for endianness, complex vs real, header_bytes & trailing_bytes, etc).
+3. Once I have a vector of std::vector<InputT> (or std::vector<std::complex<InputT>>), then I use the dispatch/convert functions to static_cast the vector to OutputT.
+
+See any flaws in this logic? All of the wierd things that happen on disk from SigMF is handled before it become a vector. Once it's in a vector, it gets converted. I haven't thought through how complex vs real works in this case...
+
+---
+
+The order is solid. Keeping the disk-format concerns fully resolved before conversion is the right separation — your convert layer can stay completely ignorant of SigMF details.
+
+The one flaw I'd flag is in step 2: **you're constructing an intermediate vector you may not need.** If the input and output types are the same, you're allocating and copying for no reason. Worth at least noting as a potential optimization path — you could short-circuit the conversion step when `InputT == OutputT`.
+
+---
+
+## The Complex Problem
+
+This is where your otherwise clean pipeline gets awkward. The issue is that complex vs real is a **structural difference**, not just a numeric one, so it doesn't fit neatly into the same `convert<InputT, OutputT>` framework.
+
+You essentially have four cases:
+
+```
+real    → real     // straightforward, your current design handles this
+complex → complex  // also fine, just convert the component type
+real    → complex  // zero the imaginary part
+complex → real     // lossy: what do you take? real part? magnitude?
+```
+
+The tricky part is that `std::complex<float>` and `float` are **different types at the type system level** — you can't `static_cast` between them. So your type list either needs to include both:
+
+```cpp
+using SigMFTypes = std::tuple
+    float, double, int16_t, /*...*/,   // real types
+    std::complex<float>, std::complex<double>  // complex types
+>;
+```
+
+...which means your N×M matrix now includes complex↔real cells that `static_cast` simply can't fill. Those cells need hand-written specializations.
+
+The cleanest way to handle this is to **keep complex and real as separate template axes** rather than collapsing them into one type list:
+
+```cpp
+template <typename InputT, typename OutputT>
+std::vector<OutputT> convert_real_to_real(const std::vector<InputT>& in);
+
+template <typename InputT, typename OutputT>
+std::vector<std::complex<OutputT>> convert_real_to_complex(const std::vector<InputT>& in);
+
+template <typename InputT, typename OutputT>
+std::vector<OutputT> convert_complex_to_real(const std::vector<std::complex<InputT>>& in);
+
+template <typename InputT, typename OutputT>
+std::vector<std::complex<OutputT>> convert_complex_to_complex(const std::vector<std::complex<InputT>>& in);
+```
+
+Your dispatch layer then selects which of these four paths to take based on whether the on-disk format is complex and whether the user requested complex output. That decision can be made entirely at the dispatch layer — the convert functions themselves stay simple.
+
+This also gives you a natural place to make the `complex → real` semantic explicit and documented, rather than hiding a lossy operation inside a generic conversion.
