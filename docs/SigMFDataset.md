@@ -94,3 +94,67 @@ int64_t SigMFDataset::size(const std::vector<SigMFCapture>& captures, const int6
     return totalFrames + ((channel <= remainderSamples) ? 1 : 0);
 }
 ```
+
+### Algorithm
+
+#### Data on Disk
+* Primitive Type
+* Sample Type (Real/Complex)
+* Endianness (Big/Little)
+* Captures
+    * header_bytes
+* trailing_bytes
+* file size
+* num_channels
+* offset
+
+#### User-Specified Data
+* Target Data Type
+* sample_start (index)
+* sample_count
+* channel
+
+> Fast-Path: Conforming SigMF Dataset, where OutputT == InputT.
+
+1. Validate User Input.
+    1. Check sample_start & sample_count are in-bounds.
+    2. Check channel is in-bounds.
+    * Use dataset.size(channel) for this.
+2. Get start byte of file as a byte pointer.
+3. Allocate a vector of memory the size of sampleCount, and of the target data type (OutputT).
+4. If NO capture data (ie. no header_bytes):
+    1. Apply formula to get initial sample byte index:
+    
+    ```
+    # Take Logical sample_start (provided by user), apply global/stream offset.
+    # Multiply by num_channels to get to correct frame in file, as samples are interleaved.
+    # Add desired channel to get correct sample in frame. Subtract one since channels use 1-based indexing.
+    index_offset_samples = (sample_start - offset) * num_channels + (channel - 1)
+    
+    # Convert logical index to physical index - multiply by bytes per sample.
+    index_offset_bytes = index_offset_samples * bytes_per_sample
+    ```
+5. If header_bytes exist (ie. Non-Conforming Dataset), offset by header_bytes:
+    ```
+    accumulated_header_bytes = 0
+    for capture in captures:
+        if (capture.sample_start - offset) <= sample_start: 
+            accumulated_header_bytes += capture.header_bytes
+        else:
+            break
+    index_offset_bytes += accumulated_header_bytes
+    ```
+6. Loop to aggregate samples from disk.
+    1. Cast value at index_offset_bytes to on-disk data type.
+    2. If complex, read both components.
+    3. Increment by formula:
+    ```
+    # Continue through captures, picking up from where initial header bytes loop was last.
+    offset_header_bytes = 0
+    for capture in captures:
+        if (capture.sample_start - offset) <= (sample_start + sample_idx): 
+            offset_header_bytes += capture.header_bytes
+    index_sentry_byte += (bytes_per_sample * num_channels) + offset_header_bytes
+    ```
+    4. If we pass a capture boundary, offset the index_sentry_byte pointer by the header_bytes of the new capture we crossed into.
+7. Cast the vector of samples to the user-specified target data type.
