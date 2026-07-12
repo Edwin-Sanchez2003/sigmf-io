@@ -54,6 +54,7 @@ public:
     int64_t getNumChannels() const { return this->numChannels; }
     int64_t getTrailingBytes() const { return this->trailingBytes; }
     int64_t getOffset() const { return this->offset; }
+    SigMFDataType::Endianness getSystemEndianness() const;
 
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
     template <typename OutputT>
@@ -122,11 +123,13 @@ std::complex<T> SigMFDataset::byteSwap(std::complex<T> val) const {
     return std::complex<T>(byteSwap(val.real()), byteSwap(val.imag()));
 }
 
+
 template<typename T>
 T SigMFDataset::valueAt(const uint8_t* bytePtr) const {
     const T* primitivePtr = reinterpret_cast<const T*>(bytePtr);
     return *primitivePtr;
 }
+
 
 template<typename T>
 std::vector<T> SigMFDataset::loadSamples(
@@ -142,18 +145,17 @@ std::vector<T> SigMFDataset::loadSamples(
     out.reserve(sampleCount); // pre-allocate the memory needed for this vector, without initializing the values (cheap).
 
     // Get initial position of data being requested (ie. first byte of requested data; sampleStart).
-
     int64_t indexOffsetSamples = (sampleStart - offset) * this->numChannels + (channel - 1);
     int64_t indexOffsetBytes = indexOffsetSamples * this->getDataType().getBytesPerSample();
     bytePtr += indexOffsetBytes;
 
     // Get accumulated header_bytes from captures, up to sampleStart.
     int64_t accumulatedHeaderBytes = 0;
-    int64_t capture_idx = 0;
-    for(; capture_idx < captures.size(); capture_idx++)
+    int64_t captureIdx = 0;
+    for (; captureIdx < captures.size(); captureIdx++)
     {
         // const_cast -> stupid hack to allow for const function arguments, which allows for default empty vector...
-        const sigmf::core::CaptureT& cap = const_cast<SigMFCapture&>(captures[capture_idx]).access<sigmf::core::CaptureT>();
+        const sigmf::core::CaptureT& cap = const_cast<SigMFCapture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
 
         // check if the capture start sample index comes before sampleStart meaning
         // we need to apply header bytes offset.
@@ -167,46 +169,33 @@ std::vector<T> SigMFDataset::loadSamples(
     bytePtr += accumulatedHeaderBytes;
 
     // Loop to aggregate samples into out vector
-    for(int64_t i = 0; i < sampleCount; i++)
+    for (int64_t i = 0; i < sampleCount; i++)
     {
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX) {
-            // 1. cast current sentry (initially index_offset_bytes) to on-disk primitive type.
-            // read both components (real & complex).
-            T I = this->valueAt(bytePtr);
-            T Q = this->valueAt(bytePtr + 1);
-
-            // 2. Perform endianness swap, if necessary & push back into vector.
-            if (this->dataType.Endianness != endianness_of_computer) {
-                out.push_back(std::complex<T>(this->byteSwap(I), this->byteSwap(Q));
+        // 1. If we pass a capture boundary, offset by header_bytes again.
+        while (captureIdx < captures.size()) {
+            const sigmf::core::CaptureT& cap =const_cast<SigMFCapture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
+            if ((cap.sample_start.value_or(0) - offset) <= (sampleStart + i))
+            {
+                bytePtr += cap.header_bytes.value_or(0);
+                captureIdx++;
             } else {
-                out.push_back(std::complex<T>(I, Q));
+                break;
             }
-        } else { // Real
-            // 1. cast current sentry (initially index_offset_bytes) to on-disk primitive type.
-            T sample = this->valueAt(bytePtr);
+        }
 
-            // 2. Perform endianness swap, if necessary & push back into vector.
-            if (this->dataType.Endianness != endianness_of_computer) {
-                out.push_back(this->byteSwap(sample));
-            } else {
-                out.push_back(sample);
-            }
+        // 2. cast current sentry (initially index_offset_bytes) to on-disk primitive type.
+        T sample = this->valueAt<T>(bytePtr);
+
+        // 3. Perform endianness swap, if necessary & push back into vector.
+        if (this->dataType.getEndianness() != this->getSystemEndianness()) {
+            out.push_back(this->byteSwap(sample));
+        } else {
+            out.push_back(sample);
         }
 
         // 4. Increment by formula: `bytes_per_sample * num_channels`
         bytePtr += this->dataType.getBytesPerSample() * this->numChannels;
 
-        // 5. If we pass a capture boundary, offset by header_bytes again.
-        if (/*Cross Capture Boundary Threshold*/) {
-            // const_cast -> stupid hack to allow for const function arguments, which allows for default empty vector...
-            const sigmf::core::CaptureT& cap = const_cast<SigMFCapture&>(captures[capture_idx]).access<sigmf::core::CaptureT>();
-
-            // TODO: check if the current capture index needs to be incremented
-            if ((cap.sample_start.value_or(0) - offset) <= (sampleStart + i))
-            {
-                accumulatedHeaderBytes += cap.header_bytes.value_or(0);
-            }
-        }
     } // end aggregate samples
 
     return out;

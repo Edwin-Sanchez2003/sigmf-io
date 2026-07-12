@@ -46,6 +46,14 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 }
 
 
+SigMFDataType::Endianness SigMFDataset::getSystemEndianness() const {
+    uint32_t x = 1;
+    uint8_t firstByte = *reinterpret_cast<uint8_t*>(&x);
+
+    return (firstByte == 1) ? SigMFDataType::Endianness::LITTLE : SigMFDataType::Endianness::BIG;
+}
+
+
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
 // requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
 int64_t SigMFDataset::size(const std::vector<SigMFCapture>& captures, const int64_t channel) const

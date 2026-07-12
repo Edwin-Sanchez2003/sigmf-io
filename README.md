@@ -64,10 +64,10 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 `index_offset_bytes = index_offset_samples * bytes_per_sample`
 5. ~If capture data (ie. header_bytes) exists, then data is offset by header_bytes as well:~
 `index_offset_bytes += accumulated_header_bytes`
-6. Loop to aggregate samples from disk.
-    1. cast current sentry (initially index_offset_bytes) to on-disk primitive type.
-    2. Perform endianness swap.
-    3. push back into vector. If complex, read both components (real & complex).
-    4. Increment by formula: `bytes_per_sample * num_channels`
-    5. If we pass a capture boundary, offset by header_bytes again.
-7. Cast to user-specified data type.
+6. ~Loop to aggregate samples from disk.~
+    1. ~Cast current sentry (initially index_offset_bytes) to on-disk primitive type.~
+    2. ~Perform endianness swap.~
+    3. ~Push back into vector. If complex, read both components (real & complex).~
+    4. ~Increment by formula: `bytes_per_sample * num_channels`~
+    5. ~If we pass a capture boundary, offset by header_bytes again.~
+7. ~Cast to user-specified data type.~
