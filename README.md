@@ -49,6 +49,7 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
  * API to allow a user to treat a NCD as a runtime SigMF dataset. You don't have to necessarily generate .sigmf-meta files, you can use the interface to describe only the needed information, then let the program run in memory.
  * Extension Builder - make a tool to help add SigMF specification extensions for the project - a GUI interface lets you build the structure & requirements (data types, required vs. optional fields). This will enable groups to do the specifics of their work easily.
     * Also allow users to ingest an existing file & build a specification from it. This means reading a file, infering the data types, and suggesting the rules automatically. This will help with custom-made specs that were written first and defined rigidly later.
+    * May also need to handle newly defined data types... YIKES.
 * Update the interfaces to each class to implement different contruction options (copy, move, const, static, etc.) so that the user can make the most of each function.
 * Maybe make SigMFDataType enums castable to strings, for error handling clarity...
 * Make sure spec is validated - captures & annotations should be sorted before used. Captures should never overlap!
