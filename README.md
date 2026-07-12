@@ -1,7 +1,7 @@
 # BurstRFBackend
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
-## NotesTODO:
+## Notes / ToDo
  * ~Implement int64_t size() on SigMFDataset class.~
  * ~SigMFDataset class should handle trailing_bytes.~ -> Since SigMFDataset.size() already factors in trailing_bytes, and this is the value used to
  * ~SigMFDataset class should handle header_bytes (NOTE: need the concept of a 'capture' for this to work properly.)  -> This means updating loadSamples() to use captures, if given, to offset samples from their sample bytes.~
@@ -50,3 +50,24 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 * Make sure spec is validated - captures & annotations should be sorted before used. Captures should never overlap!
 * Need to remember to handle versioning...
 * Need to explicitly say if the data returned when loaded is normalized/allow user to specify if they want the loaded data to be normalized \[-1, 1\].?
+
+
+## SigMFDataset Algorithm
+1. Validate User Input
+    1. ~Check sampleStart & sampleCount are in-bounds.~
+    2. ~Check channel is in-bounds.~
+    * This uses SigMFDataset.size(channel) function.
+2. ~Get start byte of file as byte.~
+3. ~Allocate vector of memory of size sampleCount.~
+4. ~If NO capture data (ie. no header_bytes), apply formula to get to sample byte index: (NOTE: offset will be handled with respect to metadata).~
+`index_offset_samples = (sample_start - offset) * num_channels + (channel - 1)` 
+`index_offset_bytes = index_offset_samples * bytes_per_sample`
+5. ~If capture data (ie. header_bytes) exists, then data is offset by header_bytes as well:~
+`index_offset_bytes += accumulated_header_bytes`
+6. Loop to aggregate samples from disk.
+    1. cast current sentry (initially index_offset_bytes) to on-disk primitive type.
+    2. Perform endianness swap.
+    3. push back into vector. If complex, read both components (real & complex).
+    4. Increment by formula: `bytes_per_sample * num_channels`
+    5. If we pass a capture boundary, offset by header_bytes again.
+7. Cast to user-specified data type.

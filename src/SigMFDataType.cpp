@@ -106,19 +106,19 @@ SigMFDataType::Endianness SigMFDataType::getEndianness() const
 
 
 // gets the number of bytes that the primitive data type corresponds to.
-size_t SigMFDataType::getPrimitiveByteCount() const
+int64_t SigMFDataType::getPrimitiveByteCount() const
 {
     return this->primitiveByteCount;
 }
 
 
-size_t SigMFDataType::getPrimitivesPerSample() const
+int64_t SigMFDataType::getPrimitivesPerSample() const
 {
     return (this->getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX) ? 2 : 1;
 }
 
 
-size_t SigMFDataType::getBytesPerSample() const
+int64_t SigMFDataType::getBytesPerSample() const
 {
     return this->primitiveByteCount * getPrimitivesPerSample();
 }

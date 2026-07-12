@@ -12,7 +12,7 @@
 using SigMFCapture = sigmf::Capture<sigmf::core::DescrT>;
 
 
-SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes)
+SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes, int64_t offset)
     : dataType(dataType)
 {
     // validate datasetPath exists.
@@ -32,6 +32,12 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
             "SigMFDataset: trailingBytes value must be greater than or equal to zero. Given trailingBytes: '" + std::to_string(trailingBytes) + "'.");
     this->trailingBytes = trailingBytes;
 
+    // validate offset is greater than or equal to zero.
+    if (offset < 0)
+        throw std::runtime_error(
+            "SigMFDataset: offset value must be greater than or equal to zero. Given offset: '" + std::to_string(offset) + "'.");
+    this->offset = offset;
+
     // create a memory map given the dataset path.
     std::error_code errorCode;
     this->mmap.map(datasetPath, errorCode);
@@ -39,12 +45,6 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
         throw std::runtime_error("Failed to map file: " + errorCode.message());
 }
 
-
-/*
- *  1. validate sampleStart, sampleCount, and channel.
- *  2. loadSamples from disk, using SigMFDataType, into a std::vector.
- *  3. convert that vector to the data type the user calls.
- */
 
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
 // requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
