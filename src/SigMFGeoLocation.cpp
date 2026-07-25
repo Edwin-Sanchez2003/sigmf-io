@@ -1,3 +1,3 @@
-#include "../include/SigMFGeoLocation.h"
+#include "SigMFGeoLocation.h"
 
 SigMFGeoLocation::SigMFGeoLocation() {}

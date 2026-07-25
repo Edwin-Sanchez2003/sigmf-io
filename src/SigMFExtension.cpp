@@ -1,3 +1,3 @@
-#include "../include/SigMFExtension.h"
+#include "SigMFExtension.h"
 
 SigMFExtension::SigMFExtension() {}
