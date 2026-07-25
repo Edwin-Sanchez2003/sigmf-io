@@ -67,7 +67,8 @@ FetchContent_MakeAvailable(mio)
 add_executable(BurstRFBackend src/main.cpp
     src/SigMFDataType.cpp
     src/SigMFDataset.cpp
-    docs/notes-on-data-type-conversions.md
+    src/SigMFGeoLocation.cpp
+    src/SigMFExtension.cpp
 )
 
 target_link_libraries(BurstRFBackend
