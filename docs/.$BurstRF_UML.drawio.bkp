@@ -543,7 +543,7 @@
           <mxGeometry height="26" width="210" y="190" as="geometry" />
         </mxCell>
         <mxCell id="qpp1i6JPxUIBGQLCngFS-9" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SigMFAnnotation" vertex="1">
-          <mxGeometry height="268" width="160" x="-425" y="-2300" as="geometry" />
+          <mxGeometry height="268" width="160" x="-425" y="-2430" as="geometry" />
         </mxCell>
         <mxCell id="qpp1i6JPxUIBGQLCngFS-10" parent="qpp1i6JPxUIBGQLCngFS-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ sample_start: int64_t" vertex="1">
           <mxGeometry height="26" width="160" y="26" as="geometry" />
@@ -969,8 +969,8 @@
         <mxCell id="8nr05T6UOH9qvmAxOsa1-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Go back through and make custom classes for anything that has a certain enforceable format - doi, sha512, etc..." vertex="1">
           <mxGeometry height="88" width="150" x="-870" y="-2200" as="geometry" />
         </mxCell>
-        <mxCell id="8nr05T6UOH9qvmAxOsa1-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="What I&#39;m leaning towards:&lt;div&gt;* Make structs for users to build datasets.&lt;/div&gt;&lt;div&gt;* Make classes for users to read datasets, to enforce formatting?&lt;/div&gt;&lt;div&gt;* When reading a SigMF file, defer to constructor to build each field (especially when they follow some sort of pattern), and use logic as dictated by the spec to pick values given certain circumstances.&lt;/div&gt;" vertex="1">
-          <mxGeometry height="160" width="235" x="-685" y="-2050" as="geometry" />
+        <mxCell id="8nr05T6UOH9qvmAxOsa1-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="What I&#39;m leaning towards:&lt;div&gt;* Make classes for users to read &amp;amp; write datasets, to enforce formatting?&lt;/div&gt;&lt;div&gt;* When reading a SigMF file, defer to constructor to build each field (especially when they follow some sort of pattern), and use logic as dictated by the spec to pick values given certain circumstances.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Make constructing a SigMFMetadata object via a constructor w/ a file path, forcing data loading &amp;amp; validation at construction time.&lt;/div&gt;&lt;div&gt;-&amp;gt; Same issue as before - how do we handle data that&#39;s in-between when building a dataset? May need structs back later...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="213" width="450" x="-690" y="-2084" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
