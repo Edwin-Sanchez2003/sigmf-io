@@ -5,7 +5,7 @@ cmake_policy(SET CMP0071 NEW)  # AUTOMOC/AUTOUIC skip GENERATED files cleanly
 
 project(BurstRFBackend VERSION 0.1.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)              # libsigmf v1.0 requires C++17 for std::optional
+set(CMAKE_CXX_STANDARD 20)              # libsigmf v1.0 requires C++17 for std::optional
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ── FetchContent for libsigmf ─────────────────────────────────────────────────

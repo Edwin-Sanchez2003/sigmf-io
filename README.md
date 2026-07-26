@@ -8,9 +8,20 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
     - Follow spec logic to fill in fields at construction time.
 * Create sigmf_io namespace & put all classes in there...
     - remove SigMF prepend to each class...
-* Need to make interfaces for fields loaded from metadata. Constructors should account for the bounds that are allowed, given the specification, and should also point to which part of the specification indicates why the data fails if an error has to be thrown.
+* Schema enforcement should be have 2 dimensions:
+    1. **Timing** - *When* the schema is enforced. This can be:
+        - **Eager** - at value-setting time. This will be the most helpful, as things throw an error right where they are set.
+        - **Lazy** - at write-time. This is convenient when you need to set values temporarily that may be incorrect until you have good placeholders. 
+        - **None** - never. You don't care about it being correct (at your own peril).
+-    2. **Enforcement** - *What* gets enforced. This should be based on the  MUST, SHALL, SHOULD, etc. phrasing, to give good enough variety of enforcement for users.
+    * The defaults should be EAGER & MUST (Strictest).
+* Constructors should account for the bounds that are allowed, given the specification, and should also point to which part of the specification indicates why the data fails if an error has to be thrown.
     - There should be error-handling used to catch when the user doesn't care if values aren't bounded properly - instead of erroring out, the program should continue running until it crashes, rather than early stopping. This will help when the user doesn't care about certain metadata (even if it's malformed), and still wants to run the program.
+* What containers should be returned to the user for RF data? Vector? Something else? What gives the most flexibility? Most convenience?
+    - Leaning towards most flexible container by default.
+    - Extensions for certain well-known libraries (Eigen, etc.)
 * Implement bracket indexing for SigMFDatasets - can treat it like a std::vector or something similar (std::iterable?). Implement that interface on it to make it more compatible with other tools??? May require re-defining the interface...
+* Current rule: Any data type that requires parsing gets a custom data type. Anything that has a simple restriction on the domain uses the raw data type, and is validated using comparison functions.
 * Does memory mapping do anything right now? - we create a vector in-memory and then load samples when the vector is initialized (doesn't this defeat the purpose)? need to double-check to see if this is even worth the effort/dependency...
     - If we end up implementing SigMFDataset with the iterable/vector interface, then we could make it work as a proxy to the memmapped dataset - only loading data into memory when actually indexed by the user. I think vectors can work like this already, so may just be a matter of pointing the vector to the correct spots on disk/intializing and returning one? I don't know... C++ ranges, etc.? Look into the proxy vector thing...
 * Need to enforce data types and boundaries for metadata fields, when included.
