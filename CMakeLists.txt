@@ -70,6 +70,8 @@ add_executable(BurstRFBackend src/main.cpp
     src/SigMFGeoLocation.cpp
     src/SigMFExtension.cpp
     src/SigMFDateTime.cpp
+    include/SigMFVersion.h src/SigMFVersion.cpp
+    include/SigMFUUID.h src/SigMFUUID.cpp
 
 )
 

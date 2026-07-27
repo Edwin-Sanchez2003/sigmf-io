@@ -3,6 +3,9 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 ## Notes / ToDo
 * Implement minor classes that enforce schema logic - doi, license, sha512, etc...
+* For error handling, may want to make base class for custom types to implement validation functionality (virtual function they all must implement).
+* Seem to use regex alot - may want to make one place with all of the patterns?
+* Implement supported versions as a const map where a specific version is mapped to a certain implementation of the SigMFSpecEnforcementVisitor - when a new spec drops, we simply inherit from the last implementation & re-implement functions that change. That would be bitchin'.
 * Convert SigMF namespace types to classes & enforce at construction.
     - They will need to be used for both reading & writing - don't worry about writing for now, future me's problem...
     - Follow spec logic to fill in fields at construction time.
