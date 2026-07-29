@@ -1,17 +1,15 @@
 #include "SigMFUUID.h"
-#include <regex>
-#include <stdexcept>
 #include <algorithm>
 #include <cctype>
+#include <regex>
+#include <stdexcept>
 
 SigMFUUID::SigMFUUID(const std::string& uuid)
 {
-    if (!is_valid(uuid))
-    {
+    if (!is_valid(uuid)) {
         throw std::invalid_argument(
             "SigMFUUID: invalid UUID string '" + uuid + "', expected RFC-4122 format");
     }
-
     uuid_ = toLower(uuid);
     bytes_ = parseBytes(uuid_);
 }
@@ -25,22 +23,20 @@ bool SigMFUUID::is_valid(const std::string& candidate)
 
 bool SigMFUUID::is_nil() const
 {
-    return std::all_of(bytes_.begin(), bytes_.end(), [](uint8_t b) { return b == 0; });
+    return std::all_of(bytes_.begin(), bytes_.end(),
+                       [](std::byte b) { return b == std::byte{0}; });
 }
 
-std::array<uint8_t, 16> SigMFUUID::parseBytes(const std::string& canonical)
+std::array<std::byte, 16> SigMFUUID::parseBytes(const std::string& canonical)
 {
     std::string hex;
     hex.reserve(32);
-    for (char c : canonical)
-    {
+    for (char c : canonical) {
         if (c != '-') hex.push_back(c);
     }
-
-    std::array<uint8_t, 16> result{};
-    for (size_t i = 0; i < 16; ++i)
-    {
-        result[i] = hexPairToByte(hex[2 * i], hex[2 * i + 1]);
+    std::array<std::byte, 16> result{};
+    for (size_t i = 0; i < 16; ++i) {
+        result[i] = static_cast<std::byte>(hexPairToByte(hex[2 * i], hex[2 * i + 1]));
     }
     return result;
 }
