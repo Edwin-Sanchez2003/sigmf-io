@@ -4,6 +4,7 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 ## Notes / ToDo
 * Implement minor classes that enforce schema logic - doi, license, sha512, etc...
 * For error handling, may want to make base class for custom types to implement validation functionality (virtual function they all must implement).
+* SigMF Extensions should be user-extendable base classes - a user can implement a custom C++ class that defines an extension interface, for convenience.
 * Seem to use regex alot - may want to make one place with all of the patterns?
 * Implement supported versions as a const map where a specific version is mapped to a certain implementation of the SigMFSpecEnforcementVisitor - when a new spec drops, we simply inherit from the last implementation & re-implement functions that change. That would be bitchin'.
 * Convert SigMF namespace types to classes & enforce at construction.
@@ -20,6 +21,13 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
     * The defaults should be EAGER & MUST (Strictest).
 * Constructors should account for the bounds that are allowed, given the specification, and should also point to which part of the specification indicates why the data fails if an error has to be thrown.
     - There should be error-handling used to catch when the user doesn't care if values aren't bounded properly - instead of erroring out, the program should continue running until it crashes, rather than early stopping. This will help when the user doesn't care about certain metadata (even if it's malformed), and still wants to run the program.
+* SigMFRecording Capture Interface should be easy to use:
+    - Get captures' samples with a simple function call.
+    - Get annotations strictly within a capture.
+    - Get annotations partially overlapping with a capture.
+    - Annotations should be able to identify which captures it overlaps with.
+    - Annotations should know which capture it starts in.
+    - Annotations should know which capture it ends in.
 * What containers should be returned to the user for RF data? Vector? Something else? What gives the most flexibility? Most convenience?
     - Leaning towards most flexible container by default.
     - Extensions for certain well-known libraries (Eigen, etc.)
