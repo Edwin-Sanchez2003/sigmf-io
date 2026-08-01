@@ -21,3 +21,10 @@ int main()
 
     return 0;
 }
+
+
+// Figuring out how I want the API to feel.
+void test()
+{
+
+}

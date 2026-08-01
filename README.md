@@ -1,10 +1,49 @@
 # BurstRFBackend
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
+## Initial Interface Design
+
+### Phase 1: Initial Interface Structure
+* SigMFRecording to start out.
+* Constructor initializes the jsoncons object.
+    - Don't worry about schema enforcement yet - later addition.
+* Implement core interface:
+    - Global Object
+    - Captures array/vector object.
+    - Annotations array/vector object.
+    - each of these have a getter/setter for the core namespace values. (again, don't worry about value enforcement yet).
+* SigMFDataset object initialization & interface (read samples from disk).
+
+## Phase 2: Schema Validation
+* Add in schema validation - eager/lazy/none for the core namespace.
+* Add in schema validation for extensions.
+* Make sure it still works with/handles/ignores keys outside the core namespace...
+
+## Phase 3: Extensions & General key/value insertion.
+* Allow users to add their own extensions & keys/values/object structures.
+
+## Phase 4: Read/Write Interface
+* Add in support to read & write datasets, with proper warnings for overwriting datasets.
+
+## Phase 5: Comprehensive Schema Enforcement
+* There are schema-related requirements that aren't obvious/lack implicit enforcement - go through and make sure that they are enforced properly.
+    - Capture & Annotation array/sample order - ordered by samples.
+        - Maybe then order by some other field for consistency? I dunno...
+* Begin writing test cases!!!
+        
+## Phase 6: Complete Error Handling & Clear Error Messages
+* Error messages are well-designed around Eager/Lazy/None schema enforcement.
+* Error messages describe the problem completely.
+
 ## Notes / ToDo
-* Implement minor classes that enforce schema logic - doi, license, sha512, etc...
+* implement SigMF metadata loading, using json library. Interfaces should:
+    - support SigMF Core Namespace.
+    - support adding/setting/getting fields that are NOT defined by the core namespace.
+    - support extension objects that are user-defined.
 * For error handling, may want to make base class for custom types to implement validation functionality (virtual function they all must implement).
 * SigMF Extensions should be user-extendable base classes - a user can implement a custom C++ class that defines an extension interface, for convenience.
+* Table of schemas corresponding to versions of the SigMF specification format.
+* Ability for user-based extension JSON schemas to be added to validate portions of the JSON data.
 * Seem to use regex alot - may want to make one place with all of the patterns?
 * Implement supported versions as a const map where a specific version is mapped to a certain implementation of the SigMFSpecEnforcementVisitor - when a new spec drops, we simply inherit from the last implementation & re-implement functions that change. That would be bitchin'.
 * Convert SigMF namespace types to classes & enforce at construction.
