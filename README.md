@@ -35,6 +35,9 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 * Error messages are well-designed around Eager/Lazy/None schema enforcement.
 * Error messages describe the problem completely.
 
+## Phase 7: Annotation / Capture / Meta / Data / Recording / Collection / Archive
+* Make sure interface is properly broken into parts based on structures from the spec, and are capable of interfacing with each other naturally.
+
 ## Notes / ToDo
 * implement SigMF metadata loading, using json library. Interfaces should:
     - support SigMF Core Namespace.
