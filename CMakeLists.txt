@@ -64,6 +64,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(mio)
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ── FetchContent for jsoncons (header-only JSON parsing/schema library) ──────
+FetchContent_Declare(
+    jsoncons
+    GIT_REPOSITORY https://github.com/danielaparker/jsoncons.git
+    GIT_TAG        d35782026b6208d7c0ed80f5a8165a7a3b868e2f     # v1.8.1 - June 9th, 2026
+    GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(jsoncons)
+# ─────────────────────────────────────────────────────────────────────────────
+
 add_executable(BurstRFBackend src/main.cpp
     src/SigMFDataType.cpp
     src/SigMFDataset.cpp
@@ -73,6 +83,7 @@ add_executable(BurstRFBackend src/main.cpp
     include/SigMFVersion.h src/SigMFVersion.cpp
     include/SigMFUUID.h src/SigMFUUID.cpp
     include/SigMFSHA512.h src/SigMFSHA512.cpp
+    include/SigMFRecording.h src/SigMFRecording.cpp
 
 )
 
@@ -81,6 +92,7 @@ target_link_libraries(BurstRFBackend
             flatbuffers             # flatbuffers is needed at link time per their README
             kissfft::kissfft-float  # kissfft for std::complex<double>
             mio::mio                # mio for cross-platform memory mapping
+            jsoncons                # jsoncons for handling JSON data
 )
 
 # libsigmf generates headers into the build tree; this makes them findable
