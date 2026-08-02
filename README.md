@@ -2,6 +2,10 @@
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
 ## Initial Interface Design
+* Implement SigMFGlobal:
+    - named accessors for common fields.
+    - arbitrary extras field for jsoncons::json extra fields.
+* Repeat for Captures & Annotations.
 
 ### Phase 1: Initial Interface Structure
 * SigMFRecording to start out.
@@ -113,3 +117,4 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 * Make sure spec is validated - captures & annotations should be sorted before used. Captures should never overlap!
 * Need to remember to handle versioning... both of this repo AND of SigMF versions.
 * Need to explicitly say if the data returned when loaded is normalized / allow user to specify if they want the loaded data to be normalized \[-1, 1\].?
+* Should consider in a later version, a facade/wrapper around jsoncons to abstract the json backend out - this way the user can decide to swap out the json backend OR I can swap it out if I think it matters later... for now, jsoncons is exposed in metadata constructors & when adding arbitrary fields.
