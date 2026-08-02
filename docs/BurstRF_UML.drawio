@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36">
   <diagram name="BrainStorming" id="gXdXRD-hxSofAkPK0ilU">
-    <mxGraphModel dx="6075" dy="5065" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="5957" dy="4984" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1192,7 +1192,7 @@
         <mxCell id="_5YiugN58uN8odfge-gd-12" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ set(const std::string&amp;amp; json_pointer, T&amp;amp;&amp;amp; value): template &amp;lt;typename T&amp;gt; void" vertex="1">
           <mxGeometry height="26" width="440" y="216" as="geometry" />
         </mxCell>
-        <mxCell id="_5YiugN58uN8odfge-gd-14" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ save(const std::string&amp;amp; file_path, bool overwrite = false): template: void" vertex="1">
+        <mxCell id="_5YiugN58uN8odfge-gd-14" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ save(const std::string&amp;amp; file_path, bool overwrite = false): void" vertex="1">
           <mxGeometry height="26" width="440" y="242" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-7" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- ends_with(const std::string&amp;amp; value, const std::string&amp;amp; ending) const: bool" vertex="1">
