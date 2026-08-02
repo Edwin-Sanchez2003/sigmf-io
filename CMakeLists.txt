@@ -84,7 +84,6 @@ add_executable(BurstRFBackend src/main.cpp
     include/SigMFUUID.h src/SigMFUUID.cpp
     include/SigMFSHA512.h src/SigMFSHA512.cpp
     include/SigMFRecording.h src/SigMFRecording.cpp
-
 )
 
 target_link_libraries(BurstRFBackend

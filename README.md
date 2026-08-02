@@ -43,6 +43,8 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
     - support SigMF Core Namespace.
     - support adding/setting/getting fields that are NOT defined by the core namespace.
     - support extension objects that are user-defined.
+* May need to implement/expose JSONPath and JMESPath along with JSONPointer for user convenience...
+    - maybe need to expose JSON object itself???
 * For error handling, may want to make base class for custom types to implement validation functionality (virtual function they all must implement).
 * SigMF Extensions should be user-extendable base classes - a user can implement a custom C++ class that defines an extension interface, for convenience.
 * Table of schemas corresponding to versions of the SigMF specification format.
