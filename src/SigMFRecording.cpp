@@ -13,7 +13,7 @@ SigMFRecording::SigMFRecording() {}
 SigMFRecording::SigMFRecording(std::string file_path)
 {
     std::string data_path;
-    if (this->endsWith(file_path, this->META_EXT)) {
+    if (this->ends_with(file_path, this->META_EXT)) {
         // --- .sigmf-meta case ---
         this->meta_path_ = file_path;
 
@@ -44,7 +44,7 @@ SigMFRecording::SigMFRecording(std::string file_path)
             data_path = dir + dataset_filename;
         }
     }
-    else if (endsWith(file_path, DATA_EXT)) {
+    else if (this->ends_with(file_path, DATA_EXT)) {
         // --- .sigmf-data case ---
         data_path = file_path;
 
@@ -98,7 +98,7 @@ SigMFRecording::SigMFRecording(std::string file_path)
 }
 
 
-bool SigMFRecording::endsWith(const std::string& value, const std::string& ending) const
+bool SigMFRecording::ends_with(const std::string& value, const std::string& ending) const
 {
     std::string::size_type pos = value.rfind(ending);
     // it ends with the extension only if the extension is found at the end of the string.

@@ -24,7 +24,7 @@ private:
     std::string meta_path_;
     jsoncons::json meta_;
 
-    bool endsWith(const std::string& value, const std::string& ending) const;
+    bool ends_with(const std::string& value, const std::string& ending) const;
 };
 
 #endif // SIGMFRECORDING_H
