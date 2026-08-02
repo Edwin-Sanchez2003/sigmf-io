@@ -7,6 +7,18 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
     - arbitrary extras field for jsoncons::json extra fields.
 * Repeat for Captures & Annotations.
 
+### Example
+```cpp
+struct CaptureFields {
+    std::uint64_t sample_start;
+    std::optional<double> frequency;
+    std::optional<std::uint64_t> header_bytes;
+    std::optional<std::string> datetime;
+
+    jsoncons::json extra = jsoncons::json::object();  // everything not named above
+};
+```
+
 ### Phase 1: Initial Interface Structure
 * SigMFRecording to start out.
 * Constructor initializes the jsoncons object.
