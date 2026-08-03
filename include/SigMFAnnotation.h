@@ -1,6 +1,8 @@
 #ifndef SIGMFANNOTATION_H
 #define SIGMFANNOTATION_H
 
+#include "SigMFUUID.h"
+#include <jsoncons/json.hpp>
 #include <cstdint>
 #include <optional>
 #include<string>
@@ -15,7 +17,9 @@ struct SigMFAnnotation
     std::optional<std::string> label;
     std::optional<std::string> comment;
     std::optional<std::string> generator;
-    std::optional<std::string> uuid;        // TODO: make custom class to enforce format.
+    std::optional<SigMFUUID> uuid;
+
+    jsoncons::json extra = jsoncons::json::object();
 };
 
 #endif // SIGMFANNOTATION_H
