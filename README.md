@@ -55,6 +55,8 @@ struct CaptureFields {
 * Make sure interface is properly broken into parts based on structures from the spec, and are capable of interfacing with each other naturally.
 
 ## Notes / ToDo
+* For non-conforming datasets, allow the user to define & extract header_bytes & trailing_bytes fields!
+    - MVP-extract raw bytes & let the user mess with it (convert to data types, etc.).
 * implement SigMF metadata loading, using json library. Interfaces should:
     - support SigMF Core Namespace.
     - support adding/setting/getting fields that are NOT defined by the core namespace.
