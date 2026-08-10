@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36">
   <diagram name="BrainStorming" id="gXdXRD-hxSofAkPK0ilU">
-    <mxGraphModel dx="5957" dy="4984" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="7275" dy="5748" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1162,44 +1162,46 @@
         <mxCell id="WylAUdubsWu8hRcYI3EU-12" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Control Flow&lt;/h1&gt;&lt;p&gt;1. Point SigMFRecording object at a file path, a jsoncons object, or with the default initializer. User specifies the strictness of the schema validation.&lt;/p&gt;&lt;p&gt;2. If initialized with on-disk data, then schema validation happens (depending on user specified strictness).&lt;/p&gt;&lt;p&gt;3. Afterwards, user can use the object to read and write data to the object.&lt;/p&gt;&lt;p&gt;4. Once written, the user can call a function to serialize the changes/new dataset.&lt;/p&gt;" vertex="1">
           <mxGeometry height="220" width="370" x="-130" y="-2300" as="geometry" />
         </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-48" edge="1" parent="1" source="_5YiugN58uN8odfge-gd-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bT2UMPbv7jLrRgfduueW-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-105" y="-3990" />
+              <mxPoint x="-770" y="-3990" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SigMFMetadata" vertex="1">
-          <mxGeometry height="294" width="440" x="-360" y="-3470" as="geometry" />
+          <mxGeometry height="242" width="430" x="-320" y="-3860" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-2" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- meta_path_: std::string" vertex="1">
-          <mxGeometry height="26" width="440" y="26" as="geometry" />
+          <mxGeometry height="26" width="430" y="26" as="geometry" />
         </mxCell>
-        <mxCell id="_5YiugN58uN8odfge-gd-5" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- meta_: jsoncons::json" vertex="1">
-          <mxGeometry height="26" width="440" y="52" as="geometry" />
+        <mxCell id="bT2UMPbv7jLrRgfduueW-21" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- read_only: bool -&amp;gt; needed? or just const version of this object?" vertex="1">
+          <mxGeometry height="26" width="430" y="52" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-3" parent="_5YiugN58uN8odfge-gd-1" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
-          <mxGeometry height="8" width="440" y="78" as="geometry" />
+          <mxGeometry height="8" width="430" y="78" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-4" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ explicit SigMFMetadata()" vertex="1">
-          <mxGeometry height="26" width="440" y="86" as="geometry" />
+          <mxGeometry height="26" width="430" y="86" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-6" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ SigMFMetadata(const std::string&amp;amp; file_path)" vertex="1">
-          <mxGeometry height="26" width="440" y="112" as="geometry" />
+          <mxGeometry height="26" width="430" y="112" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-11" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ SigMFMetadata(const jsoncons::json&amp;amp; meta)" vertex="1">
-          <mxGeometry height="26" width="440" y="138" as="geometry" />
+          <mxGeometry height="26" width="430" y="138" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-8" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ meta_path() const: std::string" vertex="1">
-          <mxGeometry height="26" width="440" y="164" as="geometry" />
-        </mxCell>
-        <mxCell id="_5YiugN58uN8odfge-gd-10" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ get(const std::string&amp;amp; json_pointer) const: template &amp;lt;typename T&amp;gt; T" vertex="1">
-          <mxGeometry height="26" width="440" y="190" as="geometry" />
-        </mxCell>
-        <mxCell id="_5YiugN58uN8odfge-gd-12" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ set(const std::string&amp;amp; json_pointer, T&amp;amp;&amp;amp; value): template &amp;lt;typename T&amp;gt; void" vertex="1">
-          <mxGeometry height="26" width="440" y="216" as="geometry" />
+          <mxGeometry height="26" width="430" y="164" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-14" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ save(const std::string&amp;amp; file_path, bool overwrite = false): void" vertex="1">
-          <mxGeometry height="26" width="440" y="242" as="geometry" />
+          <mxGeometry height="26" width="430" y="190" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-7" parent="_5YiugN58uN8odfge-gd-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- ends_with(const std::string&amp;amp; value, const std::string&amp;amp; ending) const: bool" vertex="1">
-          <mxGeometry height="26" width="440" y="268" as="geometry" />
+          <mxGeometry height="26" width="430" y="216" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="* Consider adding in features to get/set complex objects (structures), not just key/value pairs (not sure if current interface supports it).&lt;div&gt;* Consider adding support for wildcard/regex-style multiple results queries on the JSON object.&lt;/div&gt;&lt;div&gt;* If I have global/captures/annotation interfaces/views, do I want those objects to have ownership of the data, or to just be pointers to the SigMFMetadata object? Should they read from there or should I make copies?&lt;/div&gt;" vertex="1">
-          <mxGeometry height="213" width="220" x="-600" y="-3433" as="geometry" />
+          <mxGeometry height="213" width="220" x="-540" y="-3389" as="geometry" />
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-15" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SigMFValidationResult" vertex="1">
           <mxGeometry height="86" width="160" x="190" y="-3700" as="geometry" />
@@ -1215,6 +1217,143 @@
         </mxCell>
         <mxCell id="_5YiugN58uN8odfge-gd-27" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Need some sort of mapping between SigMFVersion and implementation of how to enforce the Specification..." vertex="1">
           <mxGeometry height="70" width="270" x="410" y="-3560" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="JSONBase" vertex="1">
+          <mxGeometry height="294" width="750" x="-1145" y="-4400" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-2" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- data_: jsoncons::json" vertex="1">
+          <mxGeometry height="26" width="750" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-3" parent="bT2UMPbv7jLrRgfduueW-1" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="750" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-24" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ JSONBase()" vertex="1">
+          <mxGeometry height="26" width="750" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-4" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ explicit JSONBase(const jsoncons::json&amp;amp; data)" vertex="1">
+          <mxGeometry height="26" width="750" y="86" as="geometry" />
+        </mxCell>
+        <mxCell id="eAXLmriM7AxTMwM3spie-1" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ explicit JSONBase(jsoncons::json&amp;amp;&amp;amp; data)" vertex="1">
+          <mxGeometry height="26" width="750" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="eAXLmriM7AxTMwM3spie-2" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ ~JSONBase()" vertex="1">
+          <mxGeometry height="26" width="750" y="138" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-25" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ get(const std::string&amp;amp; json_pointer) const: template &amp;lt;typename T&amp;gt; T" vertex="1">
+          <mxGeometry height="26" width="750" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-26" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ set(const std::string&amp;amp; json_pointer, T&amp;amp;&amp;amp; value): template &amp;lt;typename T&amp;gt; void" vertex="1">
+          <mxGeometry height="26" width="750" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-27" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ merge(const std::string&amp;amp; json_pointer, const jsoncons::json&amp;amp; value): void // only adds new values to an object" vertex="1">
+          <mxGeometry height="26" width="750" y="216" as="geometry" />
+        </mxCell>
+        <mxCell id="eAXLmriM7AxTMwM3spie-3" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ merge_or_update(const std::string&amp;amp; json_pointer, const jsoncons::json&amp;amp; value): void // only adds new values to an object" vertex="1">
+          <mxGeometry height="26" width="750" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-28" parent="bT2UMPbv7jLrRgfduueW-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ to_json() const: jsoncons::json" vertex="1">
+          <mxGeometry height="26" width="750" y="268" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-44" edge="1" parent="1" source="bT2UMPbv7jLrRgfduueW-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bT2UMPbv7jLrRgfduueW-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-5" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Global" vertex="1">
+          <mxGeometry height="86" width="160" x="-1060" y="-3860" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-6" parent="bT2UMPbv7jLrRgfduueW-5" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ field: type" vertex="1">
+          <mxGeometry height="26" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-7" parent="bT2UMPbv7jLrRgfduueW-5" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-8" parent="bT2UMPbv7jLrRgfduueW-5" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ method(type): type" vertex="1">
+          <mxGeometry height="26" width="160" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-45" edge="1" parent="1" source="bT2UMPbv7jLrRgfduueW-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bT2UMPbv7jLrRgfduueW-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-9" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Capture" vertex="1">
+          <mxGeometry height="86" width="160" x="-885" y="-3860" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-10" parent="bT2UMPbv7jLrRgfduueW-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ field: type" vertex="1">
+          <mxGeometry height="26" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-11" parent="bT2UMPbv7jLrRgfduueW-9" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-12" parent="bT2UMPbv7jLrRgfduueW-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ method(type): type" vertex="1">
+          <mxGeometry height="26" width="160" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-46" edge="1" parent="1" source="bT2UMPbv7jLrRgfduueW-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bT2UMPbv7jLrRgfduueW-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-13" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Annotation" vertex="1">
+          <mxGeometry height="86" width="160" x="-705" y="-3860" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-14" parent="bT2UMPbv7jLrRgfduueW-13" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ field: type" vertex="1">
+          <mxGeometry height="26" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-15" parent="bT2UMPbv7jLrRgfduueW-13" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-16" parent="bT2UMPbv7jLrRgfduueW-13" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ method(type): type" vertex="1">
+          <mxGeometry height="26" width="160" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-47" edge="1" parent="1" source="bT2UMPbv7jLrRgfduueW-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bT2UMPbv7jLrRgfduueW-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-17" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Geolocation" vertex="1">
+          <mxGeometry height="86" width="160" x="-520" y="-3860" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-18" parent="bT2UMPbv7jLrRgfduueW-17" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ field: type" vertex="1">
+          <mxGeometry height="26" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-19" parent="bT2UMPbv7jLrRgfduueW-17" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-20" parent="bT2UMPbv7jLrRgfduueW-17" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ method(type): type" vertex="1">
+          <mxGeometry height="26" width="160" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-33" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Namespaces" vertex="1">
+          <mxGeometry height="242" width="530" x="-2190" y="-4220" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-34" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- extension_namespaces: std::set&amp;lt;std::string&amp;gt;&amp;nbsp;" vertex="1">
+          <mxGeometry height="26" width="530" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-50" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- core_namespace: std::set&amp;lt;std::string&amp;gt;&amp;nbsp;" vertex="1">
+          <mxGeometry height="26" width="530" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-35" parent="bT2UMPbv7jLrRgfduueW-33" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="530" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-37" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ Namespaces()" vertex="1">
+          <mxGeometry height="26" width="530" y="86" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-36" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ Namespaces(const std::set&amp;lt;const std::string&amp;gt;&amp;amp; extension_namespaces)" vertex="1">
+          <mxGeometry height="26" width="530" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-51" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ get() const: std::set&amp;lt;std::string&amp;gt;" vertex="1">
+          <mxGeometry height="26" width="530" y="138" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-38" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ add(const std::string&amp;amp; extension_namespaces)" vertex="1">
+          <mxGeometry height="26" width="530" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-39" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ remove(const std::string&amp;amp; extension_namespaces)" vertex="1">
+          <mxGeometry height="26" width="530" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-40" parent="bT2UMPbv7jLrRgfduueW-33" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ touches_reserved_namespace(jsoncons::json_pointer): bool" vertex="1">
+          <mxGeometry height="26" width="530" y="216" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-49" edge="1" parent="1" source="bT2UMPbv7jLrRgfduueW-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="bT2UMPbv7jLrRgfduueW-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-42" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="throw an error if returns true when user tries to set a value on the core namespace - should only use the defined getters/setters for validation against SigMF specification.&lt;div&gt;This means Namespaces is a global variable we can check against, within the sigmf-io namespace.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Wait... this makes things kinda funky - what if a user has an existing json object they want to pass to one of our objects? This creates a weird case where they&#39;re denied setting a whole object at once... that&#39;s kinda scuffed, there&#39;s going to be cases where a user already has json data within the core namespace and they want to just pass the existing object over.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Not sure how to handle this...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200.5" width="450" x="-1500" y="-4090.5" as="geometry" />
+        </mxCell>
+        <mxCell id="bT2UMPbv7jLrRgfduueW-41" edge="1" parent="1" source="bT2UMPbv7jLrRgfduueW-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bT2UMPbv7jLrRgfduueW-42">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-390" y="-3920" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

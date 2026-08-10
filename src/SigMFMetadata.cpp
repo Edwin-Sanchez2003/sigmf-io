@@ -14,9 +14,8 @@ SigMFMetadata::SigMFMetadata()
 
 
 SigMFMetadata::SigMFMetadata(const jsoncons::json& meta)
-{
-    this->meta_ = meta;
-}
+    :meta_(meta)
+{}
 
 
 SigMFMetadata::SigMFMetadata(const std::string& meta_path)
@@ -44,6 +43,8 @@ void SigMFMetadata::save(const std::string& file_path, bool overwrite)
         throw std::runtime_error(
             "SigMFMetadata::save: file already exists and overwrite is false: " + file_path);
     }
+
+    // TODO: final validation against schema? other things???
 
     // attempt to open the file & write out to disk.
     std::ofstream out_file(file_path);

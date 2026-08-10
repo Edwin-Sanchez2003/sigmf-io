@@ -2,6 +2,14 @@
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
 ## Initial Interface Design
+* Implement JSONBase class.
+    - independent jsoncons::json object.
+    - convenience functions that wrap json pointers for get/set of known values.
+    - template get/set for unknown values.
+* inherit for global, capture, annotation, and geolocation.
+* metadata class composes these objects.
+* how much of jsoncons::json to expose???
+
 * Implement SigMFGlobal:
     - named accessors for common fields.
     - arbitrary extras field for jsoncons::json extra fields.
