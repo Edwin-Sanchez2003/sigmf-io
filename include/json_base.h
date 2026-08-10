@@ -36,7 +36,7 @@ public:
 
     virtual jsoncons::json to_json() const;
 
-private:
+protected:
     jsoncons::json data_;
 };
 
