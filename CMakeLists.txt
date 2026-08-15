@@ -86,6 +86,8 @@ add_executable(BurstRFBackend src/main.cpp
     include/SigMFRecording.h src/SigMFRecording.cpp
     include/SigMFMetadata.h src/SigMFMetadata.cpp
     include/json_base.h src/json_base.cpp
+    include/sigmf_global.h src/sigmf_global.cpp
+
 )
 
 target_link_libraries(BurstRFBackend

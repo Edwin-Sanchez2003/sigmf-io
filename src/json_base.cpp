@@ -8,16 +8,12 @@
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 #include <jsoncons_ext/mergepatch/mergepatch.hpp>
 
-JSONBase::JSONBase() {}
 
-
-JSONBase::JSONBase(const jsoncons::json& data)
-    :data_(data)
-{}
-
-JSONBase::JSONBase(jsoncons::json&& data)
-    :data_(std::move(data))
-{}
+JSONBase::JSONBase(jsoncons::json defaults, const jsoncons::json& overrides)
+    : data_(std::move(defaults))
+{
+   this->merge_patch("", overrides);
+}
 
 
 void JSONBase::merge(const std::string& json_pointer, const jsoncons::json& value) {

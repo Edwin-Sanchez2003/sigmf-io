@@ -13,9 +13,8 @@
 class JSONBase
 {
 public:
-    JSONBase();
     explicit JSONBase(const jsoncons::json& data);
-    explicit JSONBase(jsoncons::json&& data);       // avoids a copy when constructing from a temporary json object.
+
     virtual ~JSONBase() = default;                  // needed for safe polymorphic destruction.
 
     template <typename T>
@@ -37,6 +36,7 @@ public:
     virtual jsoncons::json to_json() const;
 
 protected:
+    JSONBase(jsoncons::json defaults, const jsoncons::json& overrides);
     jsoncons::json data_;
 };
 

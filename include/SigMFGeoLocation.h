@@ -8,6 +8,8 @@
  * constraints on the core fields ("type", "coordinates": longitude,
  * latitude, optional altitude) while still allowing arbitrary additional
  * keys/values/nested structures via jsoncons.
+ *
+ * TODO: extend to allow for global's older version of captures...
  */
 #include <jsoncons/json.hpp>
 #include <optional>
