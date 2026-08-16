@@ -16,7 +16,7 @@ public:
     std::chrono::sys_time<std::chrono::nanoseconds> time_point() const { return time_point_; }
 
     // get the raw string formatted version first read from the file.
-    std::string get_raw_datetime() const { return raw_; }
+    std::string to_string() const { return raw_; }
 
     // true if the source string encoded a leap second (":60"); the stored
     // time_point() is clamped to ":59" plus the fractional part, since

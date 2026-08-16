@@ -28,6 +28,7 @@ struct CaptureFields {
 ```
 
 ### Phase 1: Initial Interface Structure
+* Getters/setters ought to validate input & throw an error if it's invalid (sample_start, sample_count, etc.)
 * SigMFRecording to start out.
 * Constructor initializes the jsoncons object.
     - Don't worry about schema enforcement yet - later addition.
@@ -65,6 +66,7 @@ struct CaptureFields {
 * Make sure interface is properly broken into parts based on structures from the spec, and are capable of interfacing with each other naturally.
 
 ## Notes / ToDo
+* Because the json objects are separate (global, capture, annotation, etc.) Things get a little wonky. Does a user use normal json pointers, or when interacting with each object do they have to write pointers that work in that context (not /global/core:datatype when using a global object, but /core:datatype).
 * Currently, going to throw errors when we come across malformed datasets. Later, we will want to have options for lenient/strict loading to handle cases where a user failed to create a valid SigMF dataset -> do we want to error on-load? when it hits the function value? on-write? etc.
 * Geolocation currently doesn't support everything found in the spec, and doesn't support the version differences between what can be found in the global vs. the capture fields.
 * Move headrs/impl files into sigmf_io folders.

@@ -7,8 +7,6 @@
 #include "SigMFGeoLocation.h"
 #include "SigMFExtension.h"
 #include <jsoncons/json.hpp>
-#include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
-#include <jsoncons_ext/mergepatch/mergepatch.hpp>
 #include <optional>
 #include <cstdint>
 #include <string>
