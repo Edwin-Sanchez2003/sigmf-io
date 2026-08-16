@@ -2,36 +2,17 @@
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
 ## Initial Interface Design
-* Implement JSONBase class.
-    - independent jsoncons::json object.
-    - convenience functions that wrap json pointers for get/set of known values.
-    - template get/set for unknown values.
-* inherit for global, capture, annotation, and geolocation.
+
+* inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
 * how much of jsoncons::json to expose???
-
-* Implement SigMFGlobal:
-    - named accessors for common fields.
-    - arbitrary extras field for jsoncons::json extra fields.
-* Repeat for Captures & Annotations.
-
-### Example
-```cpp
-struct CaptureFields {
-    std::uint64_t sample_start;
-    std::optional<double> frequency;
-    std::optional<std::uint64_t> header_bytes;
-    std::optional<std::string> datetime;
-
-    jsoncons::json extra = jsoncons::json::object();  // everything not named above
-};
-```
+    * how much of the jsoncons::json interface should I make the objects compatible with?
 
 ### Phase 1: Initial Interface Structure
 * Getters/setters ought to validate input & throw an error if it's invalid (sample_start, sample_count, etc.)
 * SigMFRecording to start out.
 * Constructor initializes the jsoncons object.
-    - Don't worry about schema enforcement yet - later addition.
+    - Don't worry about general schema enforcement yet (outside individual value policy enforcement) - later addition.
 * Implement core interface:
     - Global Object
     - Captures array/vector object.
