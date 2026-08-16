@@ -13,7 +13,7 @@ public:
 
     explicit SigMFSHA512(const std::string& hex);
 
-    std::string get_raw() const { return raw_; }
+    std::string to_string() const { return raw_; }
     std::string hex() const { return normalized_; }
     std::array<std::byte, kDigestBytes> bytes() const { return bytes_; }
 

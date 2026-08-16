@@ -11,7 +11,7 @@ int main()
 {
     // Simple Initialization of SigMFDataset object.
     SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);
-    std::cout << sigmfData.getDataType().getRawDataType() << '\n';
+    std::cout << sigmfData.getDataType().to_string() << '\n';
     std::vector<SigMFCapture> captures;
     captures.clear();
 

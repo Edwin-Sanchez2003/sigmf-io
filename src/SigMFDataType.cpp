@@ -81,7 +81,7 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
 }
 
 
-std::string SigMFDataType::getRawDataType() const
+std::string SigMFDataType::to_string() const
 {
     return this->rawDataType;
 }

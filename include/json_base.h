@@ -1,6 +1,7 @@
 #ifndef JSON_BASE_H
 #define JSON_BASE_H
 
+#include <optional>
 #include <fstream>
 #include <filesystem>
 #include <string>
@@ -17,8 +18,13 @@ public:
 
     virtual ~JSONBase() = default;                  // needed for safe polymorphic destruction.
 
+    // Will throw a jsoncons::json error if the value cannot be retrieved.
     template <typename T>
     T get(const std::string& json_pointer) const;
+
+    // Will catch an error within std::optional, explicitly deferring missing values to the user.
+    template <typename T>
+    std::optional<T> get_optional(const std::string& json_pointer) const;
 
     template <typename T>
     void set(const std::string& json_pointer, T&& value);
@@ -43,6 +49,18 @@ protected:
 template <typename T>
 T JSONBase::get(const std::string& json_pointer) const {
     return jsoncons::jsonpointer::get(this->data_, json_pointer).template as<T>();
+}
+
+template <typename T>
+std::optional<T> JSONBase::get_optional(const std::string& json_pointer) const {
+    try
+    {
+        return this->get<T>(json_pointer);
+    }
+    catch (const jsoncons::jsonpointer::jsonpointer_error&)
+    {
+        return std::nullopt; // key/path missing - pass this to user as an empty std::optional<T>.
+    }
 }
 
 template <typename T>

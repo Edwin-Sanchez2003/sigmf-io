@@ -45,7 +45,7 @@ public:
 public:
     SigMFDataType(std::string rawDataType); // constructs SigMFDataType from raw string in SigMF meta file.
 
-    std::string getRawDataType() const;
+    std::string to_string() const;
     SampleFormat getSampleFormat() const;
     SampleType getSampleType() const;
     Endianness getEndianness() const;

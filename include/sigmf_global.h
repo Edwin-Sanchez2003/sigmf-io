@@ -56,10 +56,10 @@ public:
     void set_trailing_bytes(const int64_t trailing_bytes);
     std::string version() const;
     void set_version(const std::string& version);
-    SigMFGeoLocation geolocation() const;
-    void set_geolocation(const SigMFGeoLocation& geolocation);
-    std::vector<SigMFExtension> extensions() const;
-    void set_extensions(const std::vector<SigMFExtension>& extensions);
+    // std::optional<SigMFGeoLocation> geolocation() const;
+    // void set_geolocation(const SigMFGeoLocation& geolocation);
+    // std::vector<SigMFExtension> extensions() const;
+    // void set_extensions(const std::vector<SigMFExtension>& extensions);
 };
 
 #endif // SIGMF_GLOBAL_H

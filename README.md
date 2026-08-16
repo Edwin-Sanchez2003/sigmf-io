@@ -37,6 +37,8 @@ struct CaptureFields {
     - Annotations array/vector object.
     - each of these have a getter/setter for the core namespace values. (again, don't worry about value enforcement yet).
 * SigMFDataset object initialization & interface (read samples from disk).
+* Note: read header bytes out to use as bytes if they exist!
+* update hard-coded strings to const string values in namespaces (sample_rate should be sigmf_io::core::global::SAMPLE_RATE (a std::string)).
 
 ## Phase 2: Schema Validation
 * Add in schema validation - eager/lazy/none for the core namespace.
@@ -63,6 +65,11 @@ struct CaptureFields {
 * Make sure interface is properly broken into parts based on structures from the spec, and are capable of interfacing with each other naturally.
 
 ## Notes / ToDo
+* Currently, going to throw errors when we come across malformed datasets. Later, we will want to have options for lenient/strict loading to handle cases where a user failed to create a valid SigMF dataset -> do we want to error on-load? when it hits the function value? on-write? etc.
+* Geolocation currently doesn't support everything found in the spec, and doesn't support the version differences between what can be found in the global vs. the capture fields.
+* There's a difference between "default" on load and "default" on write.
+    - default on load: default value is assumed when the value is missing in a recording.
+    - default on write: default value is assumed when a user does not specify a value to be written, and is substituted in during write-time.
 * For non-conforming datasets, allow the user to define & extract header_bytes & trailing_bytes fields!
     - MVP-extract raw bytes & let the user mess with it (convert to data types, etc.).
 * implement SigMF metadata loading, using json library. Interfaces should:

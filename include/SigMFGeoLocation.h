@@ -9,7 +9,10 @@
  * latitude, optional altitude) while still allowing arbitrary additional
  * keys/values/nested structures via jsoncons.
  *
- * TODO: extend to allow for global's older version of captures...
+ * TODO: extend to allow for global's older version of geolocation...
+ * TODO: update geolocation to have a jsoncons::json object constructor.
+ * TODO: extend for alternative representaitons for geolocation (global).
+ * TODO: update to inherit from JSONBase...
  */
 #include <jsoncons/json.hpp>
 #include <optional>
@@ -21,6 +24,7 @@ class SigMFGeoLocation
     // SigMFGeoLocation public interface.
 public:
     SigMFGeoLocation() = default;
+    //SigMFGeoLocation(const jsoncons::json& data);
     SigMFGeoLocation(double latitude, double longitude);
     SigMFGeoLocation(double latitude, double longitude, double altitude);
 
