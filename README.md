@@ -67,6 +67,8 @@ struct CaptureFields {
 ## Notes / ToDo
 * Currently, going to throw errors when we come across malformed datasets. Later, we will want to have options for lenient/strict loading to handle cases where a user failed to create a valid SigMF dataset -> do we want to error on-load? when it hits the function value? on-write? etc.
 * Geolocation currently doesn't support everything found in the spec, and doesn't support the version differences between what can be found in the global vs. the capture fields.
+* Move headrs/impl files into sigmf_io folders.
+* when moving into namespace & renaming files, make sure to update the header guards to use #ifndef SIGMF_IO_GLOBAL_H, etc. So that we avoid silent errors in case other use similarly named files.
 * There's a difference between "default" on load and "default" on write.
     - default on load: default value is assumed when the value is missing in a recording.
     - default on write: default value is assumed when a user does not specify a value to be written, and is substituted in during write-time.
