@@ -1,11 +1,12 @@
-#include "SigMFVersion.h"
+#include "sigmf_io/version.h"
 
 #include <regex>
 #include <stdexcept>
 #include <string>
 
+namespace sigmf_io {
 
-SigMFVersion::SigMFVersion(const std::string& version)
+Version::Version(const std::string& version)
 {
     // Validate that version matches the format X.Y.Z where X, Y, Z are
     // non-negative integers (no leading zeros other than "0" itself).
@@ -24,3 +25,5 @@ SigMFVersion::SigMFVersion(const std::string& version)
     this->patch_ = std::stoi(match[3]);
     this->version_ = version;
 }
+
+} // end sigmf_io namespace

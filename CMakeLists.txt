@@ -75,12 +75,12 @@ FetchContent_MakeAvailable(jsoncons)
 # ─────────────────────────────────────────────────────────────────────────────
 
 add_executable(BurstRFBackend src/main.cpp
-    src/Datatype.cpp
-    src/dataset.cpp
+    include/sigmf_io/datatype.h src/sigmf_io/datatype.cpp
+    include/sigmf_io/dataset.h src/sigmf_io/dataset.cpp
     src/SigMFGeoLocation.cpp
     src/SigMFExtension.cpp
-    src/Datetime.cpp
-    include/SigMFVersion.h src/SigMFVersion.cpp
+    include/sigmf_io/datetime.h src/sigmf_io/datetime.cpp
+    include/sigmf_io/version.h src/sigmf_io/version.cpp
     include/SigMFUUID.h src/SigMFUUID.cpp
     include/SigMFSHA512.h src/SigMFSHA512.cpp
     include/SigMFRecording.h src/SigMFRecording.cpp

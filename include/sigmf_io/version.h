@@ -3,12 +3,14 @@
 
 #include <string>
 
-class SigMFVersion
+namespace sigmf_io {
+
+class Version
 {
 public:
-    explicit SigMFVersion(const std::string& version);
+    explicit Version(const std::string& version);
 
-    std::string version() const { return this->version_; }
+    std::string to_string() const { return this->version_; }
 
     int major() const { return this->major_; }
     int minor() const { return this->minor_; }
@@ -20,5 +22,7 @@ private:
     int minor_;
     int patch_;
 };
+
+} // end sigmf_io namespace
 
 #endif // SIGMFVERSION_H
