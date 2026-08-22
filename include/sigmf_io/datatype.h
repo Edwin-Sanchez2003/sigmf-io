@@ -25,7 +25,7 @@ public:
     };
 
     // Tells us what the primitive is that is written to disk.
-    enum class SampleType {
+    enum class Sampletype {
         FLOAT_32,
         FLOAT_64,
         INT_16,
@@ -44,27 +44,27 @@ public:
 
 // Datatype public interface.
 public:
-    Datatype(std::string rawDataType); // constructs Datatype from raw string in SigMF meta file.
+    Datatype(const std::string& datatype); // constructs Datatype from raw string in SigMF meta file.
 
-    std::string to_string() const;
-    SampleFormat getSampleFormat() const;
-    SampleType getSampleType() const;
-    Endianness getEndianness() const;
+    std::string to_string() const { return this->datatype_; }
+    SampleFormat sample_format() const { return this->sample_format_; }
+    Sampletype sampletype() const { return this->sampletype_; }
+    Endianness endianness() const { return this->endianness_; }
 
     // helpers for interpreting data on disk.
-    int64_t getPrimitiveByteCount() const;     // How many bytes is one primitive.
-    int64_t getPrimitivesPerSample() const;    // How many primitives make up a single sample.
-    int64_t getBytesPerSample() const;         // How many bytes make up a single sample.
+    int64_t primitive_byte_count() const { return this->primitive_byte_count_; }     // How many bytes is one primitive.
+    int64_t primitives_per_sample() const;    // How many primitives make up a single sample.
+    int64_t bytes_per_sample() const;         // How many bytes make up a single sample.
 
 // Hidden member variables.
 private:
-    std::string rawDataType;    // string representing the raw datatype written in the SigMF meta file.
+    std::string datatype_;    // string representing the raw datatype written in the SigMF meta file.
 
-    SampleFormat sampleFormat;  // the format of the current dataset instance.
-    SampleType sampleType;      // the on-disk data type of the current dataset instance.
-    Endianness endianness;      // the byte order of the current dataset instance.
+    SampleFormat sample_format_;  // the format of the current dataset instance.
+    Sampletype sampletype_;      // the on-disk data type of the current dataset instance.
+    Endianness endianness_;      // the byte order of the current dataset instance.
 
-    size_t primitiveByteCount;  // the number of bytes based on the dataset's primitive type.
+    size_t primitive_byte_count_;  // the number of bytes based on the dataset's primitive type.
 };
 
 } // end sigmf_io namespace

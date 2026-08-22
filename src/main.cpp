@@ -8,13 +8,13 @@
 
 int main()
 {
-    // Simple Initialization of SigMFDataset object.
-    sigmf_io::Dataset sigmfData = sigmf_io::Dataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", sigmf_io::Datatype("cf32_le"), 1, 0);
-    std::cout << sigmfData.getDataType().to_string() << '\n';
+    // Simple Initialization of sigmf_io::Dataset object.
+    sigmf_io::Dataset sigmf_data = sigmf_io::Dataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", sigmf_io::Datatype("cf32_le"), 1, 0);
+    std::cout << sigmf_data.datatype().to_string() << '\n';
     std::vector<sigmf_io::Capture> captures;
     captures.clear();
 
-    auto samples = sigmfData.getSamples<std::complex<double>>(captures, 0, 100);
+    auto samples = sigmf_data.get_samples<std::complex<double>>(captures, 0, 100);
     std::cout << "Sample count returned: " << samples.size() << '\n';
 
     for(const std::complex<double>& sample: samples)
