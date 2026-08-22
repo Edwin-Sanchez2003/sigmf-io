@@ -1,8 +1,8 @@
-#ifndef SIGMFDATATYPE_H
-#define SIGMFDATATYPE_H
+#ifndef DATATYPE_H
+#define DATATYPE_H
 
 /*
- * SigMFDataType
+ * Datatype
  *
  * A class that acts as an interface between the datatype string and what the
  * program needs to read the data properly from disk.
@@ -11,8 +11,9 @@
 
 #include <string>
 
+namespace sigmf_io {
 
-class SigMFDataType
+class Datatype
 {
 // Enumerations to describe datatype.
 public:
@@ -41,9 +42,9 @@ public:
         BIG
     };
 
-// SigMFDataType public interface.
+// Datatype public interface.
 public:
-    SigMFDataType(std::string rawDataType); // constructs SigMFDataType from raw string in SigMF meta file.
+    Datatype(std::string rawDataType); // constructs Datatype from raw string in SigMF meta file.
 
     std::string to_string() const;
     SampleFormat getSampleFormat() const;
@@ -66,4 +67,6 @@ private:
     size_t primitiveByteCount;  // the number of bytes based on the dataset's primitive type.
 };
 
-#endif // SIGMFDATATYPE_H
+} // end sigmf_io namespace
+
+#endif // DATATYPE_H

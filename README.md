@@ -3,6 +3,12 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 ## Initial Interface Design
 
+* fix header guards to work more generally when incorporated in other projects.
+* fix member vars to be underscores for member variables, rather than camelCase.
+* fix member vars to have underscore after name, as a convention.
+* fix Datatype enum naming to be lowercase for *Type -> *type: (SampleType -> Sampletype)?
+* fix include order to be consistent (stdlib -> dependencies -> local lib? look up the standard convention).
+
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
 * how much of jsoncons::json to expose???

@@ -1,18 +1,19 @@
-#include "SigMFDataType.h"
+#include "sigmf_io/datatype.h"
 
 #include <string>
 #include <stdexcept>
 
+namespace sigmf_io {
 
 // parse the rawDataType - throw an error if the data type is invalid.
-SigMFDataType::SigMFDataType(const std::string rawDataType)
+Datatype::Datatype(const std::string rawDataType)
 {
     // set rawDataType so we have an instance to the original string.
     this->rawDataType = rawDataType;
 
     // Empty string - throw error
     if (rawDataType.empty())
-        throw std::runtime_error("SigMFDataType: empty format string");
+        throw std::runtime_error("Datatype: empty format string");
 
     // Parse real/complex prefix
     if (rawDataType[0] == 'r') {
@@ -20,7 +21,7 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
     } else if (rawDataType[0] == 'c') {
         this->sampleFormat = SampleFormat::COMPLEX;
     } else {
-        throw std::runtime_error("SigMFDataType: expected 'r' or 'c' at position 0, got: " + rawDataType);
+        throw std::runtime_error("Datatype: expected 'r' or 'c' at position 0, got: " + rawDataType);
     }
 
     // Remaining substring after the real/complex prefix
@@ -44,7 +45,7 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
     // Parse multi-char type + endianness: e.g. "f32_le", "u16_be", "i32_le"
     // Find the endianness suffix
     if(rest.size() < 3)
-        throw std::runtime_error("SigMFDataType: missing or invalid sample type and/or endianness '" + rest + "' in: " + rawDataType);
+        throw std::runtime_error("Datatype: missing or invalid sample type and/or endianness '" + rest + "' in: " + rawDataType);
 
     std::string endiannessSuffix = rest.substr(rest.size() - 3);
     std::string typeStr = rest.substr(0, rest.size() - 3);
@@ -53,7 +54,7 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
     } else if (endiannessSuffix == "_be") {
         this->endianness = Endianness::BIG;
     } else {
-        throw std::runtime_error("SigMFDataType: missing or invalid endianness suffix in: " + rawDataType);
+        throw std::runtime_error("Datatype: missing or invalid endianness suffix in: " + rawDataType);
     }
 
     // Parse the type token
@@ -76,49 +77,51 @@ SigMFDataType::SigMFDataType(const std::string rawDataType)
         this->sampleType = SampleType::UINT_32;
         this->primitiveByteCount = 4;
     } else {
-        throw std::runtime_error("SigMFDataType: unknown sample type '" + typeStr + "' in: " + rawDataType);
+        throw std::runtime_error("Datatype: unknown sample type '" + typeStr + "' in: " + rawDataType);
     }
 }
 
 
-std::string SigMFDataType::to_string() const
+std::string Datatype::to_string() const
 {
     return this->rawDataType;
 }
 
 
-SigMFDataType::SampleFormat SigMFDataType::getSampleFormat() const
+Datatype::SampleFormat Datatype::getSampleFormat() const
 {
     return this->sampleFormat;
 }
 
 
-SigMFDataType::SampleType SigMFDataType::getSampleType() const
+Datatype::SampleType Datatype::getSampleType() const
 {
     return this->sampleType;
 }
 
 
-SigMFDataType::Endianness SigMFDataType::getEndianness() const
+Datatype::Endianness Datatype::getEndianness() const
 {
     return this->endianness;
 }
 
 
 // gets the number of bytes that the primitive data type corresponds to.
-int64_t SigMFDataType::getPrimitiveByteCount() const
+int64_t Datatype::getPrimitiveByteCount() const
 {
     return this->primitiveByteCount;
 }
 
 
-int64_t SigMFDataType::getPrimitivesPerSample() const
+int64_t Datatype::getPrimitivesPerSample() const
 {
-    return (this->getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX) ? 2 : 1;
+    return (this->getSampleFormat() == Datatype::SampleFormat::COMPLEX) ? 2 : 1;
 }
 
 
-int64_t SigMFDataType::getBytesPerSample() const
+int64_t Datatype::getBytesPerSample() const
 {
     return this->primitiveByteCount * getPrimitivesPerSample();
 }
+
+} // end sigmf_io namespace

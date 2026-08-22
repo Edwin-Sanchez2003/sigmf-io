@@ -11,6 +11,8 @@
 
 // TODO: Consider json-style bracket interface for getting/setting values???
 
+namespace sigmf_io {
+
 class JSONBase
 {
 public:
@@ -71,5 +73,7 @@ void JSONBase::set(const std::string& json_pointer, T&& value) {
 inline jsoncons::json JSONBase::to_json() const {
     return data_;
 }
+
+} // end sigmf_io namespace
 
 #endif // JSON_BASE_H

@@ -1,16 +1,14 @@
 #include <iostream>
 
-#include "SigMFRecording.h"
-#include "SigMFDataType.h"
-#include "SigMFDataset.h"
-#include "sigmf.h"
+//#include "SigMFRecording.h"
+#include "sigmf_io/datatype.h"
+#include "sigmf_io/dataset.h"
 
-using SigMFCapture = sigmf::Capture<sigmf::core::DescrT>;
 
 int main()
 {
     // Simple Initialization of SigMFDataset object.
-    SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", SigMFDataType("cf32_le"), 1, 0);
+    SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", sigmf_io::Datatype("cf32_le"), 1, 0);
     std::cout << sigmfData.getDataType().to_string() << '\n';
     std::vector<SigMFCapture> captures;
     captures.clear();
@@ -21,6 +19,7 @@ int main()
     for(const std::complex<double>& sample: samples)
         std::cout << sample.real() << " + " << sample.imag() << "i\n";
 
+    /*
     // Initial Initialization of SigMFRecording object.
     SigMFRecording recording = SigMFRecording("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data");
     SigMFRecording();
@@ -29,7 +28,7 @@ int main()
 
     for(const std::complex<double>& sample: samples2)
         std::cout << sample.real() << " + " << sample.imag() << "i\n";
-
+    */
     return 0;
 }
 

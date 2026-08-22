@@ -1,15 +1,16 @@
-#include "sigmf_global.h"
-#include "json_base.h"
+#include "sigmf_io/global.h"
+#include "sigmf_io/json_base.h"
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 
+namespace sigmf_io {
 
-SigMFGlobal::SigMFGlobal(const jsoncons::json& data)
-    : JSONBase(SigMFGlobal::default_data(), data)
+Global::Global(const jsoncons::json& data)
+    : JSONBase(Global::default_data(), data)
 {}
 
 
-jsoncons::json SigMFGlobal::default_data()
+jsoncons::json Global::default_data()
 {
     jsoncons::json defaults;
     defaults["core:datatype"] = "cf32_le";
@@ -21,175 +22,175 @@ jsoncons::json SigMFGlobal::default_data()
 }
 
 
-SigMFDataType SigMFGlobal::datatype() const
+SigMFDataType Global::datatype() const
 {
     return SigMFDataType(this->get<std::string>("/core:datatype"));
 }
 
 
-void SigMFGlobal::set_datatype(const SigMFDataType& datatype)
+void Global::set_datatype(const SigMFDataType& datatype)
 {
     this->set("/core:datatype", datatype.to_string());
 }
 
 
-std::optional<double> SigMFGlobal::sample_rate() const
+std::optional<double> Global::sample_rate() const
 {
     return this->get_optional<double>("/core:sample_rate");
 }
 
 
-void SigMFGlobal::set_sample_rate(const double sample_rate)
+void Global::set_sample_rate(const double sample_rate)
 {
     this->set("/core:sample_rate", sample_rate);
 }
 
 
-std::optional<std::string> SigMFGlobal::author() const
+std::optional<std::string> Global::author() const
 {
     return this->get_optional<std::string>("/core:author");
 }
 
 
-void SigMFGlobal::set_author(const std::string& author)
+void Global::set_author(const std::string& author)
 {
     this->set("/core:author", author);
 }
 
 
-std::optional<std::string> SigMFGlobal::collection() const
+std::optional<std::string> Global::collection() const
 {
     return this->get_optional<std::string>("/core:collection");
 }
 
 
-void SigMFGlobal::set_collection(const std::string& collection)
+void Global::set_collection(const std::string& collection)
 {
     this->set("/core:collection", collection);
 }
 
 
-std::optional<std::string> SigMFGlobal::dataset() const
+std::optional<std::string> Global::dataset() const
 {
     return this->get_optional<std::string>("/core:collection");
 }
 
 
-void SigMFGlobal::set_dataset(const std::string& dataset)
+void Global::set_dataset(const std::string& dataset)
 {
     this->set("/core:dataset", dataset);
 }
 
 
-std::optional<std::string> SigMFGlobal::data_doi() const
+std::optional<std::string> Global::data_doi() const
 {
     return this->get_optional<std::string>("/core:data_doi");
 }
 
 
-void SigMFGlobal::set_data_doi(const std::string& data_doi)
+void Global::set_data_doi(const std::string& data_doi)
 {
     this->set("/core:data_doi", data_doi);
 }
 
 
-std::optional<std::string> SigMFGlobal::description() const
+std::optional<std::string> Global::description() const
 {
     return this->get_optional<std::string>("/core:description");
 }
 
 
-void SigMFGlobal::set_description(const std::string& description)
+void Global::set_description(const std::string& description)
 {
     this->set("/core:description", description);
 }
 
 
-std::optional<std::string> SigMFGlobal::hw() const
+std::optional<std::string> Global::hw() const
 {
     return this->get_optional<std::string>("/core:hw");
 }
 
 
-void SigMFGlobal::set_hw(const std::string& hw)
+void Global::set_hw(const std::string& hw)
 {
     this->set("/core:hw", hw);
 }
 
 
-std::optional<std::string> SigMFGlobal::license() const
+std::optional<std::string> Global::license() const
 {
     return this->get_optional<std::string>("/core:license");
 }
 
 
-void SigMFGlobal::set_license(const std::string& license)
+void Global::set_license(const std::string& license)
 {
     this->set("/core:license", license);
 }
 
 
-std::optional<bool> SigMFGlobal::matadata_only() const
+std::optional<bool> Global::matadata_only() const
 {
     return this->get_optional<bool>("/core:metadata_only");
 }
 
 
-void SigMFGlobal::set_metadata_only(const bool metadata_only)
+void Global::set_metadata_only(const bool metadata_only)
 {
     this->set("/core:metadata_only", metadata_only);
 }
 
 
-std::optional<std::string> SigMFGlobal::meta_doi() const
+std::optional<std::string> Global::meta_doi() const
 {
     return this->get_optional<std::string>("/core:meta_doi");
 }
 
 
-void SigMFGlobal::set_meta_doi(const std::string& meta_doi)
+void Global::set_meta_doi(const std::string& meta_doi)
 {
     this->set("/core:meta_doi", meta_doi);
 }
 
 
-int64_t SigMFGlobal::num_channels() const
+int64_t Global::num_channels() const
 {
     return this->get_optional<int64_t>("/core:num_channels").value_or(1);
 }
 
 
-void SigMFGlobal::set_num_channels(const int64_t num_channels)
+void Global::set_num_channels(const int64_t num_channels)
 {
     this->set("/core:num_channels", num_channels);
 }
 
 
-int64_t SigMFGlobal::offset() const
+int64_t Global::offset() const
 {
     return this->get_optional<int64_t>("/core:offset").value_or(0);
 }
 
 
-void SigMFGlobal::set_offset(int64_t offset)
+void Global::set_offset(int64_t offset)
 {
     this->set("/core:offset", offset);
 }
 
 
-std::optional<std::string> SigMFGlobal::recorder() const
+std::optional<std::string> Global::recorder() const
 {
     return this->get_optional<std::string>("/core:recorder");
 }
 
 
-void SigMFGlobal::set_recorder(const std::string& recorder)
+void Global::set_recorder(const std::string& recorder)
 {
     return this->set("/core:recorder", recorder);
 }
 
 
-std::optional<SigMFSHA512> SigMFGlobal::sha512() const
+std::optional<SigMFSHA512> Global::sha512() const
 {
     std::optional<std::string> sha512 = this->get_optional<std::string>("/core:sha512");
     if(sha512.has_value()) {
@@ -199,37 +200,37 @@ std::optional<SigMFSHA512> SigMFGlobal::sha512() const
 }
 
 
-void SigMFGlobal::set_sha512(const SigMFSHA512& sha512)
+void Global::set_sha512(const SigMFSHA512& sha512)
 {
     this->set("/core:sha512", sha512.to_string());
 }
 
 
-std::optional<int64_t> SigMFGlobal::trailing_bytes() const
+std::optional<int64_t> Global::trailing_bytes() const
 {
     return this->get_optional<int64_t>("/core:trailing_bytes");
 }
 
 
-void SigMFGlobal::set_trailing_bytes(const int64_t trailing_bytes)
+void Global::set_trailing_bytes(const int64_t trailing_bytes)
 {
     this->set("/core:trailing_bytes", trailing_bytes);
 }
 
 
-std::string SigMFGlobal::version() const
+std::string Global::version() const
 {
     return this->get<std::string>("/core:version");
 }
 
 
-void SigMFGlobal::set_version(const std::string& version)
+void Global::set_version(const std::string& version)
 {
     this->set("/core:version", version);
 }
 
 
-// std::optional<SigMFGeoLocation> SigMFGlobal::geolocation() const
+// std::optional<SigMFGeoLocation> Global::geolocation() const
 // {
 //     std::optional<jsoncons::json> geolocation = this->get_optional<jsoncons::json>("/core:geolocation");
 //     if(geolocation.has_value()) {
@@ -239,10 +240,12 @@ void SigMFGlobal::set_version(const std::string& version)
 // }
 
 
-// void SigMFGlobal::set_geolocation(const SigMFGeoLocation& geolocation) {}
+// void Global::set_geolocation(const SigMFGeoLocation& geolocation) {}
 
 
-// std::vector<SigMFExtension> SigMFGlobal::extensions() const {}
+// std::vector<SigMFExtension> Global::extensions() const {}
 
 
-// void SigMFGlobal::set_extensions(const std::vector<SigMFExtension>& extensions) {}
+// void Global::set_extensions(const std::vector<SigMFExtension>& extensions) {}
+
+} // end sigmf_io namespace

@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.25)
 
 cmake_policy(SET CMP0048 NEW)  # project() manages VERSION variables
 cmake_policy(SET CMP0071 NEW)  # AUTOMOC/AUTOUIC skip GENERATED files cleanly
 
 project(BurstRFBackend VERSION 0.1.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)              # libsigmf v1.0 requires C++17 for std::optional
+set(CMAKE_CXX_STANDARD 23)              # libsigmf v1.0 requires C++17 for std::optional
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ── FetchContent for libsigmf ─────────────────────────────────────────────────
@@ -75,8 +75,8 @@ FetchContent_MakeAvailable(jsoncons)
 # ─────────────────────────────────────────────────────────────────────────────
 
 add_executable(BurstRFBackend src/main.cpp
-    src/SigMFDataType.cpp
-    src/SigMFDataset.cpp
+    src/Datatype.cpp
+    src/dataset.cpp
     src/SigMFGeoLocation.cpp
     src/SigMFExtension.cpp
     src/SigMFDateTime.cpp
@@ -85,11 +85,10 @@ add_executable(BurstRFBackend src/main.cpp
     include/SigMFSHA512.h src/SigMFSHA512.cpp
     include/SigMFRecording.h src/SigMFRecording.cpp
     include/SigMFMetadata.h src/SigMFMetadata.cpp
-    include/json_base.h src/json_base.cpp
-    include/sigmf_global.h src/sigmf_global.cpp
-    include/sigmf_capture.h src/sigmf_capture.cpp
-    include/sigmf_annotation.h src/sigmf_annotation.cpp
-
+    include/sigmf_io/json_base.h src/sigmf_io/json_base.cpp
+    include/sigmf_io/global.h src/sigmf_io/global.cpp
+    include/sigmf_io/capture.h src/sigmf_io/capture.cpp
+    include/sigmf_io/annotation.h src/sigmf_io/annotation.cpp
 )
 
 target_link_libraries(BurstRFBackend

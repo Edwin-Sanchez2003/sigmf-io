@@ -1,4 +1,4 @@
-#include "json_base.h"
+#include "sigmf_io/json_base.h"
 
 #include <fstream>
 #include <filesystem>
@@ -8,6 +8,7 @@
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 #include <jsoncons_ext/mergepatch/mergepatch.hpp>
 
+namespace sigmf_io {
 
 JSONBase::JSONBase(jsoncons::json defaults, const jsoncons::json& overrides)
     : data_(std::move(defaults))
@@ -54,3 +55,5 @@ void JSONBase::merge_patch(const std::string& json_pointer, const jsoncons::json
 
     jsoncons::mergepatch::apply_merge_patch(target, value);   // recursive: replaces/deletes only what `value` specifies
 }
+
+} // end sigmf_io namespace

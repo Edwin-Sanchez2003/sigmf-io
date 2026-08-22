@@ -9,10 +9,10 @@
 #include <cstdint>
 #include <cstring>
 #include <algorithm>
-#include "SigMFDataType.h"
-#include "sigmf.h"
+#include "sigmf_io/datatype.h"
+#include "sigmf_io/capture.h"
 
-using SigMFCapture = sigmf::Capture<sigmf::core::DescrT>;
+namespace sigmf_io {
 
 // outside the class, at the top of the header after your includes
 
@@ -32,50 +32,50 @@ template <typename T>
 constexpr bool is_complex_v<std::complex<T>> = true;
 
 /*
- * SigMFDataset
+ * Dataset
  *
- * The SigMFDataset class represents the raw RF data (real or complex) contained in
+ * The Dataset class represents the raw RF data (real or complex) contained in
  * the .sigmf-data file (or raw RF data files ending in not .sigmf-data for Non-Conforming Datasets).
  *
  * This class handles the actual data loading from disk, presenting the loaded RF data as a
  * std::vector<std::complex<double>> to the user of this interface.
  */
 
-class SigMFDataset
+class Dataset
 {
 public:
-    // Construct a SigMFDataset object as an interface with the data on disk, with the minimum required information
+    // Construct a Dataset object as an interface with the data on disk, with the minimum required information
     // to interpret the data on disk.
-    SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels = 1, int64_t trailingBytes = 0, int64_t offset = 0);
+    Dataset(std::string datasetPath, Datatype dataType, int64_t numChannels = 1, int64_t trailingBytes = 0, int64_t offset = 0);
 
     /* Getters & Setters */
     std::string getDatasetPath() const { return this->datasetPath; }
-    SigMFDataType getDataType() const { return this->dataType; }
+    Datatype getDataType() const { return this->dataType; }
     int64_t getNumChannels() const { return this->numChannels; }
     int64_t getTrailingBytes() const { return this->trailingBytes; }
     int64_t getOffset() const { return this->offset; }
-    SigMFDataType::Endianness getSystemEndianness() const;
+    Datatype::Endianness getSystemEndianness() const;
 
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
     template <typename OutputT>
     std::vector<OutputT> getSamples(
-        const std::vector<SigMFCapture>& captures = {}, const int64_t sampleStart = 0, int64_t sampleCount = -1, const int64_t channel = 1);
+        const std::vector<Capture>& captures = {}, const int64_t sampleStart = 0, int64_t sampleCount = -1, const int64_t channel = 1);
 
     // Returns the number of samples in the dataset.
     // Must factor in header_bytes, footer_bytes, and channel.
-    int64_t size(const std::vector<SigMFCapture>& captures = {}, const int64_t channel = 1) const;
+    int64_t size(const std::vector<Capture>& captures = {}, const int64_t channel = 1) const;
 
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
-    SigMFDataset(const SigMFDataset&)            = delete;
-    SigMFDataset& operator=(const SigMFDataset&) = delete;
-    SigMFDataset(SigMFDataset&&)                 = default;
-    SigMFDataset& operator=(SigMFDataset&&)      = default;
+    Dataset(const Dataset&)            = delete;
+    Dataset& operator=(const Dataset&) = delete;
+    Dataset(Dataset&&)                 = default;
+    Dataset& operator=(Dataset&&)      = default;
 
 private:
     std::string datasetPath;    // Path to the dataset file to be interacted with on disk.
-    SigMFDataType dataType;     // The SigMF Datatype; tells us how to read data from disk.
-    int64_t numChannels;        // The number of interleaved streams of samples in this SigMFDataset.
+    Datatype dataType;     // The SigMF Datatype; tells us how to read data from disk.
+    int64_t numChannels;        // The number of interleaved streams of samples in this Dataset.
     int64_t trailingBytes;      // The number of bytes at the end of the file that are NOT samples (NCDs).
     int64_t offset;             // A logical offset applied to all sample-related indices in some SigMFRecordings.
     mio::basic_mmap<mio::access_mode::read, uint8_t> mmap;      // The Memory Mapping instance used to read data from disk at runtime.
@@ -98,7 +98,7 @@ private:
     // a type T that represents the type used to store samples in the file.
     template<typename T>
     std::vector<T> loadSamples(
-        const std::vector<SigMFCapture>& captures, const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const;
+        const std::vector<Capture>& captures, const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const;
 
     // converts a vector of type InputT to type OutputT.
     template <typename InputT, typename OutputT>
@@ -107,7 +107,7 @@ private:
 
 
 template<typename T>
-T SigMFDataset::byteSwap(T val) const {
+T Dataset::byteSwap(T val) const {
     static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>);
     uint8_t bytes[sizeof(T)];
     std::memcpy(bytes, &val, sizeof(T));
@@ -119,21 +119,21 @@ T SigMFDataset::byteSwap(T val) const {
 
 
 template<typename T>
-std::complex<T> SigMFDataset::byteSwap(std::complex<T> val) const {
+std::complex<T> Dataset::byteSwap(std::complex<T> val) const {
     return std::complex<T>(byteSwap(val.real()), byteSwap(val.imag()));
 }
 
 
 template<typename T>
-T SigMFDataset::valueAt(const uint8_t* bytePtr) const {
+T Dataset::valueAt(const uint8_t* bytePtr) const {
     const T* primitivePtr = reinterpret_cast<const T*>(bytePtr);
     return *primitivePtr;
 }
 
 
 template<typename T>
-std::vector<T> SigMFDataset::loadSamples(
-    const std::vector<SigMFCapture>& captures, const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const
+std::vector<T> Dataset::loadSamples(
+    const std::vector<Capture>& captures, const int64_t sampleStart, const int64_t sampleCount, const int64_t channel) const
 {
     // NOTE: Assumes that the global value core:offset is implicitly added to all captures/annotations/sample indices!!!
 
@@ -155,7 +155,7 @@ std::vector<T> SigMFDataset::loadSamples(
     for (; captureIdx < captures.size(); captureIdx++)
     {
         // const_cast -> stupid hack to allow for const function arguments, which allows for default empty vector...
-        const sigmf::core::CaptureT& cap = const_cast<SigMFCapture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
+        const sigmf::core::CaptureT& cap = const_cast<Capture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
 
         // check if the capture start sample index comes before sampleStart meaning
         // we need to apply header bytes offset.
@@ -173,7 +173,7 @@ std::vector<T> SigMFDataset::loadSamples(
     {
         // 1. If we pass a capture boundary, offset by header_bytes again.
         while (captureIdx < captures.size()) {
-            const sigmf::core::CaptureT& cap =const_cast<SigMFCapture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
+            const sigmf::core::CaptureT& cap =const_cast<Capture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
             if ((cap.sample_start.value_or(0) - offset) <= (sampleStart + i))
             {
                 bytePtr += cap.header_bytes.value_or(0);
@@ -203,7 +203,7 @@ std::vector<T> SigMFDataset::loadSamples(
 
 
 template <typename InputT, typename OutputT>
-std::vector<OutputT> SigMFDataset::convert(const std::vector<InputT>& in) {
+std::vector<OutputT> Dataset::convert(const std::vector<InputT>& in) {
     using InnerOutputT = inner_type_t<OutputT>;
     using InnerInputT  = inner_type_t<InputT>;
 
@@ -241,8 +241,8 @@ std::vector<OutputT> SigMFDataset::convert(const std::vector<InputT>& in) {
 
 
 template <typename OutputT>
-std::vector<OutputT> SigMFDataset::getSamples(
-    const std::vector<SigMFCapture>& captures, const int64_t sampleStart, int64_t sampleCount, const int64_t channel)
+std::vector<OutputT> Dataset::getSamples(
+    const std::vector<Capture>& captures, const int64_t sampleStart, int64_t sampleCount, const int64_t channel)
 {
     // NOTE: sampleStart = 0, sampleCount = 0 passes through silently - returns an empty array.
 
@@ -280,50 +280,51 @@ std::vector<OutputT> SigMFDataset::getSamples(
 
     // get the RF data as the data type specified by the user.
     switch (this->dataType.getSampleType()) {
-    case SigMFDataType::SampleType::FLOAT_32:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::FLOAT_32:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<float>, OutputT>(loadSamples<std::complex<float>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<float, OutputT>(loadSamples<float>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::FLOAT_64:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::FLOAT_64:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<double>, OutputT>(loadSamples<std::complex<double>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<double, OutputT>(loadSamples<double>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::INT_16:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::INT_16:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<int16_t>, OutputT>(loadSamples<std::complex<int16_t>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<int16_t, OutputT>(loadSamples<int16_t>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::INT_32:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::INT_32:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<int32_t>, OutputT>(loadSamples<std::complex<int32_t>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<int32_t, OutputT>(loadSamples<int32_t>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::UINT_16:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::UINT_16:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<uint16_t>, OutputT>(loadSamples<std::complex<uint16_t>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<uint16_t, OutputT>(loadSamples<uint16_t>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::UINT_32:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::UINT_32:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<uint32_t>, OutputT>(loadSamples<std::complex<uint32_t>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<uint32_t, OutputT>(loadSamples<uint32_t>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::BYTE:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::BYTE:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<int8_t>, OutputT>(loadSamples<std::complex<int8_t>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<int8_t, OutputT>(loadSamples<int8_t>(captures, sampleStart, sampleCount, channel));
-    case SigMFDataType::SampleType::UBYTE:
-        if (this->dataType.getSampleFormat() == SigMFDataType::SampleFormat::COMPLEX)
+    case Datatype::SampleType::UBYTE:
+        if (this->dataType.getSampleFormat() == Datatype::SampleFormat::COMPLEX)
             return convert<std::complex<uint8_t>, OutputT>(loadSamples<std::complex<uint8_t>>(captures, sampleStart, sampleCount, channel));
         else
             return convert<uint8_t, OutputT>(loadSamples<uint8_t>(captures, sampleStart, sampleCount, channel));
     default:
-        throw std::runtime_error("Unsupported SigMFDataType::SampleType!");
+        throw std::runtime_error("Unsupported Datatype::SampleType!");
     }
 }
 
+} // end sigmf_io namespace
 
 #endif // SIGMFDATALOADER_H

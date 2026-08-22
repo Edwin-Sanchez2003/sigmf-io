@@ -1,17 +1,19 @@
 #ifndef SIGMF_ANNOTATION_H
 #define SIGMF_ANNOTATION_H
 
-#include "json_base.h"
+#include "sigmf_io/json_base.h"
 #include "SigMFUUID.h"
 #include <jsoncons/json.hpp>
 #include <optional>
 #include <cstdint>
 #include <string>
 
-class SigMFAnnotation : public JSONBase
+namespace sigmf_io {
+
+class Annotation : public JSONBase
 {
 public:
-    explicit SigMFAnnotation(const jsoncons::json& data = jsoncons::json());
+    explicit Annotation(const jsoncons::json& data = jsoncons::json());
 
     // returns a jsoncons::json initialized with default SigMF values.
     static jsoncons::json default_data();
@@ -33,6 +35,8 @@ public:
     std::optional<SigMFUUID> uuid() const;
     void set_uuid(const std::string& uuid);
 };
+
+} // end sigmf_io namespace
 
 #endif // SIGMF_ANNOTATION_H
 

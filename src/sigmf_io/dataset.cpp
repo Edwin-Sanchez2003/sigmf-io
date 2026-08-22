@@ -1,5 +1,5 @@
-#include "SigMFDataset.h"
-#include "SigMFDataType.h"
+#include "sigmf_io/dataset.h"
+#include "sigmf_io/datatype.h"
 
 #include <mio/mmap.hpp>
 
@@ -8,34 +8,32 @@
 #include <stdexcept>
 #include "sigmf.h"
 
-// define SigMFCapture as the object type in a captures array.
-using SigMFCapture = sigmf::Capture<sigmf::core::DescrT>;
+namespace sigmf_io {
 
-
-SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int64_t numChannels, int64_t trailingBytes, int64_t offset)
+Dataset::Dataset(std::string datasetPath, Datatype dataType, int64_t numChannels, int64_t trailingBytes, int64_t offset)
     : dataType(dataType)
 {
     // validate datasetPath exists.
     if (std::filesystem::exists(datasetPath) == false)
-        throw std::runtime_error("SigMFDataset: Dataset file path '" + datasetPath + "' does not exist!");
+        throw std::runtime_error("Dataset: Dataset file path '" + datasetPath + "' does not exist!");
     this->datasetPath = datasetPath;
 
     // validate numChannels is greater than or equal to one.
     if (numChannels < 1)
         throw std::runtime_error(
-            "SigMFDataset: numChannels value must be greater than or equal to one. Given numChannels: '" + std::to_string(numChannels) + "'.");
+            "Dataset: numChannels value must be greater than or equal to one. Given numChannels: '" + std::to_string(numChannels) + "'.");
     this->numChannels = numChannels;
 
     // validate trailingBytes is greater than or equal to zero.
     if (trailingBytes < 0)
         throw std::runtime_error(
-            "SigMFDataset: trailingBytes value must be greater than or equal to zero. Given trailingBytes: '" + std::to_string(trailingBytes) + "'.");
+            "Dataset: trailingBytes value must be greater than or equal to zero. Given trailingBytes: '" + std::to_string(trailingBytes) + "'.");
     this->trailingBytes = trailingBytes;
 
     // validate offset is greater than or equal to zero.
     if (offset < 0)
         throw std::runtime_error(
-            "SigMFDataset: offset value must be greater than or equal to zero. Given offset: '" + std::to_string(offset) + "'.");
+            "Dataset: offset value must be greater than or equal to zero. Given offset: '" + std::to_string(offset) + "'.");
     this->offset = offset;
 
     // create a memory map given the dataset path.
@@ -46,17 +44,17 @@ SigMFDataset::SigMFDataset(std::string datasetPath, SigMFDataType dataType, int6
 }
 
 
-SigMFDataType::Endianness SigMFDataset::getSystemEndianness() const {
+Datatype::Endianness Dataset::getSystemEndianness() const {
     uint32_t x = 1;
     uint8_t firstByte = *reinterpret_cast<uint8_t*>(&x);
 
-    return (firstByte == 1) ? SigMFDataType::Endianness::LITTLE : SigMFDataType::Endianness::BIG;
+    return (firstByte == 1) ? Datatype::Endianness::LITTLE : Datatype::Endianness::BIG;
 }
 
 
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
 // requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
-int64_t SigMFDataset::size(const std::vector<SigMFCapture>& captures, const int64_t channel) const
+int64_t Dataset::size(const std::vector<SigMFCapture>& captures, const int64_t channel) const
 {
     // check that the given channel is within bounds
     if(
@@ -105,3 +103,5 @@ int64_t SigMFDataset::size(const std::vector<SigMFCapture>& captures, const int6
     // Channels are 1-indexed; channel <= remainder get one extra sample
     return totalFrames + ((channel <= remainderSamples) ? 1 : 0);
 }
+
+} // end sigmf_io namespace

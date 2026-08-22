@@ -1,8 +1,8 @@
 #ifndef SIGMF_GLOBAL_H
 #define SIGMF_GLOBAL_H
 
-#include "json_base.h"
-#include "SigMFDataType.h"
+#include "sigmf_io/json_base.h"
+#include "sigmf_io/datatype.h"
 #include "SigMFSHA512.h"
 #include "SigMFGeoLocation.h"
 #include "SigMFExtension.h"
@@ -11,17 +11,19 @@
 #include <cstdint>
 #include <string>
 
-class SigMFGlobal : public JSONBase
+namespace sigmf_io {
+
+class Global : public JSONBase
 {
 public:
-    explicit SigMFGlobal(const jsoncons::json& data = jsoncons::json());
+    explicit Global(const jsoncons::json& data = jsoncons::json());
 
     // returns a jsoncons::json initialized with default SigMF values.
     static jsoncons::json default_data();
 
     // core namespace getters & setters.
-    SigMFDataType datatype() const;
-    void set_datatype(const SigMFDataType& datatype);
+    Datatype datatype() const;
+    void set_datatype(const Datatype& datatype);
     std::optional<double> sample_rate() const;
     void set_sample_rate(const double sample_rate);
     std::optional<std::string> author() const;
@@ -59,5 +61,7 @@ public:
     // std::vector<SigMFExtension> extensions() const;
     // void set_extensions(const std::vector<SigMFExtension>& extensions);
 };
+
+} // end sigmf_io namespace
 
 #endif // SIGMF_GLOBAL_H

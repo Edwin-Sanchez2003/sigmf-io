@@ -1,7 +1,7 @@
 #ifndef SIGMF_CAPTURE_H
 #define SIGMF_CAPTURE_H
 
-#include "json_base.h"
+#include "sigmf_io/json_base.h"
 #include "SigMFGeoLocation.h"
 #include "SigMFDateTime.h"
 #include <jsoncons/json.hpp>
@@ -16,10 +16,12 @@
  *
  */
 
-class SigMFCapture : public JSONBase
+namespace sigmf_io {
+
+class Capture : public JSONBase
 {
 public:
-    explicit SigMFCapture(const jsoncons::json& data = jsoncons::json());
+    explicit Capture(const jsoncons::json& data = jsoncons::json());
 
     // returns a jsoncons::json initialized with default SigMF values.
     static jsoncons::json default_data();
@@ -36,5 +38,7 @@ public:
     void set_header_bytes(int64_t header_bytes);
     // SigMFGeolocation getter/setter
 };
+
+} // end sigmf_io namespace
 
 #endif // SIGMF_CAPTURE_H
