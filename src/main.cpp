@@ -1,6 +1,7 @@
 #include <iostream>
 
 //#include "SigMFRecording.h"
+#include "sigmf_io/capture.h"
 #include "sigmf_io/datatype.h"
 #include "sigmf_io/dataset.h"
 
@@ -8,9 +9,9 @@
 int main()
 {
     // Simple Initialization of SigMFDataset object.
-    SigMFDataset sigmfData = SigMFDataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", sigmf_io::Datatype("cf32_le"), 1, 0);
+    sigmf_io::Dataset sigmfData = sigmf_io::Dataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", sigmf_io::Datatype("cf32_le"), 1, 0);
     std::cout << sigmfData.getDataType().to_string() << '\n';
-    std::vector<SigMFCapture> captures;
+    std::vector<sigmf_io::Capture> captures;
     captures.clear();
 
     auto samples = sigmfData.getSamples<std::complex<double>>(captures, 0, 100);

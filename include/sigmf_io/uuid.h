@@ -1,5 +1,5 @@
-#ifndef SIGMFUUID_H
-#define SIGMFUUID_H
+#ifndef SIGMF_IO_UUID_H
+#define SIGMF_IO_UUID_H
 #include <array>
 #include <compare>
 #include <cstddef>
@@ -7,10 +7,12 @@
 #include <span>
 #include <string>
 
-class SigMFUUID
+namespace sigmf_io {
+
+class UUID
 {
 public:
-    explicit SigMFUUID(const std::string& uuid);
+    explicit UUID(const std::string& uuid);
 
     std::string uuid() const { return uuid_; }
     bool is_nil() const;
@@ -28,8 +30,8 @@ public:
             reinterpret_cast<const unsigned char*>(bytes_.data()), 16);
     }
 
-    std::strong_ordering operator<=>(const SigMFUUID& other) const { return bytes_ <=> other.bytes_; }
-    bool operator==(const SigMFUUID& other) const { return bytes_ == other.bytes_; }
+    std::strong_ordering operator<=>(const UUID& other) const { return bytes_ <=> other.bytes_; }
+    bool operator==(const UUID& other) const { return bytes_ == other.bytes_; }
 
 private:
     std::string uuid_;
@@ -40,4 +42,7 @@ private:
     static uint8_t hexPairToByte(char hi, char lo); // numeric result -- real magnitude
     static uint8_t nibble(char c);                  // numeric result -- real hex digit value
 };
-#endif // SIGMFUUID_H
+
+} // end sigmf_io namespace
+
+#endif // SIGMF_IO_UUID_H

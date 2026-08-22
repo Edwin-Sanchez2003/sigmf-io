@@ -1,23 +1,25 @@
-#ifndef SIGMFRECORDING_H
-#define SIGMFRECORDING_H
+#ifndef RECORDING_H
+#define RECORDING_H
 
-#include "SigMFDataset.h"
-#include "SigMFMetadata.h"
+#include "sigmf_io/dataset.h"
+#include "sigmf_io/metadata.h"
 #include <optional>
 #include <string>
 #include <jsoncons/json.hpp>
 
-class SigMFRecording
+namespace sigmf_io {
+
+class Recording
 {
 public:
-    SigMFDataset data;
-    SigMFMetadata meta;
+    //Dataset data;
+    //Metadata meta;
 public:
-    SigMFRecording();
-    explicit SigMFRecording(const std::string& file_path);
+    Recording();
+    explicit Recording(const std::string& file_path);
 
-    std::string meta_path() const { return this->meta_path_; }
-    std::string data_path() const { return this->dataset.value().getDatasetPath(); }
+    //std::string meta_path() const { return this->meta_path_; }
+    //std::string data_path() const { return this->dataset.value().getDatasetPath(); }
 
     /* TODO: helper functions for accessing data from a recording using the metadata.
      * - get samples given indices
@@ -31,4 +33,6 @@ private:
     static constexpr std::string DATA_EXT = ".sigmf-data";
 };
 
-#endif // SIGMFRECORDING_H
+} // end sigmf_io namespace
+
+#endif // RECORDING_H

@@ -1,17 +1,19 @@
-#ifndef SIGMFSHA512_H
-#define SIGMFSHA512_H
+#ifndef SIGMF_IO_SHA512_H
+#define SIGMF_IO_SHA512_H
 #include <array>
 #include <compare>
 #include <cstddef>
 #include <span>
 #include <string>
 
-class SigMFSHA512 {
+namespace sigmf_io {
+
+class SHA512 {
 public:
     static constexpr std::size_t kDigestBytes = 64;
     static constexpr std::size_t kHexLength   = kDigestBytes * 2;
 
-    explicit SigMFSHA512(const std::string& hex);
+    explicit SHA512(const std::string& hex);
 
     std::string to_string() const { return raw_; }
     std::string hex() const { return normalized_; }
@@ -24,10 +26,10 @@ public:
             reinterpret_cast<const unsigned char*>(bytes_.data()), kDigestBytes);
     }
 
-    std::strong_ordering operator<=>(const SigMFSHA512& other) const {
+    std::strong_ordering operator<=>(const SHA512& other) const {
         return normalized_ <=> other.normalized_;
     }
-    bool operator==(const SigMFSHA512& other) const {
+    bool operator==(const SHA512& other) const {
         return normalized_ == other.normalized_;
     }
 
@@ -44,4 +46,7 @@ private:
 
     void parse_and_validate(const std::string& hex);
 };
-#endif // SIGMFSHA512_H
+
+} // end SIGMF_IO_SHA512_H
+
+#endif // SHA512_H

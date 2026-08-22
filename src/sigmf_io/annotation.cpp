@@ -100,11 +100,11 @@ void Annotation::set_generator(const std::string& generator)
 }
 
 
-std::optional<SigMFUUID> Annotation::uuid() const
+std::optional<UUID> Annotation::uuid() const
 {
     std::optional<std::string> uuid = this->get_optional<std::string>("/core:uuid");
     if(uuid.has_value()) {
-        return SigMFUUID(uuid.value());
+        return UUID(uuid.value());
     }
     return std::nullopt;
 }

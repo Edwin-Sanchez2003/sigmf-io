@@ -2,8 +2,8 @@
 #define SIGMF_CAPTURE_H
 
 #include "sigmf_io/json_base.h"
-#include "SigMFGeoLocation.h"
-#include "SigMFDateTime.h"
+#include "sigmf_io/geolocation.h"
+#include "sigmf_io/datetime.h"
 #include <jsoncons/json.hpp>
 #include <optional>
 #include <cstdint>
@@ -28,8 +28,8 @@ public:
 
     int64_t sample_start() const;
     void set_sample_start(int64_t sample_start);
-    std::optional<SigMFDateTime> datetime() const;
-    void set_datetime(SigMFDateTime datetime);
+    std::optional<Datetime> datetime() const;
+    void set_datetime(Datetime datetime);
     std::optional<double> frequency() const;
     void set_frequency(double frequency);
     std::optional<int64_t> global_index() const;

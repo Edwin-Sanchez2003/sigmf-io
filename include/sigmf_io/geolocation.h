@@ -1,7 +1,7 @@
-#ifndef SIGMFGEOLOCATION_H
-#define SIGMFGEOLOCATION_H
+#ifndef SIGMF_IO_GEOLOCATION_H
+#define SIGMF_IO_GEOLOCATION_H
 /*
- * SigMFGeoLocation
+ * Geolocation
  *
  * A class that acts as a convenient interface to SigMF Geolocation objects
  * (GeoJSON "Point" objects). Enforces the SigMF core specification
@@ -18,15 +18,17 @@
 #include <optional>
 #include <string>
 
+namespace sigmf_io {
+
 // TODO: Implement to WGS84 GeoJSON specification.
-class SigMFGeoLocation
+class Geolocation
 {
-    // SigMFGeoLocation public interface.
+    // Geolocation public interface.
 public:
-    SigMFGeoLocation() = default;
-    //SigMFGeoLocation(const jsoncons::json& data);
-    SigMFGeoLocation(double latitude, double longitude);
-    SigMFGeoLocation(double latitude, double longitude, double altitude);
+    Geolocation() = default;
+    //Geolocation(const jsoncons::json& data);
+    Geolocation(double latitude, double longitude);
+    Geolocation(double latitude, double longitude, double altitude);
 
     // core "type" field - always "Point" per SigMF/GeoJSON spec. Read-only.
     std::string getType() const { return "Point"; }
@@ -44,7 +46,7 @@ public:
 
     // (de)serialization to/from a SigMF-compliant jsoncons::json object.
     jsoncons::json toJson() const;
-    static SigMFGeoLocation fromJson(const jsoncons::json& j);
+    static Geolocation fromJson(const jsoncons::json& j);
 
     // Arbitrary additional keys/values/complex structures that are not
     // part of the SigMF core spec for geolocation. These are merged in
@@ -61,4 +63,7 @@ private:
     double longitude_{0.0};
     std::optional<double> altitude_;
 };
-#endif // SIGMFGEOLOCATION_H
+
+} // end sigmf_io namespace
+
+#endif // SIGMF_IO_GEOLOCATION_H

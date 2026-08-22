@@ -3,18 +3,22 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 ## Initial Interface Design
 
-* fix header guards to work more generally when incorporated in other projects.
+* fix header guards to work more generally when incorporated in other projects -> should be SIGMF_IO_*_H
 * fix member vars to be underscores for member variables, rather than camelCase.
 * fix member vars to have underscore after name, as a convention.
 * fix Datatype enum naming to be lowercase for *Type -> *type: (SampleType -> Sampletype)?
 * fix include order to be consistent (stdlib -> dependencies -> local lib? look up the standard convention).
 * general header & impl convention cleanup!!!
 * test code folder -> move 'main.cpp' to a 'test.cpp' folder. Setup CMakeLists.txt to allow exclusion of building test cases for users of the library.
+* consistent comment descriptions?
 
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
 * how much of jsoncons::json to expose???
     * how much of the jsoncons::json interface should I make the objects compatible with?
+
+* do proper versioning - pick a pattern & stick to it...
+* after version 1 -> geolocation?, extensions, collections, archives?
 
 ### Phase 1: Initial Interface Structure
 * Getters/setters ought to validate input & throw an error if it's invalid (sample_start, sample_count, etc.)

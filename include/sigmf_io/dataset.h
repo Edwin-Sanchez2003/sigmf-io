@@ -145,7 +145,7 @@ std::vector<T> Dataset::loadSamples(
     out.reserve(sampleCount); // pre-allocate the memory needed for this vector, without initializing the values (cheap).
 
     // Get initial position of data being requested (ie. first byte of requested data; sampleStart).
-    int64_t indexOffsetSamples = (sampleStart - offset) * this->numChannels + (channel - 1);
+    int64_t indexOffsetSamples = (sampleStart - this->offset) * this->numChannels + (channel - 1);
     int64_t indexOffsetBytes = indexOffsetSamples * this->getDataType().getBytesPerSample();
     bytePtr += indexOffsetBytes;
 
@@ -154,14 +154,13 @@ std::vector<T> Dataset::loadSamples(
     int64_t captureIdx = 0;
     for (; captureIdx < captures.size(); captureIdx++)
     {
-        // const_cast -> stupid hack to allow for const function arguments, which allows for default empty vector...
-        const sigmf::core::CaptureT& cap = const_cast<Capture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
+        const Capture& cap = captures[captureIdx];
 
         // check if the capture start sample index comes before sampleStart meaning
         // we need to apply header bytes offset.
-        if ((cap.sample_start.value_or(0) - offset) <= sampleStart)
+        if ((cap.sample_start() - this->offset) <= sampleStart)
         {
-            accumulatedHeaderBytes += cap.header_bytes.value_or(0);
+            accumulatedHeaderBytes += cap.header_bytes().value_or(0);
         } else {
             break;
         }
@@ -173,10 +172,10 @@ std::vector<T> Dataset::loadSamples(
     {
         // 1. If we pass a capture boundary, offset by header_bytes again.
         while (captureIdx < captures.size()) {
-            const sigmf::core::CaptureT& cap =const_cast<Capture&>(captures[captureIdx]).access<sigmf::core::CaptureT>();
-            if ((cap.sample_start.value_or(0) - offset) <= (sampleStart + i))
+            const Capture& cap = captures[captureIdx];
+            if ((cap.sample_start() - this->offset) <= (sampleStart + i))
             {
-                bytePtr += cap.header_bytes.value_or(0);
+                bytePtr += cap.header_bytes().value_or(0);
                 captureIdx++;
             } else {
                 break;

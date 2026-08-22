@@ -3,9 +3,9 @@
 
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/datatype.h"
-#include "SigMFSHA512.h"
-#include "SigMFGeoLocation.h"
-#include "SigMFExtension.h"
+#include "sigmf_io/sha512.h"
+#include "sigmf_io/geolocation.h"
+// Sigmf Extension
 #include <jsoncons/json.hpp>
 #include <optional>
 #include <cstdint>
@@ -50,8 +50,8 @@ public:
     void set_offset(int64_t offset);
     std::optional<std::string> recorder() const;
     void set_recorder(const std::string& recorder);
-    std::optional<SigMFSHA512> sha512() const;
-    void set_sha512(const SigMFSHA512& sha512);
+    std::optional<SHA512> sha512() const;
+    void set_sha512(const SHA512& sha512);
     std::optional<int64_t> trailing_bytes() const;
     void set_trailing_bytes(const int64_t trailing_bytes);
     std::string version() const;

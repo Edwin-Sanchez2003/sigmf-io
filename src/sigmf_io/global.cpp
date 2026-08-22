@@ -1,4 +1,8 @@
 #include "sigmf_io/global.h"
+#include "sigmf_io/datatype.h"
+#include "sigmf_io/sha512.h"
+#include "sigmf_io/datetime.h"
+#include "sigmf_io/uuid.h"
 #include "sigmf_io/json_base.h"
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
@@ -22,13 +26,13 @@ jsoncons::json Global::default_data()
 }
 
 
-SigMFDataType Global::datatype() const
+Datatype Global::datatype() const
 {
-    return SigMFDataType(this->get<std::string>("/core:datatype"));
+    return Datatype(this->get<std::string>("/core:datatype"));
 }
 
 
-void Global::set_datatype(const SigMFDataType& datatype)
+void Global::set_datatype(const Datatype& datatype)
 {
     this->set("/core:datatype", datatype.to_string());
 }
@@ -190,17 +194,17 @@ void Global::set_recorder(const std::string& recorder)
 }
 
 
-std::optional<SigMFSHA512> Global::sha512() const
+std::optional<SHA512> Global::sha512() const
 {
     std::optional<std::string> sha512 = this->get_optional<std::string>("/core:sha512");
     if(sha512.has_value()) {
-        return SigMFSHA512(sha512.value());
+        return SHA512(sha512.value());
     }
     return std::nullopt;
 }
 
 
-void Global::set_sha512(const SigMFSHA512& sha512)
+void Global::set_sha512(const SHA512& sha512)
 {
     this->set("/core:sha512", sha512.to_string());
 }

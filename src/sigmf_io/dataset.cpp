@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <filesystem>
 #include <stdexcept>
-#include "sigmf.h"
 
 namespace sigmf_io {
 
@@ -54,7 +53,7 @@ Datatype::Endianness Dataset::getSystemEndianness() const {
 
 // Returns the size of the dataset, given capture header_byte information, the trailing_bytes, and the
 // requested channel. captures array can be an empty vector if dataset is contiguous (no header bytes).
-int64_t Dataset::size(const std::vector<SigMFCapture>& captures, const int64_t channel) const
+int64_t Dataset::size(const std::vector<Capture>& captures, const int64_t channel) const
 {
     // check that the given channel is within bounds
     if(
@@ -69,11 +68,9 @@ int64_t Dataset::size(const std::vector<SigMFCapture>& captures, const int64_t c
     int64_t nonSampleBytes = 0;
 
     // add up header bytes across all captures to get total # of header bytes.
-    for(const SigMFCapture& capture: captures)
+    for(const Capture& capture: captures)
     {
-        // const_cast -> stupid hack to allow for const function arguments, which allows for default empty vector...
-        const sigmf::core::CaptureT& cap = const_cast<SigMFCapture&>(capture).access<sigmf::core::CaptureT>();
-        nonSampleBytes += cap.header_bytes.value_or(0);
+        nonSampleBytes += capture.header_bytes().value_or(0);
     }
 
     // add trailing_byte count.

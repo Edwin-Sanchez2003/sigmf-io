@@ -2,7 +2,7 @@
 #define SIGMF_ANNOTATION_H
 
 #include "sigmf_io/json_base.h"
-#include "SigMFUUID.h"
+#include "sigmf_io/uuid.h"
 #include <jsoncons/json.hpp>
 #include <optional>
 #include <cstdint>
@@ -32,7 +32,7 @@ public:
     void set_comment(const std::string& comment);
     std::optional<std::string> generator() const;
     void set_generator(const std::string& generator);
-    std::optional<SigMFUUID> uuid() const;
+    std::optional<UUID> uuid() const;
     void set_uuid(const std::string& uuid);
 };
 
