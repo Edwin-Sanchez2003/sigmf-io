@@ -1,3 +1,5 @@
+#include <catch2/catch_test_macros.hpp>
+
 #include <iostream>
 
 //#include "SigMFRecording.h"
@@ -6,8 +8,9 @@
 #include "sigmf_io/dataset.h"
 
 
-int main()
+TEST_CASE("Simple Pipeline Test", "[pipeline]")
 {
+    std::cout << "SIMPLE PIPELINE: Reading dataset and printing 100 samples...\n";
     // Simple Initialization of sigmf_io::Dataset object.
     sigmf_io::Dataset sigmf_data = sigmf_io::Dataset("/var/home/edwsanch/Downloads/trimmedSamples.sigmf-data", sigmf_io::Datatype("cf32_le"), 1, 0);
     std::cout << sigmf_data.datatype().to_string() << '\n';
@@ -30,12 +33,11 @@ int main()
     for(const std::complex<double>& sample: samples2)
         std::cout << sample.real() << " + " << sample.imag() << "i\n";
     */
-    return 0;
 }
 
 
 // Figuring out how I want the API to feel.
-void test()
+TEST_CASE("Another Test", "[pipeline]")
 {
     // Goal: Load SigMF Recording.
     //SigMFRecording recording = SigMFRecording("/path/to/file.sigmf-meta");

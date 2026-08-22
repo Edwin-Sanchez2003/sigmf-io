@@ -1,12 +1,9 @@
-# BurstRFBackend
+# SigMF IO
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
 ## Initial Interface Design
 
-* fix include order to be consistent (stdlib -> dependencies -> local lib? look up the standard convention).
-* general header & impl convention cleanup!!!
 * test code folder -> move 'main.cpp' to a 'test.cpp' folder. Setup CMakeLists.txt to allow exclusion of building test cases for users of the library.
-* consistent comment descriptions?
 
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
