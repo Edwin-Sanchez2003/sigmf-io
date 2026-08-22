@@ -1,5 +1,6 @@
 #ifndef SIGMF_IO_SHA512_H
 #define SIGMF_IO_SHA512_H
+
 #include <array>
 #include <compare>
 #include <cstddef>

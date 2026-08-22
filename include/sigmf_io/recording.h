@@ -1,11 +1,13 @@
 #ifndef SIGMF_IO_RECORDING_H
 #define SIGMF_IO_RECORDING_H
 
-#include "sigmf_io/dataset.h"
-#include "sigmf_io/metadata.h"
 #include <optional>
 #include <string>
+
 #include <jsoncons/json.hpp>
+
+#include "sigmf_io/dataset.h"
+#include "sigmf_io/metadata.h"
 
 namespace sigmf_io {
 

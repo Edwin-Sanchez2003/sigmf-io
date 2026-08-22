@@ -1,5 +1,6 @@
 #ifndef SIGMF_IO_UUID_H
 #define SIGMF_IO_UUID_H
+
 #include <array>
 #include <compare>
 #include <cstddef>

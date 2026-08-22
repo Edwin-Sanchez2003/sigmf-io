@@ -1,14 +1,15 @@
 #ifndef SIGMF_IO_DATASET_H
 #define SIGMF_IO_DATASET_H
 
-#include <mio/mmap.hpp>
-
+#include <cstdint>
+#include <cstring>
 #include <vector>
 #include <string>
 #include <complex>
-#include <cstdint>
-#include <cstring>
 #include <algorithm>
+
+#include <mio/mmap.hpp>
+
 #include "sigmf_io/datatype.h"
 #include "sigmf_io/capture.h"
 

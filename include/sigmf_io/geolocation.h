@@ -14,9 +14,10 @@
  * TODO: extend for alternative representaitons for geolocation (global).
  * TODO: update to inherit from JSONBase...
  */
-#include <jsoncons/json.hpp>
 #include <optional>
 #include <string>
+
+#include <jsoncons/json.hpp>
 
 namespace sigmf_io {
 

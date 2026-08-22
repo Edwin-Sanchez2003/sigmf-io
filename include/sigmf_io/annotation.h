@@ -1,12 +1,14 @@
 #ifndef SIGMF_IO_ANNOTATION_H
 #define SIGMF_IO_ANNOTATION_H
 
+#include <cstdint>
+#include <optional>
+#include <string>
+
+#include <jsoncons/json.hpp>
+
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/uuid.h"
-#include <jsoncons/json.hpp>
-#include <optional>
-#include <cstdint>
-#include <string>
 
 namespace sigmf_io {
 

@@ -1,13 +1,16 @@
 #ifndef SIGMF_IO_CAPTURE_H
 #define SIGMF_IO_CAPTURE_H
 
+
+#include <cstdint>
+#include <optional>
+#include <string>
+
+#include <jsoncons/json.hpp>
+
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/geolocation.h"
 #include "sigmf_io/datetime.h"
-#include <jsoncons/json.hpp>
-#include <optional>
-#include <cstdint>
-#include <string>
 
 /*
  * SigMF Capture

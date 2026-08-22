@@ -5,8 +5,10 @@
 #include <filesystem>
 #include <string>
 #include <utility>
+
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
+
 #include "sigmf_io/global.h"
 #include "sigmf_io/capture.h"
 #include "sigmf_io/annotation.h"

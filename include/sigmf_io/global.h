@@ -1,15 +1,17 @@
 #ifndef SIGMF_IO_GLOBAL_H
 #define SIGMF_IO_GLOBAL_H
 
+#include <optional>
+#include <cstdint>
+#include <string>
+
+#include <jsoncons/json.hpp>
+
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/datatype.h"
 #include "sigmf_io/sha512.h"
 #include "sigmf_io/geolocation.h"
 // Sigmf Extension
-#include <jsoncons/json.hpp>
-#include <optional>
-#include <cstdint>
-#include <string>
 
 namespace sigmf_io {
 

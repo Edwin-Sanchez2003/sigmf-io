@@ -8,7 +8,6 @@
  * program needs to read the data properly from disk.
  */
 
-
 #include <string>
 
 namespace sigmf_io {
