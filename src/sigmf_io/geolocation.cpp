@@ -6,19 +6,19 @@ namespace sigmf_io {
 
 Geolocation::Geolocation(double latitude, double longitude)
 {
-    setLatitude(latitude);
-    setLongitude(longitude);
+    set_latitude(latitude);
+    set_longitude(longitude);
 }
 
 Geolocation::Geolocation(double latitude, double longitude, double altitude)
 {
-    setLatitude(latitude);
-    setLongitude(longitude);
-    setAltitude(altitude);
+    set_latitude(latitude);
+    set_longitude(longitude);
+    set_altitude(altitude);
 }
 
 // -90 to +90, per GeoJSON/WGS84 convention used by SigMF.
-void Geolocation::validateLatitude(double latitude)
+void Geolocation::validate_latitude(double latitude)
 {
     if (std::isnan(latitude) || (latitude < -90.0) || (latitude > 90.0))
         throw std::out_of_range(
@@ -27,7 +27,7 @@ void Geolocation::validateLatitude(double latitude)
 }
 
 // -180 to +180, per GeoJSON/WGS84 convention used by SigMF.
-void Geolocation::validateLongitude(double longitude)
+void Geolocation::validate_longitude(double longitude)
 {
     if (std::isnan(longitude) || (longitude < -180.0) || (longitude > 180.0))
         throw std::out_of_range(
@@ -35,37 +35,37 @@ void Geolocation::validateLongitude(double longitude)
             std::to_string(longitude));
 }
 
-void Geolocation::setLatitude(double latitude)
+void Geolocation::set_latitude(double latitude)
 {
-    validateLatitude(latitude);
+    validate_latitude(latitude);
     this->latitude_ = latitude;
 }
 
-void Geolocation::setLongitude(double longitude)
+void Geolocation::set_longitude(double longitude)
 {
-    validateLongitude(longitude);
+    validate_longitude(longitude);
     this->longitude_ = longitude;
 }
 
-void Geolocation::setAltitude(double altitude)
+void Geolocation::set_altitude(double altitude)
 {
     if (std::isnan(altitude))
         throw std::invalid_argument("Geolocation: altitude must not be NaN");
     this->altitude_ = altitude;
 }
 
-void Geolocation::clearAltitude()
+void Geolocation::clear_altitude()
 {
     this->altitude_.reset();
 }
 
-jsoncons::json Geolocation::toJson() const
+jsoncons::json Geolocation::to_json() const
 {
     // Start from any custom/extra fields so the enforced core fields
     // always take precedence if there's ever a key collision.
     jsoncons::json j = this->extra;
 
-    j["type"] = getType();
+    j["type"] = get_type();
 
     jsoncons::json coords = jsoncons::json::array();
     coords.push_back(longitude_); // GeoJSON order is [lon, lat, (alt)]
@@ -77,7 +77,7 @@ jsoncons::json Geolocation::toJson() const
     return j;
 }
 
-Geolocation Geolocation::fromJson(const jsoncons::json& j)
+Geolocation Geolocation::from_json(const jsoncons::json& j)
 {
     if (!j.is_object())
         throw std::runtime_error("Geolocation: expected a JSON object");
@@ -95,10 +95,10 @@ Geolocation Geolocation::fromJson(const jsoncons::json& j)
             "[longitude, latitude, (altitude)]");
 
     Geolocation geo;
-    geo.setLongitude(coords[0].as<double>());
-    geo.setLatitude(coords[1].as<double>());
+    geo.set_longitude(coords[0].as<double>());
+    geo.set_latitude(coords[1].as<double>());
     if (coords.size() == 3)
-        geo.setAltitude(coords[2].as<double>());
+        geo.set_altitude(coords[2].as<double>());
 
     // Preserve any additional/custom fields (everything except the two
     // core keys) so round-tripping doesn't lose user data.

@@ -12,8 +12,8 @@ UUID::UUID(const std::string& uuid)
         throw std::invalid_argument(
             "UUID: invalid UUID string '" + uuid + "', expected RFC-4122 format");
     }
-    uuid_ = toLower(uuid);
-    bytes_ = parseBytes(uuid_);
+    uuid_ = to_lower(uuid);
+    bytes_ = parse_bytes(uuid_);
 }
 
 bool UUID::is_valid(const std::string& candidate)
@@ -29,7 +29,7 @@ bool UUID::is_nil() const
                        [](std::byte b) { return b == std::byte{0}; });
 }
 
-std::array<std::byte, 16> UUID::parseBytes(const std::string& canonical)
+std::array<std::byte, 16> UUID::parse_bytes(const std::string& canonical)
 {
     std::string hex;
     hex.reserve(32);
@@ -38,19 +38,19 @@ std::array<std::byte, 16> UUID::parseBytes(const std::string& canonical)
     }
     std::array<std::byte, 16> result{};
     for (size_t i = 0; i < 16; ++i) {
-        result[i] = static_cast<std::byte>(hexPairToByte(hex[2 * i], hex[2 * i + 1]));
+        result[i] = static_cast<std::byte>(hex_pair_to_byte(hex[2 * i], hex[2 * i + 1]));
     }
     return result;
 }
 
-std::string UUID::toLower(std::string s)
+std::string UUID::to_lower(std::string s)
 {
     std::transform(s.begin(), s.end(), s.begin(),
                    [](unsigned char c) { return std::tolower(c); });
     return s;
 }
 
-uint8_t UUID::hexPairToByte(char hi, char lo)
+uint8_t UUID::hex_pair_to_byte(char hi, char lo)
 {
     return static_cast<uint8_t>((nibble(hi) << 4) | nibble(lo));
 }

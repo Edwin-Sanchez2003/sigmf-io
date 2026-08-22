@@ -31,22 +31,22 @@ public:
     Geolocation(double latitude, double longitude, double altitude);
 
     // core "type" field - always "Point" per SigMF/GeoJSON spec. Read-only.
-    std::string getType() const { return "Point"; }
+    std::string get_type() const { return "Point"; }
 
     // core "coordinates" field accessors.
-    double getLatitude() const { return latitude_; }
-    double getLongitude() const { return longitude_; }
-    std::optional<double> getAltitude() const { return altitude_; }
+    double latitude() const { return latitude_; }
+    double longitude() const { return longitude_; }
+    std::optional<double> altitude() const { return altitude_; }
 
     // core "coordinates" field mutators - throw on out-of-spec values.
-    void setLatitude(double latitude);
-    void setLongitude(double longitude);
-    void setAltitude(double altitude);
-    void clearAltitude();
+    void set_latitude(double latitude);
+    void set_longitude(double longitude);
+    void set_altitude(double altitude);
+    void clear_altitude();
 
     // (de)serialization to/from a SigMF-compliant jsoncons::json object.
-    jsoncons::json toJson() const;
-    static Geolocation fromJson(const jsoncons::json& j);
+    jsoncons::json to_json() const;
+    static Geolocation from_json(const jsoncons::json& j);
 
     // Arbitrary additional keys/values/complex structures that are not
     // part of the SigMF core spec for geolocation. These are merged in
@@ -56,8 +56,8 @@ public:
 
     // Hidden helpers/member variables.
 private:
-    static void validateLatitude(double latitude);
-    static void validateLongitude(double longitude);
+    static void validate_latitude(double latitude);
+    static void validate_longitude(double longitude);
 
     double latitude_{0.0};
     double longitude_{0.0};

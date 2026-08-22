@@ -3,7 +3,6 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 ## Initial Interface Design
 
-* fix member vars to be underscores for member variables, rather than camelCase.
 * fix member vars to have underscore after name, as a convention.
 * fix Datatype enum naming to be lowercase for *Type -> *type: (SampleType -> Sampletype)?
 * fix include order to be consistent (stdlib -> dependencies -> local lib? look up the standard convention).
@@ -18,6 +17,7 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 * do proper versioning - pick a pattern & stick to it...
 * after version 1 -> geolocation?, extensions, collections, archives?
+* Custom sigmf_io datatypes -> should be forced to use? no -> forced crashes, program may fail if incorrect format... not sure whether to go for convenience but risk crashing on malformed datasets or to go for robustness & add boilerplate when accessing fields... datatype is special because it is required for things to work at all. Version is also required... I think I need to think through handling these better in general -> should be consistent, and should give options. Pick one case to be the default, but make the other case optional (either default to forced usage of custom classes & optional unwrapped versions, or unwrapped by default & optional usage of custom classes).
 
 ### Phase 1: Initial Interface Structure
 * Getters/setters ought to validate input & throw an error if it's invalid (sample_start, sample_count, etc.)

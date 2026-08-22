@@ -37,9 +37,9 @@ private:
     std::string uuid_;
     std::array<std::byte, 16> bytes_;
 
-    static std::array<std::byte, 16> parseBytes(const std::string& canonical);
-    static std::string toLower(std::string s);
-    static uint8_t hexPairToByte(char hi, char lo); // numeric result -- real magnitude
+    static std::array<std::byte, 16> parse_bytes(const std::string& canonical);
+    static std::string to_lower(std::string s);
+    static uint8_t hex_pair_to_byte(char hi, char lo); // numeric result -- real magnitude
     static uint8_t nibble(char c);                  // numeric result -- real hex digit value
 };
 
