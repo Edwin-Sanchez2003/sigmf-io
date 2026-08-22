@@ -47,6 +47,6 @@ private:
     void parse_and_validate(const std::string& hex);
 };
 
-} // end SIGMF_IO_SHA512_H
+} // end sigmf_io namespace
 
-#endif // SHA512_H
+#endif // SIGMF_IO_SHA512_H

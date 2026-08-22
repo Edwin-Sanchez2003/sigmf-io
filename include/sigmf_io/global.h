@@ -1,5 +1,5 @@
-#ifndef SIGMF_GLOBAL_H
-#define SIGMF_GLOBAL_H
+#ifndef SIGMF_IO_GLOBAL_H
+#define SIGMF_IO_GLOBAL_H
 
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/datatype.h"
@@ -64,4 +64,4 @@ public:
 
 } // end sigmf_io namespace
 
-#endif // SIGMF_GLOBAL_H
+#endif // SIGMF_IO_GLOBAL_H

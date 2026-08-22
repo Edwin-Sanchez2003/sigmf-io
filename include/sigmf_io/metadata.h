@@ -1,5 +1,5 @@
-#ifndef METADATA_H
-#define METADATA_H
+#ifndef SIGMF_IO_METADATA_H
+#define SIGMF_IO_METADATA_H
 
 #include <fstream>
 #include <filesystem>
@@ -44,4 +44,4 @@ private:
 
 } // end sigmf_io namespace
 
-#endif // METADATA_H
+#endif // SIGMF_IO_METADATA_H

@@ -1,5 +1,5 @@
-#ifndef SIGMF_CAPTURE_H
-#define SIGMF_CAPTURE_H
+#ifndef SIGMF_IO_CAPTURE_H
+#define SIGMF_IO_CAPTURE_H
 
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/geolocation.h"
@@ -41,4 +41,4 @@ public:
 
 } // end sigmf_io namespace
 
-#endif // SIGMF_CAPTURE_H
+#endif // SIGMF_IO_CAPTURE_H

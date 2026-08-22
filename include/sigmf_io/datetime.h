@@ -1,5 +1,5 @@
-#ifndef Datetime_H
-#define Datetime_H
+#ifndef SIGMF_IO_DATETIME_H
+#define SIGMF_IO_DATETIME_H
 
 #include <chrono>
 #include <compare>
@@ -68,4 +68,4 @@ private:
 
 } // end sigmf_io namespace
 
-#endif // Datetime_H
+#endif // SIGMF_IO_DATETIME_H

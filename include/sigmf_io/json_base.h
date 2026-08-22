@@ -1,5 +1,5 @@
-#ifndef JSON_BASE_H
-#define JSON_BASE_H
+#ifndef SIGMF_IO_JSON_BASE_H
+#define SIGMF_IO_JSON_BASE_H
 
 #include <optional>
 #include <fstream>
@@ -76,4 +76,4 @@ inline jsoncons::json JSONBase::to_json() const {
 
 } // end sigmf_io namespace
 
-#endif // JSON_BASE_H
+#endif // SIGMF_IO_JSON_BASE_H

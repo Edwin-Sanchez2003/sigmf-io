@@ -1,5 +1,5 @@
-#ifndef SIGMF_ANNOTATION_H
-#define SIGMF_ANNOTATION_H
+#ifndef SIGMF_IO_ANNOTATION_H
+#define SIGMF_IO_ANNOTATION_H
 
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/uuid.h"
@@ -38,5 +38,5 @@ public:
 
 } // end sigmf_io namespace
 
-#endif // SIGMF_ANNOTATION_H
+#endif // SIGMF_IO_ANNOTATION_H
 

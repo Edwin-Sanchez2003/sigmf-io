@@ -1,5 +1,5 @@
-#ifndef RECORDING_H
-#define RECORDING_H
+#ifndef SIGMF_IO_RECORDING_H
+#define SIGMF_IO_RECORDING_H
 
 #include "sigmf_io/dataset.h"
 #include "sigmf_io/metadata.h"
@@ -35,4 +35,4 @@ private:
 
 } // end sigmf_io namespace
 
-#endif // RECORDING_H
+#endif // SIGMF_IO_RECORDING_H

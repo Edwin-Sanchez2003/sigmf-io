@@ -1,5 +1,5 @@
-#ifndef DATATYPE_H
-#define DATATYPE_H
+#ifndef SIGMF_IO_DATATYPE_H
+#define SIGMF_IO_DATATYPE_H
 
 /*
  * Datatype
@@ -69,4 +69,4 @@ private:
 
 } // end sigmf_io namespace
 
-#endif // DATATYPE_H
+#endif // SIGMF_IO_DATATYPE_H

@@ -1,5 +1,5 @@
-#ifndef SIGMFDATALOADER_H
-#define SIGMFDATALOADER_H
+#ifndef SIGMF_IO_DATASET_H
+#define SIGMF_IO_DATASET_H
 
 #include <mio/mmap.hpp>
 
@@ -326,4 +326,4 @@ std::vector<OutputT> Dataset::getSamples(
 
 } // end sigmf_io namespace
 
-#endif // SIGMFDATALOADER_H
+#endif // SIGMF_IO_DATASET_H

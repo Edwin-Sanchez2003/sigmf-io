@@ -1,5 +1,5 @@
-#ifndef SIGMFVERSION_H
-#define SIGMFVERSION_H
+#ifndef SIGMF_IO_VERSION_H
+#define SIGMF_IO_VERSION_H
 
 #include <string>
 
@@ -25,4 +25,4 @@ private:
 
 } // end sigmf_io namespace
 
-#endif // SIGMFVERSION_H
+#endif // SIGMF_IO_VERSION_H
