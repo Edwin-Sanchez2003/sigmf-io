@@ -8,6 +8,8 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 * fix member vars to have underscore after name, as a convention.
 * fix Datatype enum naming to be lowercase for *Type -> *type: (SampleType -> Sampletype)?
 * fix include order to be consistent (stdlib -> dependencies -> local lib? look up the standard convention).
+* general header & impl convention cleanup!!!
+* test code folder -> move 'main.cpp' to a 'test.cpp' folder. Setup CMakeLists.txt to allow exclusion of building test cases for users of the library.
 
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.

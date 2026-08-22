@@ -1,4 +1,4 @@
-#include "SigMFDateTime.h"
+#include "sigmf_io/datetime.h"
 
 #include <chrono>
 #include <string>
@@ -6,20 +6,22 @@
 #include <stdexcept>
 #include <charconv>
 
-SigMFDateTime::SigMFDateTime(const std::string& iso8601_utc)
+namespace sigmf_io {
+
+Datetime::Datetime(const std::string& iso8601_utc)
     : raw_(iso8601_utc)
 {
     parse_and_validate(iso8601_utc);
 }
 
-void SigMFDateTime::parse_and_validate(const std::string& s)
+void Datetime::parse_and_validate(const std::string& s)
 {
     static const std::regex pattern(
         R"(^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.\d+)?Z$)");
     std::smatch m;
     if (!std::regex_match(s, m, pattern)) {
         throw std::invalid_argument(
-            "SigMFDateTime: '" + s + "' is not a valid SigMF ISO-8601 UTC timestamp");
+            "Datetime: '" + s + "' is not a valid SigMF ISO-8601 UTC timestamp");
     }
     const int year_val       = std::stoi(m[1]);
     const unsigned month_val = static_cast<unsigned>(std::stoi(m[2]));
@@ -36,16 +38,16 @@ void SigMFDateTime::parse_and_validate(const std::string& s)
     };
     if (!parsed_ymd.ok()) {
         throw std::invalid_argument(
-            "SigMFDateTime: '" + s + "' has a calendar date that does not exist");
+            "Datetime: '" + s + "' has a calendar date that does not exist");
     }
-    if (hour > 23)   throw std::invalid_argument("SigMFDateTime: '" + s + "' has an invalid hour");
-    if (minute > 59) throw std::invalid_argument("SigMFDateTime: '" + s + "' has an invalid minute");
-    if (second > 60) throw std::invalid_argument("SigMFDateTime: '" + s + "' has an invalid second");
+    if (hour > 23)   throw std::invalid_argument("Datetime: '" + s + "' has an invalid hour");
+    if (minute > 59) throw std::invalid_argument("Datetime: '" + s + "' has an invalid minute");
+    if (second > 60) throw std::invalid_argument("Datetime: '" + s + "' has an invalid second");
 
     is_leap_second_ = (second == 60);
     if (is_leap_second_ && !(hour == 23 && minute == 59)) {
         throw std::invalid_argument(
-            "SigMFDateTime: '" + s + "' has a leap second outside of 23:59:60");
+            "Datetime: '" + s + "' has a leap second outside of 23:59:60");
     }
 
     nanoseconds frac{0};
@@ -61,3 +63,5 @@ void SigMFDateTime::parse_and_validate(const std::string& s)
     const sys_days days = sys_days{parsed_ymd};
     time_point_ = days + hours{hour} + minutes{minute} + seconds{representable_second} + frac;
 }
+
+} // end sigmf_io namespace

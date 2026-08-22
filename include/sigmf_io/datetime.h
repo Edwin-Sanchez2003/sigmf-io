@@ -1,5 +1,5 @@
-#ifndef SIGMFDATETIME_H
-#define SIGMFDATETIME_H
+#ifndef Datetime_H
+#define Datetime_H
 
 #include <chrono>
 #include <compare>
@@ -8,9 +8,11 @@
 #include <stdexcept>
 #include <charconv>
 
-class SigMFDateTime {
+namespace sigmf_io {
+
+class Datetime {
 public:
-    explicit SigMFDateTime(const std::string& iso8601_utc);
+    explicit Datetime(const std::string& iso8601_utc);
 
     // get the standard library time_point corresponding to the date-time.
     std::chrono::sys_time<std::chrono::nanoseconds> time_point() const { return time_point_; }
@@ -38,12 +40,12 @@ public:
     // Ordering/equality by instant, with leap-second status as a tiebreaker
     // so 23:59:60 and 23:59:59 (which share a time_point_) don't compare equal.
     // A leap second sorts after its clamped neighbor at the same time_point_.
-    std::strong_ordering operator<=>(const SigMFDateTime& other) const {
+    std::strong_ordering operator<=>(const Datetime& other) const {
         if (auto cmp = time_point_ <=> other.time_point_; cmp != 0) return cmp;
         return is_leap_second_ <=> other.is_leap_second_;
     }
 
-    std::chrono::nanoseconds operator-(const SigMFDateTime& other) const {
+    std::chrono::nanoseconds operator-(const Datetime& other) const {
         return time_point_ - other.time_point_;
     }
 
@@ -64,4 +66,6 @@ private:
     void parse_and_validate(const std::string& s);
 };
 
-#endif // SIGMFDATETIME_H
+} // end sigmf_io namespace
+
+#endif // Datetime_H
