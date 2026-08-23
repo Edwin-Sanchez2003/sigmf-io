@@ -1,11 +1,11 @@
 # SigMF IO
-`sigmf_io` is a C++ library designed to interface with SigMF data with the goal of standardizing implementation and usage of the SigMF Specification (https://sigmf.org/) across applications. This implementation places heavy emphasis on correctness and ease-of-use, with completeness and efficiency as secondary & tertiary goals.
+`sigmf_io` is a C++ library designed to interface with SigMF data with the goal of standardizing implementation and usage of the SigMF Specification (https://sigmf.org/) across applications. This implementation places heavy emphasis on correctness and ease-of-use, with completeness and speed as secondary & tertiary goals.
 
 ## Purpose
 
-The SigMF Specification was designed to facilitate recording and parsing of stored signal data (mostly Radio-Frequency data), with an emphasis on ease-of-use, accessibility, and flexibility. However, the specification may require a significant time investment in order to use the format as intended when writing code to store or parse data from scratch.
+The SigMF Specification was designed to facilitate recording and parsing of stored signal data (mostly Radio-Frequency data), with an emphasis on ease-of-use, accessibility, and flexibility. However, the specification has no complete and up-to-date implementation within the open-source community. Current users of the SigMF Specification must rely on a patchwork of out-of-date software resources that partially or inconsistently implement the specification. In most cases, users of the specification must devote a significant time investment in order to use the format as intended when writing code to store or parse data from scratch. Even then, a SigMF Specification user may mis-implement the specification in a way that makes it incompatible with other tools or external partners, requiring re-working collected metadata to be usable and reliable.
 
-`sigmf_io` is meant to abstract the inner-workings and specification dependencies away from those who wish to use the SigMF specification, making it easier for users to focus on their intended application rather than spending time implementing SigMF to the specification. This library helps with:
+`sigmf_io` is meant to abstract the inner-workings and specification dependencies away from those who wish to use the SigMF specification, making it easier for users to focus on their intended application rather than spending time implementing to the SigMF specification. This library helps with:
 * Maintaining SigMF files according to specific SigMF versions, helping to correctly enforce Specification requirements for both internal organizational preservation of data and to make data portable and shareable with external partners.
 * Provides signal I/O interfaces to make it easy to read & write signal data to disk in the SigMF format.
 * Includes core specification field object interfaces to pre-parse complex SigMF fields for you, and for easy tab completion when writing code, making it harder to make simple mistakes.
@@ -30,6 +30,11 @@ The current implementation of `sigmf_io` depends heavily on `jsoncons` (json lib
 * jsoncons: https://github.com/danielaparker/jsoncons
 * mio: https://github.com/vimpunk/mio
 
+## Next Release
+The core purpose of this library is to support correctness-by-default within the SigMF specification while giving users maximum flexibility when using the library (opting in or out of certain features as needed to support project-specific requirements). Upcoming releases focus heavily on:
+* **Completeness** - supporting the entirety of the SigMF Specification, while maintaining correctness across existing implementation details. More concretely, this means supporting SigMF Collections & Archives, as well as providing better support for specification validation and interacting with SigMF fields that have specific properties (examples include `core:datatype`, which must match a specific  ABNF pattern and contains information about how to read SigMF signal data from disk, and `core:geolocation`, which itself is a json structure which is expected to match certain patterns for reliable reading & writing of data).
+* **Efficiency** - identifying critical-path and computationally expensive operations to optimize for speed.
+
 ## Initial Interface Design
 
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
@@ -38,6 +43,7 @@ The current implementation of `sigmf_io` depends heavily on `jsoncons` (json lib
 * Pop off any forced conversion to custom data types -> the user should wrap the output of the metadata with this custom class explicitly rather than implicitly with the return value. This way, the user can always expect a string/object or json-supported output field when using the API, and then decide if they want to enforce spec-invariants on construction of custom objects.
 
 * TODO: Drive sigmf version (core:version) from the specification version enforced, or force user to specify themselves (NOT hardcoded in default json in global.h).
+* Future work may include auto-converters that can migrate datasets from older versions to newer versions. (Do this in a daisy-chain style, where to get from A.B.C -> X.Y.Z, you call any intermediate version migration functions, rather than trying to implement a one-to-many migration library).
 
 * after version 1 -> geolocation?, extensions, collections, archives?
 * Custom sigmf_io datatypes -> should be forced to use? no -> forced crashes, program may fail if incorrect format... not sure whether to go for convenience but risk crashing on malformed datasets or to go for robustness & add boilerplate when accessing fields... datatype is special because it is required for things to work at all. Version is also required... I think I need to think through handling these better in general -> should be consistent, and should give options. Pick one case to be the default, but make the other case optional (either default to forced usage of custom classes & optional unwrapped versions, or unwrapped by default & optional usage of custom classes).
