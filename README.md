@@ -1,5 +1,19 @@
 # SigMF IO
-This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
+`sigmf_io` is a C++ library designed to interface with SigMF data with the goal of standardizing implementation and usage of the SigMF Specification (https://sigmf.org/) across applications. This implementation places heavy emphasis on correctness and ease-of-use, with completeness and efficiency as secondary & tertiary goals.
+
+## Purpose
+
+The SigMF Specification was designed to facilitate recording and parsing of stored signal data (mostly Radio-Frequency data), with an emphasis on ease-of-use, accessibility, and flexibility. However, the specification may require a significant time investment in order to use the format as intended when writing code to store or parse data from scratch.
+
+`sigmf_io` is meant to abstract the inner-workings and specification dependencies away from those who wish to use the SigMF specification, making it easier for users to focus on their intended application rather than spending time implementing SigMF to the specification. This library helps with:
+* Maintaining SigMF files according to specific SigMF versions, helping to correctly enforce Specification requirements for both internal organizational preservation of data and to make data portable and shareable with external partners.
+* Provides signal I/O interfaces to make it easy to read & write signal data to disk in the SigMF format.
+* Includes core specification field object interfaces to pre-parse complex SigMF fields for you, and for easy tab completion when writing code, making it harder to make simple mistakes.
+
+> This library is a third-party resource - no affiliation with the maintainers of https://sigmf.org/.
+
+## Example Usage
+*TODO*
 
 ## Versioning
 This repository relies on Semantic Versioning, in the form `MAJOR.MINOR.PATCH` -> ex: `0.1.0`:
@@ -11,12 +25,20 @@ See https://semver.org/ for details.
 
 > **Current Version:** `0.1.0`
 
+## Dependencies
+The current implementation of `sigmf_io` depends heavily on `jsoncons` (json library for dealing with metadata) and `mio` (memory-mapping library for reading data from disk). Users of this library will end up directly or indirectly interacting with these dependencies.
+* jsoncons: https://github.com/danielaparker/jsoncons
+* mio: https://github.com/vimpunk/mio
+
 ## Initial Interface Design
 
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
+* Initial version should work for Recordings -> basic read & write, test cases, then publish 0.1.0. Version 1.0 should have documentation.
+* Pop off any forced conversion to custom data types -> the user should wrap the output of the metadata with this custom class explicitly rather than implicitly with the return value. This way, the user can always expect a string/object or json-supported output field when using the API, and then decide if they want to enforce spec-invariants on construction of custom objects.
 
-* do proper versioning - pick a pattern & stick to it...
+* TODO: Drive sigmf version (core:version) from the specification version enforced, or force user to specify themselves (NOT hardcoded in default json in global.h).
+
 * after version 1 -> geolocation?, extensions, collections, archives?
 * Custom sigmf_io datatypes -> should be forced to use? no -> forced crashes, program may fail if incorrect format... not sure whether to go for convenience but risk crashing on malformed datasets or to go for robustness & add boilerplate when accessing fields... datatype is special because it is required for things to work at all. Version is also required... I think I need to think through handling these better in general -> should be consistent, and should give options. Pick one case to be the default, but make the other case optional (either default to forced usage of custom classes & optional unwrapped versions, or unwrapped by default & optional usage of custom classes).
 

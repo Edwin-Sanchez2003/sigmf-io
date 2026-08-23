@@ -14,6 +14,11 @@ add_executable(sigmf_io_tests
     # ... add each test file as you write it
 
     integration/sigmf_io/simple_pipeline.cpp
+    unit/sigmf_io/test_global.cpp
+    unit/sigmf_io/test_annotation.cpp
+    unit/sigmf_io/test_capture.cpp
+    unit/sigmf_io/test_metadata.cpp
+    unit/sigmf_io/test_recording.cpp
 )
 
 target_link_libraries(sigmf_io_tests
