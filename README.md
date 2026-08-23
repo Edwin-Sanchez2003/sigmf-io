@@ -10,7 +10,7 @@ The SigMF Specification was designed to facilitate recording and parsing of stor
 * Provides signal I/O interfaces to make it easy to read & write signal data to disk in the SigMF format.
 * Includes core specification field object interfaces to pre-parse complex SigMF fields for you, and for easy tab completion when writing code, making it harder to make simple mistakes.
 
-> This library is a third-party resource - no affiliation with the maintainers of https://sigmf.org/.
+> This library is a third-party resource and has no affiliation with the maintainers of https://sigmf.org/.
 
 ## Example Usage
 *TODO*
