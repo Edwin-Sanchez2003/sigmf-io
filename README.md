@@ -12,6 +12,8 @@ The SigMF Specification was designed to facilitate recording and parsing of stor
 
 > This library is a third-party resource and has no affiliation with the maintainers of https://sigmf.org/.
 
+## How to Include
+
 ## Example Usage
 *TODO*
 
@@ -34,6 +36,8 @@ The current implementation of `sigmf_io` depends heavily on `jsoncons` (json lib
 The core purpose of this library is to support correctness-by-default within the SigMF specification while giving users maximum flexibility when using the library (opting in or out of certain features as needed to support project-specific requirements). Upcoming releases focus heavily on:
 * **Completeness** - supporting the entirety of the SigMF Specification, while maintaining correctness across existing implementation details. More concretely, this means supporting SigMF Collections & Archives, as well as providing better support for specification validation and interacting with SigMF fields that have specific properties (examples include `core:datatype`, which must match a specific  ABNF pattern and contains information about how to read SigMF signal data from disk, and `core:geolocation`, which itself is a json structure which is expected to match certain patterns for reliable reading & writing of data).
 * **Efficiency** - identifying critical-path and computationally expensive operations to optimize for speed.
+
+Additional future work includes packaging this libary for usage in other languages, such as `Python`, `Java`, and `Matlab`.
 
 ## Initial Interface Design
 
