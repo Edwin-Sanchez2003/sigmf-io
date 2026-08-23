@@ -1,14 +1,20 @@
 # SigMF IO
 This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata, SigMFRecordings, SigMFCollections, and SigMFArchives, with a focus on correctness.
 
-## Initial Interface Design
+## Versioning
+This repository relies on Semantic Versioning, in the form `MAJOR.MINOR.PATCH` -> ex: `0.1.0`:
+* **MAJOR** - Incremented with changes that break the public API.
+* **MINOR** - Incremented when new features are added that do not break the existing public API.
+* **PATCH** - Incremented with bug fixes for algorithm correctness that are backward-compatible.
 
-* test code folder -> move 'main.cpp' to a 'test.cpp' folder. Setup CMakeLists.txt to allow exclusion of building test cases for users of the library.
+See https://semver.org/ for details.
+
+> **Current Version:** `0.1.0`
+
+## Initial Interface Design
 
 * inherit for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
-* how much of jsoncons::json to expose???
-    * how much of the jsoncons::json interface should I make the objects compatible with?
 
 * do proper versioning - pick a pattern & stick to it...
 * after version 1 -> geolocation?, extensions, collections, archives?
@@ -51,6 +57,10 @@ This is a C++ repository designed to interface with SigMFDatasets, SigMFMetdata,
 
 ## Phase 7: Annotation / Capture / Meta / Data / Recording / Collection / Archive
 * Make sure interface is properly broken into parts based on structures from the spec, and are capable of interfacing with each other naturally.
+
+We will wrestle with this for a while...
+* how much of jsoncons::json to expose???
+    * how much of the jsoncons::json interface should I make the objects compatible with?
 
 ## Notes / ToDo
 * Because the json objects are separate (global, capture, annotation, etc.) Things get a little wonky. Does a user use normal json pointers, or when interacting with each object do they have to write pointers that work in that context (not /global/core:datatype when using a global object, but /core:datatype).

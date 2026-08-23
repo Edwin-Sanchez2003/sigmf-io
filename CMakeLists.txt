@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.25)
-cmake_policy(SET CMP0048 NEW)
-cmake_policy(SET CMP0071 NEW)
-project(BurstRFBackend VERSION 1.0.0 LANGUAGES CXX)
+project(sigmf_io VERSION 0.1.0 LANGUAGES CXX)
+include(GNUInstallDirs)
+
+# Template header to track versioning of sigmf_io for library users.
+configure_file(
+    ${CMAKE_SOURCE_DIR}/include/sigmf_io/lib_version.h.in
+    ${CMAKE_BINARY_DIR}/include/sigmf_io/lib_version.h
+)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -50,8 +55,9 @@ target_link_libraries(sigmf_io
 
 target_include_directories(sigmf_io
     PUBLIC
-        ${CMAKE_BINARY_DIR}/include
-        ${CMAKE_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 # ── Tests ──────────────────────────────────────────────────────────────
@@ -63,8 +69,6 @@ if(BUILD_TESTS)
 endif()
 
 # ── Install ─────────────────────────────────────────────────────────────
-include(GNUInstallDirs)
-
 install(TARGETS sigmf_io
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -72,4 +76,7 @@ install(TARGETS sigmf_io
 
 install(DIRECTORY include/sigmf_io
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+install(FILES ${CMAKE_BINARY_DIR}/include/sigmf_io/lib_version.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sigmf_io
 )
