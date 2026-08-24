@@ -13,10 +13,3 @@ TEST_CASE("Default Initializer", "[global]")
     std::cout << "Default Global: " << global.to_json() << '\n';
     SUCCEED("Constructed and serialized without throwing");
 }
-
-TEST_CASE("Default Initializer", "[global]")
-{
-    sigmf_io::Global global();
-    std::cout << "Default Global: " << global.to_json() << '\n';
-    SUCCEED("Constructed and serialized without throwing");
-}

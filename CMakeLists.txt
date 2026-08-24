@@ -46,6 +46,8 @@ add_library(sigmf_io STATIC
     include/sigmf_io/metadata.h    src/sigmf_io/metadata.cpp
     include/sigmf_io/dataset.h     src/sigmf_io/dataset.cpp
     include/sigmf_io/recording.h   src/sigmf_io/recording.cpp
+    include/sigmf_io/spec_validator_base.h
+    include/sigmf_io/v1_2_6/spec_validator.h src/sigmf_io/v1_2_6/spec_validator.cpp
 )
 
 target_link_libraries(sigmf_io
