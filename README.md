@@ -41,8 +41,10 @@ The core purpose of this library is to support correctness-by-default within the
 Additional future work includes packaging this libary for usage in other languages, such as `Python`, `Java`, and `Matlab`.
 
 ## Initial Interface Design
-
-* inherit for ~global~, ~capture~, ~annotation~, and geolocation.
+* Some spec values won't need checking? (ex: description - who cares?).
+    - We may want to leave in check functions for them anyway, in case we want to log/print suggestions (ie. core:label SHOULD be under X characters, etc.).
+* Some spec values might be better off if they can be toggled on/off for validation (ie. STRICT by default, but disable checks for fields X, Y, and Z).
+* JSONBase should be the base class for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
 * Initial version should work for Recordings -> basic read & write, test cases, then publish 0.1.0. Version 1.0 should have documentation.
 * Pop off any forced conversion to custom data types -> the user should wrap the output of the metadata with this custom class explicitly rather than implicitly with the return value. This way, the user can always expect a string/object or json-supported output field when using the API, and then decide if they want to enforce spec-invariants on construction of custom objects.

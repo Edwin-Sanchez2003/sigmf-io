@@ -35,7 +35,9 @@ public:
 
     void save(const std::string& file_path, bool overwrite = false);
 
+
     // TODO: Need to write useful/helper functions for common actions using metadata?
+    bool is_ncd() const; // checks if its a ncd using the metadata.
 
 private:
     static inline constexpr std::string META_EXT = ".sigmf-meta";
