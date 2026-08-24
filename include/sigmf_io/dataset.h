@@ -2,6 +2,7 @@
 #define SIGMF_IO_DATASET_H
 
 #include <cstdint>
+#include <cstddef>
 #include <cstring>
 #include <vector>
 #include <string>
@@ -65,6 +66,9 @@ public:
     // Returns the number of samples in the dataset.
     // Must factor in header_bytes, footer_bytes, and channel.
     int64_t size(const std::vector<Capture>& captures = {}, const int64_t channel = 1) const;
+
+    // Read the header bytes from a given capture.
+    std::vector<std::byte> read_header_bytes(const Capture& capture) const;
 
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
