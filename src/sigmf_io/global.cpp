@@ -26,9 +26,9 @@ jsoncons::json Global::default_data()
 }
 
 
-Datatype Global::datatype() const
+std::string Global::datatype() const
 {
-    return Datatype(this->get<std::string>("/core:datatype"));
+    return this->get<std::string>("/core:datatype");
 }
 
 
@@ -194,13 +194,9 @@ void Global::set_recorder(const std::string& recorder)
 }
 
 
-std::optional<SHA512> Global::sha512() const
+std::optional<std::string> Global::sha512() const
 {
-    std::optional<std::string> sha512 = this->get_optional<std::string>("/core:sha512");
-    if(sha512.has_value()) {
-        return SHA512(sha512.value());
-    }
-    return std::nullopt;
+    return this->get_optional<std::string>("/core:sha512");
 }
 
 

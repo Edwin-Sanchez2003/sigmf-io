@@ -41,9 +41,14 @@ The core purpose of this library is to support correctness-by-default within the
 Additional future work includes packaging this libary for usage in other languages, such as `Python`, `Java`, and `Matlab`.
 
 ## Initial Interface Design
+* Have per-value checks for set-time validation. Have jsoncons's json schema validation for document-wide checks. Also hand-roll functions to check across multiple fields.
+    - subschema for global, annotation, captures, geolocation, etc?
 * Some spec values won't need checking? (ex: description - who cares?).
     - We may want to leave in check functions for them anyway, in case we want to log/print suggestions (ie. core:label SHOULD be under X characters, etc.).
 * Some spec values might be better off if they can be toggled on/off for validation (ie. STRICT by default, but disable checks for fields X, Y, and Z).
+    - We can do this with overrides in the spec validator itself - user can initialize a spec validator, check/uncheck certain variables, then pass it to datasets to be used at the validator.
+    - Also consider changing errors to warnings, etc.
+* Current version of the spec validator simply checks unit-level values, and ignores anything not strictly required (MAY, SHOULD). Future versions should also check inter-field requirements (some fields' values and whether or not they should be used are dependent on other fields' values - ex: metadata_only MAY NOT be used with NCDs or the core:dataset field).
 * JSONBase should be the base class for ~global~, ~capture~, ~annotation~, and geolocation.
 * metadata class composes these objects.
 * Initial version should work for Recordings -> basic read & write, test cases, then publish 0.1.0. Version 1.0 should have documentation.

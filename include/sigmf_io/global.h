@@ -24,8 +24,8 @@ public:
     static jsoncons::json default_data();
 
     // core namespace getters & setters.
-    Datatype datatype() const;
-    void set_datatype(const Datatype& datatype);
+    std::string datatype() const;
+    void set_datatype(const std::string& datatype);
     std::optional<double> sample_rate() const;
     void set_sample_rate(const double sample_rate);
     std::optional<std::string> author() const;
@@ -52,8 +52,8 @@ public:
     void set_offset(int64_t offset);
     std::optional<std::string> recorder() const;
     void set_recorder(const std::string& recorder);
-    std::optional<SHA512> sha512() const;
-    void set_sha512(const SHA512& sha512);
+    std::optional<std::string> sha512() const;
+    void set_sha512(const std::string& sha512);
     std::optional<int64_t> trailing_bytes() const;
     void set_trailing_bytes(const int64_t trailing_bytes);
     std::string version() const;

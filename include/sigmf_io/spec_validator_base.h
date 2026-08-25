@@ -2,6 +2,7 @@
 #define SIGMF_IO_SPEC_VALIDATOR_BASE_H
 
 #include <string>
+#include <optional>
 #include <expected>
 
 #include <jsoncons/json.hpp>
@@ -9,6 +10,7 @@
 #include "sigmf_io/global.h"
 #include "sigmf_io/capture.h"
 #include "sigmf_io/annotation.h"
+#include "sigmf_io/metadata.h"
 
 /*
  * SpecValidatorBase
@@ -31,6 +33,7 @@ public:
     // Global checks
     virtual std::expected<void, std::string> check_datatype(const std::string& datatype) const = 0;
     virtual std::expected<void, std::string> check_sample_rate(double sample_rate) const = 0;
+    /*
     virtual std::expected<void, std::string> check_author(const std::string& author) const = 0;
     virtual std::expected<void, std::string> check_collection(const std::string& collection) const = 0;
     virtual std::expected<void, std::string> check_dataset(const std::string& dataset) const = 0;
@@ -40,13 +43,16 @@ public:
     virtual std::expected<void, std::string> check_license(const std::string& license) const = 0;
     virtual std::expected<void, std::string> check_metadata_only(bool metadata_only) const = 0;
     virtual std::expected<void, std::string> check_meta_doi(const std::string& meta_doi) const = 0;
+    */
     virtual std::expected<void, std::string> check_num_channels(int64_t num_channels) const = 0;
     virtual std::expected<void, std::string> check_offset(int64_t offset) const = 0;
+    /*
     virtual std::expected<void, std::string> check_recorder(const std::string& recorder) const = 0;
+    */
     virtual std::expected<void, std::string> check_sha512(const std::string& sha512) const = 0;
     virtual std::expected<void, std::string> check_trailing_bytes(int64_t trailing_bytes) const = 0;
     virtual std::expected<void, std::string> check_version(const std::string& version) const = 0;
-    // Check Geolocation
+    // TODO: check Geolocation
 
     // Capture checks
     virtual std::expected<void, std::string> check_sample_start(int64_t sample_start) const = 0;
@@ -54,30 +60,42 @@ public:
     virtual std::expected<void, std::string> check_frequency(double frequency) const = 0;
     virtual std::expected<void, std::string> check_global_index(int64_t global_index) const = 0;
     virtual std::expected<void, std::string> check_header_bytes(int64_t header_bytes) const = 0;
-    // Check Geolocation
+    // TODO: check Geolocation
 
     // Annotation checks
     virtual std::expected<void, std::string> check_sample_count(int64_t sample_count) const = 0;
     virtual std::expected<void, std::string> check_freq_lower_edge(double freq_lower_edge) const = 0;
     virtual std::expected<void, std::string> check_freq_upper_edge(double freq_upper_edge) const = 0;
+    /*
     virtual std::expected<void, std::string> check_label(const std::string& label) const = 0;
     virtual std::expected<void, std::string> check_comment(const std::string& comment) const = 0;
     virtual std::expected<void, std::string> check_generator(const std::string& generator) const = 0;
+    */
     virtual std::expected<void, std::string> check_uuid(const std::string& uuid) const = 0;
 
     // TODO: Add methods to check certain sets of fields, for convenience:
-    virtual std::expected<void, std::string> check_global(const Global& global) const = 0;
-    virtual std::expected<void, std::string> check_global(const jsoncons::json& global) const = 0;
-    virtual std::expected<void, std::string> check_capture(const Capture& capture) const = 0;
-    virtual std::expected<void, std::string> check_capture(const jsoncons::json& capture) const = 0;
-    virtual std::expected<void, std::string> check_annotation(const Annotation& annotation) const = 0;
-    virtual std::expected<void, std::string> check_annotation(const jsoncons::json& annotation) const = 0;
+    virtual std::expected<void, std::vector<std::string>> check_global(const Global& global) const = 0;
+    virtual std::expected<void, std::vector<std::string>> check_capture(const Capture& capture) const = 0;
+    virtual std::expected<void, std::vector<std::string>> check_annotation(const Annotation& annotation) const = 0;
 
     // validate a json object, assuming it is structured like a SigMF metadata file.
-    virtual std::expected<void, std::string> check_metadata(const jsoncons::json& meta) const = 0;
+    virtual std::expected<void, std::vector<std::string>> check_metadata(const Metadata& meta) const = 0;
+
+    // TODO: inter-field spec validation.
 private:
     const std::string version_;
+
+protected:
+    // Accumulates a single check's result into the running error list.
+    // Returns nothing — errors vector is modified in place.
+    static void accumulate(std::vector<std::string>& errors, std::expected<void, std::string>& result);
 };
+
+static void SpecValidatorBase::accumulate(std::vector<std::string>& errors, std::expected<void, std::string>& result)
+{
+    if (!result)
+        errors.push_back(result.error());
+}
 
 } // end sigmf_io namespace
 
