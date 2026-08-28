@@ -31,6 +31,23 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(jsoncons)
 
+# ── Embed the SigMF schema as a generated header ──────────────────
+set(SIGMF_SCHEMA_SRC ${CMAKE_SOURCE_DIR}/static/sigmf-schema.json)
+set(SIGMF_SCHEMA_GEN ${CMAKE_BINARY_DIR}/include/sigmf_io/sigmf_schema_data.h)
+
+add_custom_command(
+    OUTPUT ${SIGMF_SCHEMA_GEN}
+    COMMAND ${CMAKE_COMMAND}
+            -DIN_FILE=${SIGMF_SCHEMA_SRC}
+            -DOUT_FILE=${SIGMF_SCHEMA_GEN}
+            -DVAR_NAME=SIGMF_SCHEMA_JSON
+            -P ${CMAKE_SOURCE_DIR}/cmake/EmbedFile.cmake
+    DEPENDS ${SIGMF_SCHEMA_SRC} ${CMAKE_SOURCE_DIR}/cmake/EmbedFile.cmake
+    COMMENT "Embedding sigmf-schema.json into header"
+)
+
+add_custom_target(sigmf_schema_header DEPENDS ${SIGMF_SCHEMA_GEN})
+
 # ── sigmf_io library ──────────────────────────────────────────────────
 add_library(sigmf_io STATIC
     include/sigmf_io/version.h     src/sigmf_io/version.cpp
@@ -49,6 +66,8 @@ add_library(sigmf_io STATIC
     include/sigmf_io/spec_validator_base.h
     include/sigmf_io/v1_2_6/spec_validator.h src/sigmf_io/v1_2_6/spec_validator.cpp
 )
+
+add_dependencies(sigmf_io sigmf_schema_header)
 
 target_link_libraries(sigmf_io
     PUBLIC mio::mio

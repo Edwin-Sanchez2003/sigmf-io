@@ -32,9 +32,9 @@ std::string Global::datatype() const
 }
 
 
-void Global::set_datatype(const Datatype& datatype)
+void Global::set_datatype(const std::string& datatype)
 {
-    this->set("/core:datatype", datatype.to_string());
+    this->set("/core:datatype", datatype);
 }
 
 
@@ -200,9 +200,9 @@ std::optional<std::string> Global::sha512() const
 }
 
 
-void Global::set_sha512(const SHA512& sha512)
+void Global::set_sha512(const std::string& sha512)
 {
-    this->set("/core:sha512", sha512.to_string());
+    this->set("/core:sha512", sha512);
 }
 
 

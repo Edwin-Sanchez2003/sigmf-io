@@ -31,8 +31,8 @@ public:
 
     int64_t sample_start() const;
     void set_sample_start(int64_t sample_start);
-    std::optional<Datetime> datetime() const;
-    void set_datetime(Datetime datetime);
+    std::optional<std::string> datetime() const;
+    void set_datetime(const std::string& datetime);
     std::optional<double> frequency() const;
     void set_frequency(double frequency);
     std::optional<int64_t> global_index() const;

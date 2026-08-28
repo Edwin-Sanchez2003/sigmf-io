@@ -30,19 +30,15 @@ void Capture::set_sample_start(int64_t sample_start)
 }
 
 
-std::optional<Datetime> Capture::datetime() const
+std::optional<std::string> Capture::datetime() const
 {
-    std::optional<std::string> datetime = this->get_optional<std::string>("/core:datetime");
-    if(datetime.has_value()) {
-        return Datetime(datetime.value());
-    }
-    return std::nullopt;
+    return this->get_optional<std::string>("/core:datetime");
 }
 
 
-void Capture::set_datetime(Datetime datetime)
+void Capture::set_datetime(const std::string& datetime)
 {
-    this->set("/core:datetime", datetime.to_string());
+    this->set("/core:datetime", datetime);
 }
 
 

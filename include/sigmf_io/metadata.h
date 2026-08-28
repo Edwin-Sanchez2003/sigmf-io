@@ -22,7 +22,6 @@ public:
     std::vector<Capture> captures;
     std::vector<Annotation> annotations;
 public:
-    Metadata();
     Metadata(
         const Global& global = Global(),
         const std::vector<Capture>& captures = {},
@@ -32,6 +31,8 @@ public:
     explicit Metadata(const jsoncons::json& meta);
 
     std::string meta_path() const { return this->meta_path_; }
+
+    jsoncons::json to_json() const;
 
     void save(const std::string& file_path, bool overwrite = false);
 

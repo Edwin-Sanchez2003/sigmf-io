@@ -6,11 +6,13 @@
 #include <expected>
 
 #include <jsoncons/json.hpp>
+#include <jsoncons_ext/jsonschema/jsonschema.hpp>
 
 #include "sigmf_io/global.h"
 #include "sigmf_io/capture.h"
 #include "sigmf_io/annotation.h"
 #include "sigmf_io/metadata.h"
+#include "sigmf_io/sigmf_schema_data.h"
 
 /*
  * SpecValidatorBase
@@ -25,7 +27,10 @@ namespace sigmf_io {
 class SpecValidatorBase
 {
 public:
-    explicit SpecValidatorBase(const std::string& version):version_(version) {}
+    explicit SpecValidatorBase(const std::string& version)
+        :version_(version),
+        validator_(SpecValidatorBase::make_validator())
+    {}
     virtual ~SpecValidatorBase() = default;
 
     std::string version() const { return this->version_; }
@@ -85,13 +90,22 @@ public:
 private:
     const std::string version_;
 
+    static jsoncons::jsonschema::json_schema<jsoncons::json> make_validator();
+
 protected:
+    jsoncons::jsonschema::json_schema<jsoncons::json> validator_;
     // Accumulates a single check's result into the running error list.
     // Returns nothing — errors vector is modified in place.
-    static void accumulate(std::vector<std::string>& errors, std::expected<void, std::string>& result);
+    static void accumulate(std::vector<std::string>& errors, const std::expected<void, std::string>& result);
 };
 
-static void SpecValidatorBase::accumulate(std::vector<std::string>& errors, std::expected<void, std::string>& result)
+jsoncons::jsonschema::json_schema<jsoncons::json> SpecValidatorBase::make_validator()
+{
+    jsoncons::json schema_json = jsoncons::json::parse(sigmf_io::SIGMF_SCHEMA_JSON);
+    return jsoncons::jsonschema::make_json_schema(std::move(schema_json));
+}
+
+void SpecValidatorBase::accumulate(std::vector<std::string>& errors, const std::expected<void, std::string>& result)
 {
     if (!result)
         errors.push_back(result.error());

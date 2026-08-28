@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+#include <jsoncons_ext/jsonschema/jsonschema.hpp>
+
 #include "sigmf_io/global.h"
 #include "sigmf_io/capture.h"
 #include "sigmf_io/annotation.h"
@@ -155,14 +157,23 @@ std::expected<void, std::string> SpecValidator::check_uuid(const std::string& uu
 std::expected<void, std::vector<std::string>> SpecValidator::check_global(const Global& global) const
 {
     std::vector<std::string> errors;
+
     this->accumulate(errors, this->check_datatype(global.datatype()));
     std::optional<double> sample_rate = global.sample_rate();
     if(sample_rate.has_value())
-        this->accumulate(errors, this->check_sample_rate(sample_rate));
-    this->accumulate(errors, this->check_num_channels(global.num_channels()));
-    this->accumulate(errors, this->check_offset(global.offset()));
-    this->accumulate(errors, this->check_sha512(global.sha512()));
-    this->accumulate(errors, this->check_trailing_bytes(global.trailing_bytes()));
+        this->accumulate(errors, this->check_sample_rate(sample_rate.value()));
+    std::optional<int64_t> num_channels = global.num_channels();
+    if(num_channels.has_value())
+        this->accumulate(errors, this->check_num_channels(num_channels.value()));
+    std::optional<int64_t> offset = global.offset();
+    if(offset.has_value())
+        this->accumulate(errors, this->check_offset(offset.value()));
+    std::optional<std::string> sha512 = global.sha512();
+    if(sha512.has_value())
+        this->accumulate(errors, this->check_sha512(sha512.value()));
+    std::optional<int64_t> trailing_bytes = global.trailing_bytes();
+    if(trailing_bytes.has_value())
+        this->accumulate(errors, this->check_trailing_bytes(trailing_bytes.value()));
     this->accumulate(errors, this->check_version(global.version()));
 
     if(!errors.empty())
@@ -173,11 +184,22 @@ std::expected<void, std::vector<std::string>> SpecValidator::check_global(const 
 std::expected<void, std::vector<std::string>> SpecValidator::check_capture(const Capture& capture) const
 {
     std::vector<std::string> errors;
-    this->accumulate(errors, this->check_sample_start(capture.sample_start()));
-    this->accumulate(errors, this->check_datetime(capture.datetime()));
-    this->accumulate(errors, this->check_frequency(capture.frequency()));
-    this->accumulate(errors, this->check_global_index(capture.global_index()));
-    this->accumulate(errors, this->check_header_bytes(capture.header_bytes()));
+
+    std::optional<int64_t> sample_start = capture.sample_start();
+    if(sample_start.has_value())
+        this->accumulate(errors, this->check_sample_start(sample_start.value()));
+    std::optional<std::string> datetime = capture.datetime();
+    if(datetime.has_value())
+        this->accumulate(errors, this->check_datetime(datetime.value()));
+    std::optional<double> frequency = capture.frequency();
+    if(frequency.has_value())
+        this->accumulate(errors, this->check_frequency(frequency.value()));
+    std::optional<int64_t> global_index = capture.global_index();
+    if(global_index.has_value())
+        this->accumulate(errors, this->check_global_index(global_index.value()));
+    std::optional<int64_t> header_bytes = capture.header_bytes();
+    if(header_bytes.has_value())
+        this->accumulate(errors, this->check_header_bytes(header_bytes.value()));
     //this->accumulate(errors, this->check_geolocation(capture.geolocation()));
 
     if(!errors.empty())
@@ -189,11 +211,22 @@ std::expected<void, std::vector<std::string>> SpecValidator::check_capture(const
 std::expected<void, std::vector<std::string>> SpecValidator::check_annotation(const Annotation& annotation) const
 {
     std::vector<std::string> errors;
-    this->accumulate(errors, this->check_sample_start(annotation.sample_start()));
-    this->accumulate(errors, this->check_sample_count(annotation.sample_count()));
-    this->accumulate(errors, this->check_freq_lower_edge(annotation.freq_lower_edge()));
-    this->accumulate(errors, this->check_freq_upper_edge(annotation.freq_upper_edge()));
-    this->accumulate(errors, this->check_uuid(annotation.uuid()));
+
+    std::optional<int64_t> sample_start = annotation.sample_start();
+    if(sample_start.has_value())
+        this->accumulate(errors, this->check_sample_start(sample_start.value()));
+    std::optional<int64_t> sample_count = annotation.sample_count();
+    if(sample_count.has_value())
+        this->accumulate(errors, this->check_sample_count(sample_count.value()));
+    std::optional<double> freq_lower_edge = annotation.freq_lower_edge();
+    if(freq_lower_edge.has_value())
+        this->accumulate(errors, this->check_freq_lower_edge(freq_lower_edge.value()));
+    std::optional<double> freq_upper_edge = annotation.freq_upper_edge();
+    if(freq_upper_edge.has_value())
+        this->accumulate(errors, this->check_freq_upper_edge(freq_upper_edge.value()));
+    std::optional<std::string> uuid = annotation.uuid();
+    if(uuid.has_value())
+        this->accumulate(errors, this->check_uuid(uuid.value()));
 
     if(!errors.empty())
         return std::unexpected(errors);
@@ -204,7 +237,25 @@ std::expected<void, std::vector<std::string>> SpecValidator::check_annotation(co
 // validate a json object, assuming it is structured like a SigMF metadata file.
 std::expected<void, std::vector<std::string>> SpecValidator::check_metadata(const Metadata& meta) const
 {
+    jsoncons::json meta_json = meta.to_json();
+    std::vector<std::string> errors;
 
+    auto reporter = [&errors](const jsoncons::jsonschema::validation_message& msg)
+        -> jsoncons::jsonschema::walk_result
+    {
+        errors.push_back(
+            msg.instance_location().to_string() + ": " + msg.message()
+            );
+        return jsoncons::jsonschema::walk_result::advance; // keep collecting
+    };
+
+    this->validator_.validate(meta_json, reporter);
+
+    if (!errors.empty())
+    {
+        return std::unexpected(std::move(errors));
+    }
+    return {};
 }
 
 } // end v1_2_6 namespace

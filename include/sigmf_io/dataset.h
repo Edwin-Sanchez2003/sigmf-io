@@ -63,6 +63,9 @@ public:
     std::vector<OutputT> get_samples(
         const std::vector<Capture>& captures = {}, const int64_t sample_start = 0, int64_t sample_count = -1, const int64_t channel = 1);
 
+    // NOTE: Should I add a method to get multiple channels at the same time (ie. just give the user a contiguous block of samples,
+    // across all channels? In case it's too slow to ask for each channel one-at-a-time, since they're interleaved?
+
     // Returns the number of samples in the dataset.
     // Must factor in header_bytes, footer_bytes, and channel.
     int64_t size(const std::vector<Capture>& captures = {}, const int64_t channel = 1) const;

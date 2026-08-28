@@ -34,7 +34,7 @@ public:
     void set_comment(const std::string& comment);
     std::optional<std::string> generator() const;
     void set_generator(const std::string& generator);
-    std::optional<UUID> uuid() const;
+    std::optional<std::string> uuid() const;
     void set_uuid(const std::string& uuid);
 };
 

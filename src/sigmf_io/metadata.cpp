@@ -6,14 +6,6 @@
 
 namespace sigmf_io {
 
-Metadata::Metadata()
-{
-    // this->meta_["global"] = jsoncons::json::object();
-    // this->meta_["captures"] = jsoncons::json::array();
-    // this->meta_["annotations"] = jsoncons::json::array();
-}
-
-
 // Metadata::Metadata(const jsoncons::json& meta)
 //     :meta_(meta)
 // {}
@@ -27,6 +19,26 @@ Metadata::Metadata(const std::string& meta_path)
         throw std::runtime_error("Failed to open: " + this->meta_path_);
     }
     //this->meta_ = jsoncons::json::parse(is);
+}
+
+jsoncons::json Metadata::to_json() const
+{
+    jsoncons::json meta(jsoncons::json_object_arg);
+    meta.insert_or_assign("global", this->global.to_json());
+
+    jsoncons::json captures_arr(jsoncons::json_array_arg);
+    for (const Capture& capture : this->captures) {
+        captures_arr.push_back(capture.to_json());
+    }
+    meta.insert_or_assign("captures", captures_arr);
+
+    jsoncons::json annotations_arr(jsoncons::json_array_arg);
+    for (const Annotation& annotation : this->annotations) {
+        annotations_arr.push_back(annotation.to_json());
+    }
+    meta.insert_or_assign("annotations", annotations_arr);
+
+    return meta;
 }
 
 
