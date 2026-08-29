@@ -22,11 +22,7 @@ public:
     std::vector<Capture> captures;
     std::vector<Annotation> annotations;
 public:
-    Metadata(
-        const Global& global = Global(),
-        const std::vector<Capture>& captures = {},
-        const std::vector<Annotation>& annotations = {}
-    );
+    Metadata(const Global& global = Global(), const std::vector<Capture>& captures = {}, const std::vector<Annotation>& annotations = {}) {}
     explicit Metadata(const std::string& meta_path);
     explicit Metadata(const jsoncons::json& meta);
 
@@ -35,7 +31,6 @@ public:
     jsoncons::json to_json() const;
 
     void save(const std::string& file_path, bool overwrite = false);
-
 
     // TODO: Need to write useful/helper functions for common actions using metadata?
     bool is_ncd() const; // checks if its a ncd using the metadata.

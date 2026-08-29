@@ -86,6 +86,9 @@ public:
     // validate a json object, assuming it is structured like a SigMF metadata file.
     virtual std::expected<void, std::vector<std::string>> check_metadata(const Metadata& meta) const = 0;
 
+    // convenience method to take a set of std::expected<> values & raise it as a single error during runtime.
+    static void raise_errors(const std::expected<void, std::vector<std::string>>& validation_result);
+
     // TODO: inter-field spec validation.
 private:
     const std::string version_;
@@ -109,6 +112,28 @@ void SpecValidatorBase::accumulate(std::vector<std::string>& errors, const std::
 {
     if (!result)
         errors.push_back(result.error());
+}
+
+void SpecValidatorBase::raise_errors(const std::expected<void, std::vector<std::string>>& validation_result)
+{
+    if (!validation_result.has_value()) // "this expected does NOT hold a success — it holds an error"
+    {
+        const std::vector<std::string>& messages = validation_result.error();
+
+        for (const auto& msg : messages)
+        {
+            std::cerr << msg << '\n';
+        }
+
+        // Combine into one string for the exception, if you want a single message
+        std::ostringstream oss;
+        for (const auto& msg : messages)
+        {
+            oss << msg << '\n';
+        }
+
+        throw std::runtime_error(oss.str());
+    }
 }
 
 } // end sigmf_io namespace

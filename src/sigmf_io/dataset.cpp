@@ -9,13 +9,13 @@
 
 namespace sigmf_io {
 
-Dataset::Dataset(const std::string& dataset_path, Datatype datatype, int64_t num_channels, int64_t trailing_bytes, int64_t offset)
+Dataset::Dataset(const std::string& data_path, Datatype datatype, int64_t num_channels, int64_t trailing_bytes, int64_t offset)
     : datatype_(datatype)
 {
-    // validate dataset_path exists.
-    if (std::filesystem::exists(dataset_path) == false)
-        throw std::runtime_error("Dataset: Dataset file path '" + dataset_path + "' does not exist!");
-    this->dataset_path_ = dataset_path;
+    // validate data_path exists.
+    if (std::filesystem::exists(data_path) == false)
+        throw std::runtime_error("Dataset: Dataset file path '" + data_path + "' does not exist!");
+    this->data_path_ = data_path;
 
     // validate num_channels is greater than or equal to one.
     if (num_channels < 1)
@@ -37,7 +37,7 @@ Dataset::Dataset(const std::string& dataset_path, Datatype datatype, int64_t num
 
     // create a memory map given the dataset path.
     std::error_code error_code;
-    this->mmap_.map(dataset_path, error_code);
+    this->mmap_.map(data_path, error_code);
     if (error_code)
         throw std::runtime_error("Failed to map file: " + error_code.message());
 }

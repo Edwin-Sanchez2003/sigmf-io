@@ -104,6 +104,8 @@ We will wrestle with this for a while...
 
 ## Notes / ToDo
 * Because the json objects are separate (global, capture, annotation, etc.) Things get a little wonky. Does a user use normal json pointers, or when interacting with each object do they have to write pointers that work in that context (not /global/core:datatype when using a global object, but /core:datatype).
+* the metadata API in general is atrocious - inconsistent usage of jsoncons::json interfaces, holes in enforcing the schema, missing convenience functions, awkward relationship between write-oriented & read-oriented metadata file usage.
+* read vs. write interface is a real problem.
 * Currently, going to throw errors when we come across malformed datasets. Later, we will want to have options for lenient/strict loading to handle cases where a user failed to create a valid SigMF dataset -> do we want to error on-load? when it hits the function value? on-write? etc.
 * Geolocation currently doesn't support everything found in the spec, and doesn't support the version differences between what can be found in the global vs. the capture fields.
 * Move headrs/impl files into sigmf_io folders.

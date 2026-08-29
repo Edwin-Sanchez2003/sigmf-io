@@ -48,10 +48,10 @@ class Dataset
 public:
     // Construct a Dataset object as an interface with the data on disk, with the minimum required information
     // to interpret the data on disk.
-    Dataset(const std::string& dataset_path, Datatype datatype, int64_t num_channels = 1, int64_t trailing_bytes = 0, int64_t offset = 0);
+    Dataset(const std::string& data_path, Datatype datatype, int64_t num_channels = 1, int64_t trailing_bytes = 0, int64_t offset = 0);
 
     /* Getters & Setters */
-    std::string dataset_path() const { return this->dataset_path_; }
+    std::string data_path() const { return this->data_path_; }
     Datatype datatype() const { return this->datatype_; }
     int64_t num_channels() const { return this->num_channels_; }
     int64_t trailing_bytes() const { return this->trailing_bytes_; }
@@ -81,7 +81,7 @@ public:
     Dataset& operator=(Dataset&&)      = default;
 
 private:
-    std::string dataset_path_;      // Path to the dataset file to be interacted with on disk.
+    std::string data_path_;      // Path to the dataset file to be interacted with on disk.
     Datatype datatype_;             // The SigMF Datatype; tells us how to read data from disk.
     int64_t num_channels_;          // The number of interleaved streams of samples in this Dataset.
     int64_t trailing_bytes_;        // The number of bytes at the end of the file that are NOT samples (NCDs).

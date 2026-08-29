@@ -7,10 +7,6 @@
 
 namespace sigmf_io {
 
-// TODO: Initialize empty recording containers - global, captures, annotations, etc.
-Recording::Recording() {}
-
-
 // Recording::Recording(const std::string& file_path)
 // {
 //     std::string data_path;

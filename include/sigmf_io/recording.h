@@ -14,14 +14,16 @@ namespace sigmf_io {
 class Recording
 {
 public:
-    //Dataset data;
-    //Metadata meta;
+    Dataset data;
+    Metadata meta;
 public:
-    Recording();
+    // TODO: Support Default init Recording - currently blocked by Dataset implementation, which
+    // requires an existing dataset. Default-init Recordings would be for building new recordings...
+    Recording(const Dataset& dataset, const Metadata& metadata);
     explicit Recording(const std::string& file_path);
 
-    //std::string meta_path() const { return this->meta_path_; }
-    //std::string data_path() const { return this->dataset.value().getDatasetPath(); }
+    std::string meta_path() const { return this->meta.meta_path(); }
+    std::string data_path() const { return this->data.data_path(); }
 
     /* TODO: helper functions for accessing data from a recording using the metadata.
      * - get samples given indices

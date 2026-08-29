@@ -1,14 +1,18 @@
 #include "sigmf_io/metadata.h"
-#include <jsoncons/json.hpp>
+
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
+#include <expected>
+
+#include <jsoncons/json.hpp>
+
+#include "sigmf_io/global.h"
+#include "sigmf_io/capture.h"
+#include "sigmf_io/annotation.h"
+#include "sigmf_io/v1_2_6/spec_validator.h"
 
 namespace sigmf_io {
-
-// Metadata::Metadata(const jsoncons::json& meta)
-//     :meta_(meta)
-// {}
 
 
 Metadata::Metadata(const std::string& meta_path)
@@ -20,6 +24,22 @@ Metadata::Metadata(const std::string& meta_path)
     }
     //this->meta_ = jsoncons::json::parse(is);
 }
+
+
+Metadata::Metadata(const jsoncons::json& meta)
+{
+    this->global = Global(meta["global"]);
+    this->captures.clear();
+    // NOTE: These can be converted to jsoncons::json type traits to define how to directly convert to/from jsoncons array types.
+    this->captures.reserve(meta["captures"].size());
+    for (const auto& capture : meta["captures"].array_range())
+        this->captures.emplace_back(capture); // calls constructor in-place w/jsoncons::json object.
+    this->annotations.clear();
+    this->annotations.reserve(meta["annotations"].size());
+    for (const auto& annotation : meta["annotations"].array_range())
+        this->annotations.emplace_back(annotation); // calls constructor in-place w/jsoncons::json object.
+}
+
 
 jsoncons::json Metadata::to_json() const
 {
@@ -57,13 +77,16 @@ void Metadata::save(const std::string& file_path, bool overwrite)
             "Metadata::save: file already exists and overwrite is false: " + file_path);
     }
 
-    // TODO: final validation against schema? other things???
+    //  final validation against schema? other things???
+    sigmf_io::v1_2_6::SpecValidator spec_validator;
+    sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
 
     // attempt to open the file & write out to disk.
     std::ofstream out_file(file_path);
     if (!out_file.is_open())
         throw std::runtime_error("Metadata::save: could not open file for writing: " + file_path);
-    //out_file << jsoncons::pretty_print(this->meta_);
+
+    out_file << jsoncons::pretty_print(this->to_json());
 }
 
 
