@@ -4,6 +4,8 @@
 #include <mio/mmap.hpp>
 
 #include <cstdint>
+#include <cstddef>
+#include <optional>
 #include <filesystem>
 #include <stdexcept>
 
@@ -48,6 +50,74 @@ Datatype::Endianness Dataset::system_endianness() {
     uint8_t firstByte = *reinterpret_cast<uint8_t*>(&x);
 
     return (firstByte == 1) ? Datatype::Endianness::LITTLE : Datatype::Endianness::BIG;
+}
+
+void Dataset::check_bounds_or_throw(
+    const uint8_t* ptr, int64_t length, const uint8_t* file_begin, const uint8_t* file_end, const std::string& context) const
+{
+    int64_t file_size   = file_end - file_begin;
+    int64_t byte_offset = ptr - file_begin; // may be negative if ptr underflowed
+    int64_t available   = (ptr >= file_begin && ptr <= file_end)
+                            ? (file_end - ptr)
+                            : 0;
+    bool out_of_bounds = (ptr < file_begin) || (ptr > file_end) || (length > available);
+
+    if (out_of_bounds)
+    {
+        int64_t overflow_bytes = length - available;
+        std::ostringstream oss;
+        oss << context
+            << ": attempted to read " << length << " byte(s) at file offset "
+            << byte_offset << ", but file size is " << file_size
+            << " byte(s) (" << available << " byte(s) available at that offset). "
+            << "Overflow by " << overflow_bytes << " byte(s).";
+        throw std::out_of_range(oss.str());
+    }
+}
+
+
+// Read the header bytes from a given capture.
+std::vector<std::byte> Dataset::read_header_bytes(const std::vector<Capture>& captures, const int64_t capture_idx) const
+{
+    // initial check if capture even has header_bytes.
+    const Capture& capture = captures.at(capture_idx);
+    std::optional<int64_t> header_bytes = capture.header_bytes();
+
+    // if no header bytes value, return empty array
+    if (!header_bytes.has_value() || header_bytes.value() == 0)
+        return {};
+
+    // get byte ptr to data on disk
+    const uint8_t* file_begin = this->mmap_.data();
+    const uint8_t* file_end   = file_begin + this->mmap_.size();
+    const uint8_t* byte_ptr   = file_begin;
+
+    // Get initial position of data being requested (ie. first byte of requested data; sample_start).
+    int64_t sample_start = capture.sample_start();
+    int64_t index_offset_samples = (sample_start - this->offset_) * this->num_channels_;
+    int64_t index_offset_bytes = index_offset_samples * this->datatype_.bytes_per_sample();
+    byte_ptr += index_offset_bytes;
+
+    // Get accumulated header_bytes from previous captures, up to the desired capture's header.
+    int64_t accumulated_header_bytes = 0;
+    for (int64_t j = 0; j < capture_idx; j++)
+        accumulated_header_bytes += captures[j].header_bytes().value_or(0);
+    byte_ptr += accumulated_header_bytes;
+
+    // byte_ptr now points at the start of this capture's header in the mapped file.
+
+    // Bounds check: make sure [byte_ptr, byte_ptr + header_bytes) stays within the mapped region.
+    std::ostringstream ctx;
+    ctx << "Dataset::read_header_bytes(capture_idx=" << capture_idx
+        << ", capture.sample_start()=" << sample_start
+        << ", header_bytes=" << header_bytes.value()
+        << ", accumulated_prior_header_bytes=" << accumulated_header_bytes << ")";
+    check_bounds_or_throw(byte_ptr, header_bytes.value(), file_begin, file_end, ctx.str());
+
+    std::vector<std::byte> bytes(static_cast<size_t>(header_bytes.value()));
+    std::memcpy(bytes.data(), byte_ptr, static_cast<size_t>(header_bytes.value()));
+
+    return bytes;
 }
 
 

@@ -71,7 +71,7 @@ public:
     int64_t size(const std::vector<Capture>& captures = {}, const int64_t channel = 1) const;
 
     // Read the header bytes from a given capture.
-    std::vector<std::byte> read_header_bytes(const Capture& capture) const;
+    std::vector<std::byte> read_header_bytes(const std::vector<Capture>& captures, const int64_t capture_idx) const;
 
     // Due to mio memory map implementation, we need to avoid copy construction.
     // Non-copyable, movable
@@ -89,6 +89,10 @@ private:
     mio::basic_mmap<mio::access_mode::read, uint8_t> mmap_;      // The Memory Mapping instance used to read data from disk at runtime.
 
 private:
+    // check bounds of read from memory mapped file before trying to read (incase of malformed data).
+    void check_bounds_or_throw(
+        const uint8_t* ptr, int64_t length, const uint8_t* file_begin, const uint8_t* file_end, const std::string& context) const;
+
     // Swaps byte order - necessary when file type endianness does not match
     // the endianness of the machine it's running on.
     template<typename T>
@@ -146,7 +150,9 @@ std::vector<T> Dataset::load_samples(
     // NOTE: Assumes that the global value core:offset is implicitly added to all captures/annotations/sample indices!!!
 
     // get the pointer to the first byte in our file.
-    const uint8_t* byte_ptr = this->mmap_.data();
+    const uint8_t* file_begin = this->mmap_.data();
+    const uint8_t* file_end   = file_begin + this->mmap_.size();
+    const uint8_t* byte_ptr   = file_begin;
 
     // allocate a vector of sample_count of type T.
     std::vector<T> out;
@@ -189,6 +195,16 @@ std::vector<T> Dataset::load_samples(
                 break;
             }
         }
+
+        // check that read is in-bounds
+        std::ostringstream ctx;
+        ctx << "Dataset::load_samples(sample_start=" << sample_start
+            << ", sample_count=" << sample_count
+            << ", channel=" << channel
+            << ", current_sample_index=" << (sample_start + i)
+            << ", loop_i=" << i
+            << ", capture_idx=" << capture_idx << ")";
+        check_bounds_or_throw(byte_ptr, static_cast<int64_t>(sizeof(T)), file_begin, file_end, ctx.str());
 
         // 2. cast current sentry (initially index_offset_bytes) to on-disk primitive type.
         T sample = this->value_at<T>(byte_ptr);

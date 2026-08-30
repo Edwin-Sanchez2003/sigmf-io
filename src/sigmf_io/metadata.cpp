@@ -34,6 +34,10 @@ Metadata::Metadata(const jsoncons::json& meta)
     this->annotations.reserve(meta["annotations"].size());
     for (const auto& annotation : meta["annotations"].array_range())
         this->annotations.emplace_back(annotation); // calls constructor in-place w/jsoncons::json object.
+
+    // check against schema at load-time
+    sigmf_io::v1_2_6::SpecValidator spec_validator;
+    sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
 }
 
 
