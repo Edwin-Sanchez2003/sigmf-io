@@ -16,13 +16,9 @@ namespace sigmf_io {
 
 
 Metadata::Metadata(const std::string& meta_path)
+    : Metadata(Metadata::load_json(meta_path))
 {
     this->meta_path_ = meta_path;
-    std::ifstream is(this->meta_path_);
-    if (!is.is_open()) {
-        throw std::runtime_error("Failed to open: " + this->meta_path_);
-    }
-    //this->meta_ = jsoncons::json::parse(is);
 }
 
 
@@ -38,6 +34,35 @@ Metadata::Metadata(const jsoncons::json& meta)
     this->annotations.reserve(meta["annotations"].size());
     for (const auto& annotation : meta["annotations"].array_range())
         this->annotations.emplace_back(annotation); // calls constructor in-place w/jsoncons::json object.
+}
+
+
+std::string Metadata::data_path() const
+{
+    std::filesystem::path meta_path(this->meta_path_);
+
+    // if global's dataset field is populated, use the meta_path directory + that.
+    if (this->global.dataset().has_value()) {
+        return (meta_path.parent_path() / this->global.dataset().value()).string();
+    }
+
+    // No core:dataset field -> compliant recording, same base name, .sigmf-data extension.
+    if (meta_path.extension() != Metadata::META_EXT) {
+        throw std::runtime_error(
+            "SigMF metadata file path does not end with " + Metadata::META_EXT + ": '" + this->meta_path_ + "'");
+    }
+    meta_path.replace_extension(Metadata::DATA_EXT);
+    return meta_path.string();
+}
+
+
+jsoncons::json Metadata::load_json(const std::string& meta_path)
+{
+    std::ifstream is(meta_path);
+    if (!is.is_open()) {
+        throw std::runtime_error("Failed to open: " + meta_path);
+    }
+    return jsoncons::json::parse(is);
 }
 
 

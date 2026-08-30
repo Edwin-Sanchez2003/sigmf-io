@@ -9,7 +9,7 @@
 
 namespace sigmf_io {
 
-Dataset::Dataset(const std::string& data_path, Datatype datatype, int64_t num_channels, int64_t trailing_bytes, int64_t offset)
+Dataset::Dataset(const std::string& data_path, Datatype datatype, int64_t num_channels, int64_t offset, int64_t trailing_bytes)
     : datatype_(datatype)
 {
     // validate data_path exists.

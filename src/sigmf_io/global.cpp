@@ -206,9 +206,9 @@ void Global::set_sha512(const std::string& sha512)
 }
 
 
-std::optional<int64_t> Global::trailing_bytes() const
+int64_t Global::trailing_bytes() const
 {
-    return this->get_optional<int64_t>("/core:trailing_bytes");
+    return this->get_optional<int64_t>("/core:trailing_bytes").value_or(0);
 }
 
 

@@ -48,7 +48,7 @@ class Dataset
 public:
     // Construct a Dataset object as an interface with the data on disk, with the minimum required information
     // to interpret the data on disk.
-    Dataset(const std::string& data_path, Datatype datatype, int64_t num_channels = 1, int64_t trailing_bytes = 0, int64_t offset = 0);
+    Dataset(const std::string& data_path, Datatype datatype, int64_t num_channels = 1, int64_t offset = 0, int64_t trailing_bytes = 0);
 
     /* Getters & Setters */
     std::string data_path() const { return this->data_path_; }

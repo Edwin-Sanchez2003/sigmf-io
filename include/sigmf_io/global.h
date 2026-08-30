@@ -54,7 +54,7 @@ public:
     void set_recorder(const std::string& recorder);
     std::optional<std::string> sha512() const;
     void set_sha512(const std::string& sha512);
-    std::optional<int64_t> trailing_bytes() const;
+    int64_t trailing_bytes() const;
     void set_trailing_bytes(const int64_t trailing_bytes);
     std::string version() const;
     void set_version(const std::string& version);

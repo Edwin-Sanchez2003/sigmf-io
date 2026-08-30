@@ -27,6 +27,7 @@ public:
     explicit Metadata(const jsoncons::json& meta);
 
     std::string meta_path() const { return this->meta_path_; }
+    std::string data_path() const;
 
     jsoncons::json to_json() const;
 
@@ -36,10 +37,13 @@ public:
     bool is_ncd() const; // checks if its a ncd using the metadata.
 
 private:
-    static inline constexpr std::string META_EXT = ".sigmf-meta";
+    static constexpr std::string META_EXT = ".sigmf-meta";
+    static constexpr std::string DATA_EXT = ".sigmf-data";
     std::string meta_path_;
 
     bool ends_with(const std::string& value, const std::string& ending) const;
+
+    static jsoncons::json load_json(const std::string& meta_path);
 };
 
 } // end sigmf_io namespace
