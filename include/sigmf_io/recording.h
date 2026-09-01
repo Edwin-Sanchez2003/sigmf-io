@@ -34,6 +34,9 @@ public:
 
     template <typename OutputT>
     std::vector<OutputT> get_samples(const Annotation& annotation, const int64_t channel = 1);
+
+    // TODO: Get all annotations strictly within/overlapping with a given capture/set of captures.
+    // TODO: Get the capture an annotation starts in/ends in/ all captures an annotation overlaps with.
 };
 
 template <typename OutputT>
