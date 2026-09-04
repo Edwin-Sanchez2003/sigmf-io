@@ -44,4 +44,13 @@ public:
 
 } // end sigmf_io namespace
 
+// INTENTIONAL: Including capture_traits.h for jsoncons::json support.
+// The errors for when a user tries to use jsoncons::json j.as<Capture>() without
+// the capture_trait definition results in unclear errors, as jsoncons::json
+// will default back to generic/reflection-based trait resolution, which won't
+// point to this missing definition being the actual mistake. This forces users
+// of a capture to include this definition by default in-scope, within the
+// jsoncons::json namespace.
+#include "sigmf_io/capture_traits.h"
+
 #endif // SIGMF_IO_CAPTURE_H

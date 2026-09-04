@@ -67,6 +67,7 @@ add_library(sigmf_io STATIC
     include/sigmf_io/v1_2_6/spec_validator.h src/sigmf_io/v1_2_6/spec_validator.cpp
     src/sigmf_io/spec_validator_base.cpp
     TODO.md
+    include/sigmf_io/capture_traits.h
 )
 
 add_dependencies(sigmf_io sigmf_schema_header)
