@@ -1,5 +1,10 @@
 # TODO List
 
+## Pre 1.0.0 updates
+* Settle into read-only for Datasets/raw signal data, with Metadata being editable. It is assumed the user will use built-in C++ support or their own task-specific interface to generate signal data & write to disk (or just basic C++ file I/O), with Metadata being written alongside it.
+* update metadata interfaces to be lighter-weight facades of jsoncons::json objects, basically just extra methods on top of the object that are sigmf-specific. Make sure they are still composable.
+* refine separation between schema enforcement & metadata/recording classes.
+
 ## Initial Interface Design
 * **Read vs. Write API:** Current API does not strongly define read vs. write interfaces for the convenience classes. There is currently no support for writing baked into the API for raw signal data (only supports writing SigMF Metadata files).
 * **Per-Value Set-Time Spec Validation:** Have per-value checks for set-time validation. Have jsoncons's json schema validation for document-wide checks. Also hand-roll functions to check across multiple fields.
