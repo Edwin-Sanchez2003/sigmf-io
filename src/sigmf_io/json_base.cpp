@@ -56,4 +56,16 @@ void JSONBase::merge_patch(const std::string& json_pointer, const jsoncons::json
     jsoncons::mergepatch::apply_merge_patch(target, value);   // recursive: replaces/deletes only what `value` specifies
 }
 
+
+jsoncons::json& JSONBase::operator[](const std::string& key)
+{
+    return this->data_[key];   // auto-vivifies the key if absent, same as jsoncons::json::operator[]
+}
+
+
+const jsoncons::json& JSONBase::operator[](const std::string& key) const
+{
+    return this->data_.at(key);  // throws if absent — no auto-vivification on a const object
+}
+
 } // end sigmf_io namespace

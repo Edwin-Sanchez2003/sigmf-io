@@ -1,19 +1,19 @@
-#ifndef SIGMF_IO_CAPTURE_TRAITS_H
-#define SIGMF_IO_CAPTURE_TRAITS_H
+#ifndef SIGMF_IO_GLOBAL_TRAITS_H
+#define SIGMF_IO_GLOBAL_TRAITS_H
 
 #include <jsoncons/json.hpp>
-#include "sigmf_io/capture.h"
+#include "sigmf_io/global.h"
 
 namespace jsoncons { namespace reflect {
 
 template <typename Json>
-struct json_conv_traits<Json, sigmf_io::Capture>
+struct json_conv_traits<Json, sigmf_io::Global>
 {
-    using result_type = conversion_result<sigmf_io::Capture>;
+    using result_type = conversion_result<sigmf_io::Global>;
 
     static bool is(const Json& j) noexcept
     {
-        return j.is_object() && j.contains("core:sample_start");
+        return j.is_object() && j.contains("core:datatype") && j.contains("core:version");
     }
 
     template <typename Alloc, typename TempAlloc>
@@ -21,7 +21,7 @@ struct json_conv_traits<Json, sigmf_io::Capture>
     {
         try
         {
-            return result_type(sigmf_io::Capture(j));
+            return result_type(sigmf_io::Global(j));
         }
         catch (...)
         {
@@ -30,7 +30,7 @@ struct json_conv_traits<Json, sigmf_io::Capture>
     }
 
     template <typename Alloc, typename TempAlloc>
-    static Json to_json(const allocator_set<Alloc, TempAlloc>& aset, const sigmf_io::Capture& val)
+    static Json to_json(const allocator_set<Alloc, TempAlloc>& aset, const sigmf_io::Global& val)
     {
         return jsoncons::make_obj_using_allocator<Json>(aset.get_allocator(), val.to_json());
     }
@@ -38,4 +38,4 @@ struct json_conv_traits<Json, sigmf_io::Capture>
 
 }} // namespace jsoncons::reflect
 
-#endif // SIGMF_IO_CAPTURE_TRAITS_H
+#endif // SIGMF_IO_GLOBAL_TRAITS_H

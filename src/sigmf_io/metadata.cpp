@@ -7,9 +7,9 @@
 
 #include <jsoncons/json.hpp>
 
-#include "sigmf_io/global.h"
-#include "sigmf_io/capture.h"
-#include "sigmf_io/annotation.h"
+#include "sigmf_io/global.h"          // pulls in global_traits.h
+#include "sigmf_io/capture.h"         // pulls in capture_traits.h
+#include "sigmf_io/annotation.h"      // pulls in annotation_traits.h
 #include "sigmf_io/v1_2_6/spec_validator.h"
 
 namespace sigmf_io {
@@ -23,18 +23,10 @@ Metadata::Metadata(const std::string& meta_path)
 
 
 Metadata::Metadata(const jsoncons::json& meta)
+    : global(meta.get_value_or<sigmf_io::Global>("global", sigmf_io::Global())),
+    captures(meta.get_value_or<std::vector<sigmf_io::Capture>>("captures", std::vector<sigmf_io::Capture>{})),
+    annotations(meta.get_value_or<std::vector<sigmf_io::Annotation>>("annotations", std::vector<sigmf_io::Annotation>{}))
 {
-    this->global = Global(meta["global"]);
-    this->captures.clear();
-    // NOTE: These can be converted to jsoncons::json type traits to define how to directly convert to/from jsoncons array types.
-    this->captures.reserve(meta["captures"].size());
-    for (const auto& capture : meta["captures"].array_range())
-        this->captures.emplace_back(capture); // calls constructor in-place w/jsoncons::json object.
-    this->annotations.clear();
-    this->annotations.reserve(meta["annotations"].size());
-    for (const auto& annotation : meta["annotations"].array_range())
-        this->annotations.emplace_back(annotation); // calls constructor in-place w/jsoncons::json object.
-
     // check against schema at load-time
     sigmf_io::v1_2_6::SpecValidator spec_validator;
     sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
@@ -73,20 +65,9 @@ jsoncons::json Metadata::load_json(const std::string& meta_path)
 jsoncons::json Metadata::to_json() const
 {
     jsoncons::json meta(jsoncons::json_object_arg);
-    meta.insert_or_assign("global", this->global.to_json());
-
-    jsoncons::json captures_arr(jsoncons::json_array_arg);
-    for (const Capture& capture : this->captures) {
-        captures_arr.push_back(capture.to_json());
-    }
-    meta.insert_or_assign("captures", captures_arr);
-
-    jsoncons::json annotations_arr(jsoncons::json_array_arg);
-    for (const Annotation& annotation : this->annotations) {
-        annotations_arr.push_back(annotation.to_json());
-    }
-    meta.insert_or_assign("annotations", annotations_arr);
-
+    meta.insert_or_assign("global", this->global);
+    meta.insert_or_assign("captures", this->captures);
+    meta.insert_or_assign("annotations", this->annotations);
     return meta;
 }
 
@@ -106,7 +87,7 @@ void Metadata::save(const std::string& file_path, bool overwrite)
             "Metadata::save: file already exists and overwrite is false: " + file_path);
     }
 
-    //  final validation against schema? other things???
+    // final validation against schema? other things???
     sigmf_io::v1_2_6::SpecValidator spec_validator;
     sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
 

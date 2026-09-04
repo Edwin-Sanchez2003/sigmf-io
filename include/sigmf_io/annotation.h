@@ -40,5 +40,7 @@ public:
 
 } // end sigmf_io namespace
 
+#include "sigmf_io/annotation_traits.h"
+
 #endif // SIGMF_IO_ANNOTATION_H
 

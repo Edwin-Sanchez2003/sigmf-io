@@ -44,6 +44,13 @@ public:
 
     virtual jsoncons::json to_json() const;
 
+    // Escape hatch: direct read/write access to the underlying json value
+    // at a given key or array index, bypassing the typed getter/setter API.
+    // Mutating through the returned reference does not re-run validation —
+    // callers doing so are responsible for leaving the object in a valid state.
+    jsoncons::json& operator[](const std::string& key);
+    const jsoncons::json& operator[](const std::string& key) const;
+
 protected:
     JSONBase(jsoncons::json defaults, const jsoncons::json& overrides);
     jsoncons::json data_;

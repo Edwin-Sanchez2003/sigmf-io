@@ -66,4 +66,6 @@ public:
 
 } // end sigmf_io namespace
 
+#include "sigmf_io/global_traits.h"
+
 #endif // SIGMF_IO_GLOBAL_H
