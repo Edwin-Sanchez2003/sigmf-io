@@ -66,9 +66,9 @@ void Capture::set_global_index(int64_t global_index)
 }
 
 
-std::optional<int64_t> Capture::header_bytes() const
+int64_t Capture::header_bytes() const
 {
-    return this->get_optional<int64_t>("/core:header_bytes");
+    return this->get_optional<int64_t>("/core:header_bytes").value_or(0);
 }
 
 

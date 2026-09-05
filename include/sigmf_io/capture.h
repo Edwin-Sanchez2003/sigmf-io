@@ -37,7 +37,7 @@ public:
     void set_frequency(double frequency);
     std::optional<int64_t> global_index() const;
     void set_global_index(int64_t global_index);
-    std::optional<int64_t> header_bytes() const;
+    int64_t header_bytes() const;
     void set_header_bytes(int64_t header_bytes);
     // SigMFGeolocation getter/setter
 };

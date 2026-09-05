@@ -174,7 +174,7 @@ std::vector<T> Dataset::load_samples(
         // we need to apply header bytes offset.
         if ((cap.sample_start() - this->offset_) <= sample_start)
         {
-            accumulated_header_bytes += cap.header_bytes().value_or(0);
+            accumulated_header_bytes += cap.header_bytes();
         } else {
             break;
         }
@@ -189,7 +189,7 @@ std::vector<T> Dataset::load_samples(
             const Capture& cap = captures[capture_idx];
             if ((cap.sample_start() - this->offset_) <= (sample_start + i))
             {
-                byte_ptr += cap.header_bytes().value_or(0);
+                byte_ptr += cap.header_bytes();
                 capture_idx++;
             } else {
                 break;

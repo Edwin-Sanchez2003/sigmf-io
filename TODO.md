@@ -4,8 +4,15 @@
 * Settle into read-only for Datasets/raw signal data, with Metadata being editable. It is assumed the user will use built-in C++ support or their own task-specific interface to generate signal data & write to disk (or just basic C++ file I/O), with Metadata being written alongside it. Maybe write helper functions if there is a good case for them.
 * ~update metadata interfaces to be lighter-weight facades of jsoncons::json objects, basically just extra methods on top of the object that are sigmf-specific. Make sure they are still composable.~
 * refine separation between schema enforcement & metadata/recording classes.
+    * Should metadata own a schema validator? Must be decided at runtime, since the user can pick a schema version to enforce.
+    * User has options for:
+        - No schema validation (disabled).
+        - Only validate on-write (lazy).
+        - validate at set-time (strict).
+    * Need to come up with an error message structure, so user can understand why their dataset fails the specification.
 * Refine dataset / samples interfaces for Dataset & Recording - right now, it uses std::vector\<T\>, which may not be the standard interface for what others want to use in their code -> is there a more general container, or can I define a container interface that a user can ingest into their preferred container type? Maybe include a basic vector interface for straight-forward usage, then provide a more generic interface for extensibility... Maybe this is a 1.1.0 update...
-* Go ahead & implement is_ncd on top of Recording... & Metadata?
+* ~Go ahead & implement is_ncd on top of Recording... & Metadata?~
+* Finish final planned convenience functions within Recording (get annotations within a set of captures, get captures within a set of annotations).
 
 ## Initial Interface Design
 * **Read vs. Write API:** Current API does not strongly define read vs. write interfaces for the convenience classes. There is currently no support for writing baked into the API for raw signal data (only supports writing SigMF Metadata files).

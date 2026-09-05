@@ -101,7 +101,7 @@ std::vector<std::byte> Dataset::read_header_bytes(const std::vector<Capture>& ca
     // Get accumulated header_bytes from previous captures, up to the desired capture's header.
     int64_t accumulated_header_bytes = 0;
     for (int64_t j = 0; j < capture_idx; j++)
-        accumulated_header_bytes += captures[j].header_bytes().value_or(0);
+        accumulated_header_bytes += captures[j].header_bytes();
     byte_ptr += accumulated_header_bytes;
 
     // byte_ptr now points at the start of this capture's header in the mapped file.
@@ -140,7 +140,7 @@ int64_t Dataset::size(const std::vector<Capture>& captures, const int64_t channe
     // add up header bytes across all captures to get total # of header bytes.
     for(const Capture& capture: captures)
     {
-        non_sample_bytes += capture.header_bytes().value_or(0);
+        non_sample_bytes += capture.header_bytes();
     }
 
     // add trailing_byte count.

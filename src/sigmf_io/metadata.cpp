@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <stdexcept>
 #include <expected>
+#include <optional>
 
 #include <jsoncons/json.hpp>
 
@@ -30,6 +31,39 @@ Metadata::Metadata(const jsoncons::json& meta)
     // check against schema at load-time
     sigmf_io::v1_2_6::SpecValidator spec_validator;
     sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
+}
+
+
+// Reports to the user if the metadata indicates that the dataset is non-conforming.
+// NOTE: This function is only valid for an on-disk Metadata file.
+bool Metadata::is_ncd() const
+{
+    // To indicate a non-conforming dataset, we can refer to the core:dataset,
+    // core:header_bytes, and core:trailing_bytes fields. If core:dataset exists,
+    // core:trailing_bytes is non-zero, or core:header_bytes is non-zero for any
+    // capture, then the dataset is non-conforming.
+
+    // first, check core:dataset -> most reliable method to determine dataset conformity.
+    if(this->global.dataset().has_value())
+    {
+        // in case a user uses this field but specifies a .sigmf-data file (technically a misuse
+        // of the SigMF format), we still want to handle it as if this is conforming.
+        // check if data does not have the sigmf-data extension. If no, it's non-conforming.
+        if (std::filesystem::path(this->global.dataset().value()).extension() != Metadata::DATA_EXT)
+            return true;
+    }
+
+    // if the trailing_bytes value is set to a non-zero value, then the dataset is non-conforming.
+    if(this->global.trailing_bytes() > 0)
+        return true;
+
+    for(const Capture& cap : this->captures)
+        // if ANY capture has non-zero header_bytes, the dataset is non-conforming.
+        if(cap.header_bytes() > 0)
+            return true;
+
+    // no flags indicating non-conformity found in the metadata - SHOULD be a conforming dataset.
+    return false;
 }
 
 
