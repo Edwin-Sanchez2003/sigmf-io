@@ -24,6 +24,8 @@
 
 namespace sigmf_io {
 
+enum class ValidationLevel { STRICT, LAZY, NONE };
+
 class SpecValidatorBase
 {
 public:

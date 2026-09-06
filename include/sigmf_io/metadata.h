@@ -9,6 +9,7 @@
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 
+#include "sigmf_io/v1_2_6/spec_validator.h"
 #include "sigmf_io/global.h"
 #include "sigmf_io/capture.h"
 #include "sigmf_io/annotation.h"
@@ -23,6 +24,7 @@ public:
     std::vector<Annotation> annotations;
     static constexpr std::string META_EXT = ".sigmf-meta";
     static constexpr std::string DATA_EXT = ".sigmf-data";
+    SpecValidatorBase spec_validator;
 public:
     Metadata(const Global& global = Global(), const std::vector<Capture>& captures = {}, const std::vector<Annotation>& annotations = {}) {}
     explicit Metadata(const std::string& meta_path);
