@@ -11,6 +11,7 @@
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/geolocation.h"
 #include "sigmf_io/datetime.h"
+#include "sigmf_io/validation_context.h"
 
 /*
  * SigMF Capture
@@ -24,7 +25,7 @@ namespace sigmf_io {
 class Capture : public JSONBase
 {
 public:
-    explicit Capture(const jsoncons::json& data = jsoncons::json());
+    explicit Capture(const jsoncons::json& data = jsoncons::json(), ValidationContext validation_context = default_validation_context());
 
     // returns a jsoncons::json initialized with default SigMF values.
     static jsoncons::json default_data();

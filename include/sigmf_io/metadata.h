@@ -9,7 +9,9 @@
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 
-#include "sigmf_io/v1_2_6/spec_validator.h"
+#include "sigmf_io/spec_validator_factory.h"    // default_spec_validator(), make_spec_validator()
+#include "sigmf_io/validation_context.h"        // ValidationLevel, ValidationContext
+#include "sigmf_io/spec_validator_base.h"
 #include "sigmf_io/global.h"
 #include "sigmf_io/capture.h"
 #include "sigmf_io/annotation.h"
@@ -25,9 +27,13 @@ public:
     static constexpr std::string META_EXT = ".sigmf-meta";
     static constexpr std::string DATA_EXT = ".sigmf-data";
 public:
-    Metadata(const Global& global = Global(), const std::vector<Capture>& captures = {}, const std::vector<Annotation>& annotations = {}) {}
-    explicit Metadata(const std::string& meta_path);
-    explicit Metadata(const jsoncons::json& meta);
+    Metadata(
+        const Global& g = Global(),
+        const std::vector<Capture>& caps = {},
+        const std::vector<Annotation>& anns = {},
+        ValidationContext validation_context = default_validation_context());
+    explicit Metadata(const std::string& meta_path, ValidationContext validation_context = default_validation_context());
+    explicit Metadata(const jsoncons::json& meta, ValidationContext validation_context = default_validation_context());
 
     std::string meta_path() const { return this->meta_path_; }
     std::string data_path() const;
@@ -44,10 +50,14 @@ public:
 
     // TODO: implement functions to update ValidationLevel -> needs to propagate to Global/Captures/Annotations...
     void set_validation_context(ValidationContext validation_context);
-    ValidationContext get_validation_context() const;
+    const ValidationContext& validation_context() const { return this->validation_context_; }
 
 private:
     std::string meta_path_;
+    ValidationContext validation_context_;
+
+    // sets the validation context to global, captures, and annotations.
+    void propagate_validation_context();
 
     bool ends_with(const std::string& value, const std::string& ending) const;
 

@@ -3,8 +3,8 @@
 
 namespace sigmf_io {
 
-Annotation::Annotation(const jsoncons::json& data)
-    : JSONBase(Annotation::default_data(), data)
+Annotation::Annotation(const jsoncons::json& data, ValidationContext validation_context)
+    : JSONBase(Annotation::default_data(), data, validation_context)
 {}
 
 

@@ -9,10 +9,6 @@
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonschema/jsonschema.hpp>
 
-#include "sigmf_io/global.h"
-#include "sigmf_io/capture.h"
-#include "sigmf_io/annotation.h"
-#include "sigmf_io/metadata.h"
 #include "sigmf_io/sigmf_schema_data.h"
 
 /*
@@ -25,7 +21,11 @@
 
 namespace sigmf_io {
 
-enum class ValidationLevel { STRICT, LAZY, NONE };
+// forward declarations - resolves circular dependencies.
+class Metadata;
+class Global;
+class Capture;
+class Annotation;
 
 class SpecValidatorBase
 {
@@ -103,11 +103,6 @@ protected:
     // Accumulates a single check's result into the running error list.
     // Returns nothing — errors vector is modified in place.
     static void accumulate(std::vector<std::string>& errors, const std::expected<void, std::string>& result);
-};
-
-struct ValidationContext {
-    std::shared_ptr<const SpecValidatorBase> validator;
-    ValidationLevel level = ValidationLevel::NONE;
 };
 
 } // end sigmf_io namespace

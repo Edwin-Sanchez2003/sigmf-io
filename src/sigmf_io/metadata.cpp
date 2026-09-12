@@ -11,26 +11,50 @@
 #include "sigmf_io/global.h"          // pulls in global_traits.h
 #include "sigmf_io/capture.h"         // pulls in capture_traits.h
 #include "sigmf_io/annotation.h"      // pulls in annotation_traits.h
-#include "sigmf_io/v1_2_6/spec_validator.h"
+#include "sigmf_io/spec_validator_base.h"
 
 namespace sigmf_io {
 
 
-Metadata::Metadata(const std::string& meta_path)
-    : Metadata(Metadata::load_json(meta_path))
-{
-    this->meta_path_ = meta_path;
+// Passes validation context set at construction to global, captures, and annotations.
+void Metadata::propagate_validation_context() {
+    global.set_validation_context(this->validation_context_);
+    for (Capture& c : captures)    c.set_validation_context(this->validation_context_);
+    for (Annotation& a : annotations) a.set_validation_context(this->validation_context_);
 }
 
 
-Metadata::Metadata(const jsoncons::json& meta)
+Metadata::Metadata(
+    const Global& g,
+    const std::vector<Capture>& caps,
+    const std::vector<Annotation>& anns,
+    ValidationContext validation_context
+) : global(g),
+    captures(caps),
+    annotations(anns),
+    validation_context_(std::move(validation_context))
+{
+    propagate_validation_context();
+}
+
+
+Metadata::Metadata(const jsoncons::json& meta, ValidationContext validation_context)
     : global(meta.get_value_or<sigmf_io::Global>("global", sigmf_io::Global())),
     captures(meta.get_value_or<std::vector<sigmf_io::Capture>>("captures", std::vector<sigmf_io::Capture>{})),
     annotations(meta.get_value_or<std::vector<sigmf_io::Annotation>>("annotations", std::vector<sigmf_io::Annotation>{}))
 {
-    // check against schema at load-time
-    sigmf_io::v1_2_6::SpecValidator spec_validator;
-    sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
+    propagate_validation_context();
+
+    // check against schema at load-time, if STRICT mode is enabled.
+    if(this->validation_context_.validator && this->validation_context_.level == ValidationLevel::STRICT)
+        sigmf_io::SpecValidatorBase::raise_errors(this->validation_context_.validator->check_metadata(*this));
+}
+
+
+Metadata::Metadata(const std::string& meta_path, ValidationContext validation_context)
+    : Metadata(Metadata::load_json(meta_path), validation_context)
+{
+    this->meta_path_ = meta_path;
 }
 
 

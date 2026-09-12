@@ -10,7 +10,8 @@
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/datatype.h"
 #include "sigmf_io/sha512.h"
-#include "sigmf_io/geolocation.h"
+#include "sigmf_io/validation_context.h"
+//#include "sigmf_io/geolocation.h"
 // Sigmf Extension
 
 namespace sigmf_io {
@@ -18,7 +19,7 @@ namespace sigmf_io {
 class Global : public JSONBase
 {
 public:
-    explicit Global(const jsoncons::json& data = jsoncons::json());
+    explicit Global(const jsoncons::json& data = jsoncons::json(), ValidationContext validation_context = default_validation_context());
 
     // returns a jsoncons::json initialized with default SigMF values.
     static jsoncons::json default_data();

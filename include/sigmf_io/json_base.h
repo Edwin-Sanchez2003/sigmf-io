@@ -10,15 +10,13 @@
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 
-// TODO: Consider json-style bracket interface for getting/setting values???
+#include "sigmf_io/validation_context.h"
 
 namespace sigmf_io {
 
 class JSONBase
 {
 public:
-    explicit JSONBase(const jsoncons::json& data);
-
     virtual ~JSONBase() = default;                  // needed for safe polymorphic destruction.
 
     // Will throw a jsoncons::json error if the value cannot be retrieved.
@@ -51,9 +49,13 @@ public:
     jsoncons::json& operator[](const std::string& key);
     const jsoncons::json& operator[](const std::string& key) const;
 
+    void set_validation_context(ValidationContext validation_context);
+    const ValidationContext& validation_context() const { return this->validation_context_; }
+
 protected:
-    JSONBase(jsoncons::json defaults, const jsoncons::json& overrides);
+    JSONBase(jsoncons::json defaults, const jsoncons::json& overrides, ValidationContext validation_context = default_validation_context());
     jsoncons::json data_;
+    ValidationContext validation_context_;
 };
 
 template <typename T>

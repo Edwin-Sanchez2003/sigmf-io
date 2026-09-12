@@ -9,13 +9,14 @@
 
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/uuid.h"
+#include "sigmf_io/validation_context.h"
 
 namespace sigmf_io {
 
 class Annotation : public JSONBase
 {
 public:
-    explicit Annotation(const jsoncons::json& data = jsoncons::json());
+    explicit Annotation(const jsoncons::json& data = jsoncons::json(), ValidationContext validation_context = default_validation_context());
 
     // returns a jsoncons::json initialized with default SigMF values.
     static jsoncons::json default_data();

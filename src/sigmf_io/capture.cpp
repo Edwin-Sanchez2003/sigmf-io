@@ -1,12 +1,15 @@
 #include "sigmf_io/capture.h"
 #include "sigmf_io/json_base.h"
+
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 
+#include "sigmf_io/validation_context.h"
+
 namespace sigmf_io {
 
-Capture::Capture(const jsoncons::json& data)
-: JSONBase(Capture::default_data(), data)
+Capture::Capture(const jsoncons::json& data, ValidationContext validation_context)
+: JSONBase(Capture::default_data(), data, validation_context)
 {}
 
 

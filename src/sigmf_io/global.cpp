@@ -9,8 +9,8 @@
 
 namespace sigmf_io {
 
-Global::Global(const jsoncons::json& data)
-    : JSONBase(Global::default_data(), data)
+Global::Global(const jsoncons::json& data, ValidationContext validation_context)
+    : JSONBase(Global::default_data(), data, validation_context)
 {}
 
 

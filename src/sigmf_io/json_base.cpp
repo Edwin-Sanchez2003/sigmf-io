@@ -10,8 +10,15 @@
 
 namespace sigmf_io {
 
-JSONBase::JSONBase(jsoncons::json defaults, const jsoncons::json& overrides)
-    : data_(std::move(defaults))
+
+void JSONBase::set_validation_context(ValidationContext validation_context)
+{
+    this->validation_context_ = std::move(validation_context);
+}
+
+
+JSONBase::JSONBase(jsoncons::json defaults, const jsoncons::json& overrides, ValidationContext validation_context)
+    : data_(std::move(defaults)), validation_context_(std::move(validation_context))
 {
    this->merge_patch("", overrides);
 }
