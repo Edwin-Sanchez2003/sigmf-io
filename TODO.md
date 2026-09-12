@@ -9,6 +9,7 @@
         - No schema validation (disabled).
         - Only validate on-write (lazy).
         - validate at set-time (strict).
+    * Need to implement schema validation levels into global, capture, annotation, and metadata classes.
     * Need to come up with an error message structure, so user can understand why their dataset fails the specification.
 * Refine dataset / samples interfaces for Dataset & Recording - right now, it uses std::vector\<T\>, which may not be the standard interface for what others want to use in their code -> is there a more general container, or can I define a container interface that a user can ingest into their preferred container type? Maybe include a basic vector interface for straight-forward usage, then provide a more generic interface for extensibility... Maybe this is a 1.1.0 update...
 * ~Go ahead & implement is_ncd on top of Recording... & Metadata?~
