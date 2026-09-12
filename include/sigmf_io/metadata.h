@@ -24,7 +24,6 @@ public:
     std::vector<Annotation> annotations;
     static constexpr std::string META_EXT = ".sigmf-meta";
     static constexpr std::string DATA_EXT = ".sigmf-data";
-    SpecValidatorBase spec_validator;
 public:
     Metadata(const Global& global = Global(), const std::vector<Capture>& captures = {}, const std::vector<Annotation>& annotations = {}) {}
     explicit Metadata(const std::string& meta_path);
@@ -38,6 +37,14 @@ public:
     void save(const std::string& file_path, bool overwrite = false);
 
     bool is_ncd() const; // checks if its a ncd using the metadata.
+
+    // TODO: implement functions to add captures & Annotations -> needed for enforcing strictness for the validators...
+    void add_capture(const Capture& capture);
+    void add_annotation(const Annotation& annotation);
+
+    // TODO: implement functions to update ValidationLevel -> needs to propagate to Global/Captures/Annotations...
+    void set_validation_context(ValidationContext validation_context);
+    ValidationContext get_validation_context() const;
 
 private:
     std::string meta_path_;

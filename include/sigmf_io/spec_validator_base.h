@@ -2,6 +2,7 @@
 #define SIGMF_IO_SPEC_VALIDATOR_BASE_H
 
 #include <string>
+#include <memory>
 #include <optional>
 #include <expected>
 
@@ -102,6 +103,11 @@ protected:
     // Accumulates a single check's result into the running error list.
     // Returns nothing — errors vector is modified in place.
     static void accumulate(std::vector<std::string>& errors, const std::expected<void, std::string>& result);
+};
+
+struct ValidationContext {
+    std::shared_ptr<const SpecValidatorBase> validator;
+    ValidationLevel level = ValidationLevel::NONE;
 };
 
 } // end sigmf_io namespace

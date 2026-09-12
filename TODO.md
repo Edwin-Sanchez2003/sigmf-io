@@ -13,6 +13,7 @@
 * Refine dataset / samples interfaces for Dataset & Recording - right now, it uses std::vector\<T\>, which may not be the standard interface for what others want to use in their code -> is there a more general container, or can I define a container interface that a user can ingest into their preferred container type? Maybe include a basic vector interface for straight-forward usage, then provide a more generic interface for extensibility... Maybe this is a 1.1.0 update...
 * ~Go ahead & implement is_ncd on top of Recording... & Metadata?~
 * Finish final planned convenience functions within Recording (get annotations within a set of captures, get captures within a set of annotations).
+* Need to be consistent about specifying the sigmf_io namespace within the sigmf_io classes or not -> currently a wierd mix of both and it makes the code hard to read...
 
 ## Initial Interface Design
 * **Read vs. Write API:** Current API does not strongly define read vs. write interfaces for the convenience classes. There is currently no support for writing baked into the API for raw signal data (only supports writing SigMF Metadata files).

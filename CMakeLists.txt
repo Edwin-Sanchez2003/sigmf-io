@@ -70,6 +70,7 @@ add_library(sigmf_io STATIC
     include/sigmf_io/annotation_traits.h
     include/sigmf_io/global_traits.h
     include/sigmf_io/metadata_traits.h
+    include/sigmf_io/spec_validator_factory.h
 )
 
 add_dependencies(sigmf_io sigmf_schema_header)
