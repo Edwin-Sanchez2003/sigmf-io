@@ -6,6 +6,7 @@
 * Test by dog-fooding in test projects.
 
 ## Continuous Interface Design
+* free functions to do searches through metadata/recordings??? Regex expressions, JSONPointer/JSONPath/JMESPath to filter down annotations, find certain fields, etc. This should work for individual data objects, entire metadata files, metadata fields, directories of metadata, and collections/archives.
 * Need to be consistent about specifying the sigmf_io namespace within the sigmf_io classes or not -> currently a wierd mix of both and it makes the code hard to read...
 * Add function to generate sigmf meta and sigmf data file paths for the user.
 * Will probably need to go back and make sure that the interface is air-tight for specification validation... otherwise defeats the purpose...
