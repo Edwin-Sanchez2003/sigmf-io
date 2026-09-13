@@ -23,6 +23,19 @@ void Metadata::propagate_validation_context() {
     for (Annotation& a : annotations) a.set_validation_context(this->validation_context_);
 }
 
+void Metadata::set_validation_context(ValidationContext validation_context)
+{
+    if ((validation_context.level == ValidationLevel::STRICT ||
+         validation_context.level == ValidationLevel::LAZY) &&
+        !validation_context.validator)
+    {
+        throw std::invalid_argument(
+            "ValidationContext requires a validator when level is STRICT or LAZY");
+    }
+
+    this->validation_context_ = std::move(validation_context);
+    this->propagate_validation_context();
+}
 
 Metadata::Metadata(
     const Global& g,
@@ -31,9 +44,9 @@ Metadata::Metadata(
     ValidationContext validation_context
 ) : global(g),
     captures(caps),
-    annotations(anns),
-    validation_context_(std::move(validation_context))
+    annotations(anns)
 {
+    this->set_validation_context(std::move(validation_context));
     propagate_validation_context();
 }
 
@@ -43,6 +56,7 @@ Metadata::Metadata(const jsoncons::json& meta, ValidationContext validation_cont
     captures(meta.get_value_or<std::vector<sigmf_io::Capture>>("captures", std::vector<sigmf_io::Capture>{})),
     annotations(meta.get_value_or<std::vector<sigmf_io::Annotation>>("annotations", std::vector<sigmf_io::Annotation>{}))
 {
+    this->set_validation_context(std::move(validation_context));
     propagate_validation_context();
 
     // check against schema at load-time, if STRICT mode is enabled.
@@ -57,6 +71,33 @@ Metadata::Metadata(const std::string& meta_path, ValidationContext validation_co
     this->meta_path_ = meta_path;
 }
 
+void Metadata::add_capture(const Capture& capture)
+{
+    Capture c = capture;
+    c.set_validation_context(this->validation_context_);
+
+    if (this->validation_context_.level == ValidationLevel::STRICT)
+    {
+        SpecValidatorBase::raise_errors(
+            this->validation_context_.validator->check_capture(c));
+    }
+
+    this->captures.push_back(std::move(c));
+}
+
+void Metadata::add_annotation(const Annotation& annotation)
+{
+    Annotation a = annotation;
+    a.set_validation_context(this->validation_context_);
+
+    if (this->validation_context_.level == ValidationLevel::STRICT)
+    {
+        SpecValidatorBase::raise_errors(
+            this->validation_context_.validator->check_annotation(a));
+    }
+
+    this->annotations.push_back(std::move(a));
+}
 
 // Reports to the user if the metadata indicates that the dataset is non-conforming.
 // NOTE: This function is only valid for an on-disk Metadata file.
@@ -145,9 +186,10 @@ void Metadata::save(const std::string& file_path, bool overwrite)
             "Metadata::save: file already exists and overwrite is false: " + file_path);
     }
 
-    // final validation against schema? other things???
-    sigmf_io::v1_2_6::SpecValidator spec_validator;
-    sigmf_io::v1_2_6::SpecValidator::raise_errors(spec_validator.check_metadata(*this));
+    // final validation against schema.
+    // TODO: implement inter-field validation as well! This can only really be checked at write-time.
+    if(this->validation_context_.level == ValidationLevel::STRICT || this->validation_context_.level == ValidationLevel::LAZY)
+        SpecValidatorBase::raise_errors(this->validation_context_.validator->check_metadata(*this));
 
     // attempt to open the file & write out to disk.
     std::ofstream out_file(file_path);

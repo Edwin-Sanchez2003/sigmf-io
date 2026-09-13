@@ -13,14 +13,23 @@ namespace sigmf_io {
 
 void JSONBase::set_validation_context(ValidationContext validation_context)
 {
+    if ((validation_context.level == ValidationLevel::STRICT ||
+         validation_context.level == ValidationLevel::LAZY) &&
+        !validation_context.validator)
+    {
+        throw std::invalid_argument(
+            "ValidationContext requires a validator when level is STRICT or LAZY");
+    }
+
     this->validation_context_ = std::move(validation_context);
 }
 
 
 JSONBase::JSONBase(jsoncons::json defaults, const jsoncons::json& overrides, ValidationContext validation_context)
-    : data_(std::move(defaults)), validation_context_(std::move(validation_context))
+    : data_(std::move(defaults))
 {
-   this->merge_patch("", overrides);
+    this->set_validation_context(std::move(validation_context));
+    this->merge_patch("", overrides);
 }
 
 

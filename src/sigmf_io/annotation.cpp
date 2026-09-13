@@ -1,11 +1,17 @@
 #include "sigmf_io/annotation.h"
 #include "sigmf_io/json_base.h"
 
+#include "sigmf_io/spec_validator_base.h"
+#include "sigmf_io/validation_context.h"
+
 namespace sigmf_io {
 
 Annotation::Annotation(const jsoncons::json& data, ValidationContext validation_context)
     : JSONBase(Annotation::default_data(), data, validation_context)
-{}
+{
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_errors(this->validation_context_.validator->check_annotation(*this));
+}
 
 
 jsoncons::json Annotation::default_data()
@@ -24,6 +30,9 @@ int64_t Annotation::sample_start() const
 
 void Annotation::set_sample_start(int64_t sample_start)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_sample_start(sample_start));
+
     this->set("/core:sample_start", sample_start);
 }
 
@@ -36,6 +45,9 @@ std::optional<int64_t> Annotation::sample_count() const
 
 void Annotation::set_sample_count(int64_t sample_count)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_sample_count(sample_count));
+
     this->set("/core:sample_count", sample_count);
 }
 
@@ -48,6 +60,9 @@ std::optional<double> Annotation::freq_lower_edge() const
 
 void Annotation::set_freq_lower_edge(double freq_lower_edge)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_freq_lower_edge(freq_lower_edge));
+
     this->set("/core:freq_lower_edge", freq_lower_edge);
 }
 
@@ -60,6 +75,9 @@ std::optional<double> Annotation::freq_upper_edge() const
 
 void Annotation::set_freq_upper_edge(double freq_upper_edge)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_freq_upper_edge(freq_upper_edge));
+
     this->set("/core:freq_upper_edge", freq_upper_edge);
 }
 
@@ -108,6 +126,9 @@ std::optional<std::string> Annotation::uuid() const
 
 void Annotation::set_uuid(const std::string& uuid)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_uuid(uuid));
+
     this->set("/core:uuid", uuid);
 }
 

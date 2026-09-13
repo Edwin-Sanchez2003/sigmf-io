@@ -52,6 +52,8 @@ public:
     void set_validation_context(ValidationContext validation_context);
     const ValidationContext& validation_context() const { return this->validation_context_; }
 
+    inline bool is_validation_strict() { return (this->validation_context_.validator && this->validation_context_.level == ValidationLevel::STRICT); }
+
 protected:
     JSONBase(jsoncons::json defaults, const jsoncons::json& overrides, ValidationContext validation_context = default_validation_context());
     jsoncons::json data_;

@@ -1,17 +1,24 @@
 #include "sigmf_io/global.h"
+
+#include <jsoncons/json.hpp>
+#include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
+
 #include "sigmf_io/datatype.h"
 #include "sigmf_io/sha512.h"
 #include "sigmf_io/datetime.h"
 #include "sigmf_io/uuid.h"
 #include "sigmf_io/json_base.h"
-#include <jsoncons/json.hpp>
-#include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
+#include "sigmf_io/spec_validator_base.h"
+#include "sigmf_io/validation_context.h"
 
 namespace sigmf_io {
 
 Global::Global(const jsoncons::json& data, ValidationContext validation_context)
     : JSONBase(Global::default_data(), data, validation_context)
-{}
+{
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_errors(this->validation_context_.validator->check_global(*this));
+}
 
 
 jsoncons::json Global::default_data()
@@ -34,6 +41,9 @@ std::string Global::datatype() const
 
 void Global::set_datatype(const std::string& datatype)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_datatype(datatype));
+
     this->set("/core:datatype", datatype);
 }
 
@@ -46,6 +56,9 @@ std::optional<double> Global::sample_rate() const
 
 void Global::set_sample_rate(const double sample_rate)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_sample_rate(sample_rate));
+
     this->set("/core:sample_rate", sample_rate);
 }
 
@@ -166,6 +179,9 @@ int64_t Global::num_channels() const
 
 void Global::set_num_channels(const int64_t num_channels)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_num_channels(num_channels));
+
     this->set("/core:num_channels", num_channels);
 }
 
@@ -178,6 +194,9 @@ int64_t Global::offset() const
 
 void Global::set_offset(int64_t offset)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_offset(offset));
+
     this->set("/core:offset", offset);
 }
 
@@ -202,6 +221,9 @@ std::optional<std::string> Global::sha512() const
 
 void Global::set_sha512(const std::string& sha512)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_sha512(sha512));
+
     this->set("/core:sha512", sha512);
 }
 
@@ -214,6 +236,9 @@ int64_t Global::trailing_bytes() const
 
 void Global::set_trailing_bytes(const int64_t trailing_bytes)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_trailing_bytes(trailing_bytes));
+
     this->set("/core:trailing_bytes", trailing_bytes);
 }
 

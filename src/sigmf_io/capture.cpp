@@ -4,13 +4,17 @@
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpointer/jsonpointer.hpp>
 
+#include "sigmf_io/spec_validator_base.h"
 #include "sigmf_io/validation_context.h"
 
 namespace sigmf_io {
 
 Capture::Capture(const jsoncons::json& data, ValidationContext validation_context)
 : JSONBase(Capture::default_data(), data, validation_context)
-{}
+{
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_errors(this->validation_context_.validator->check_capture(*this));
+}
 
 
 jsoncons::json Capture::default_data()
@@ -29,6 +33,9 @@ int64_t Capture::sample_start() const
 
 void Capture::set_sample_start(int64_t sample_start)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_sample_start(sample_start));
+
     this->set("/core:sample_start", sample_start);
 }
 
@@ -41,6 +48,9 @@ std::optional<std::string> Capture::datetime() const
 
 void Capture::set_datetime(const std::string& datetime)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_datetime(datetime));
+
     this->set("/core:datetime", datetime);
 }
 
@@ -53,6 +63,9 @@ std::optional<double> Capture::frequency() const
 
 void Capture::set_frequency(double frequency)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_frequency(frequency));
+
     this->set("/core:frequency", frequency);
 }
 
@@ -65,6 +78,9 @@ std::optional<int64_t> Capture::global_index() const
 
 void Capture::set_global_index(int64_t global_index)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_global_index(global_index));
+
     this->set("/core:global_index", global_index);
 }
 
@@ -77,6 +93,9 @@ int64_t Capture::header_bytes() const
 
 void Capture::set_header_bytes(int64_t header_bytes)
 {
+    if(this->is_validation_strict())
+        SpecValidatorBase::raise_error(this->validation_context_.validator->check_header_bytes(header_bytes));
+
     this->set("/core:header_bytes", header_bytes);
 }
 

@@ -91,6 +91,7 @@ public:
 
     // convenience method to take a set of std::expected<> values & raise it as a single error during runtime.
     static void raise_errors(const std::expected<void, std::vector<std::string>>& validation_result);
+    static void raise_error(const std::expected<void, std::string>& validation_result);
 
     // TODO: inter-field spec validation.
 private:

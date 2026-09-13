@@ -46,4 +46,16 @@ void SpecValidatorBase::raise_errors(const std::expected<void, std::vector<std::
     }
 }
 
+void SpecValidatorBase::raise_error(const std::expected<void, std::string>& validation_result)
+{
+    if (!validation_result.has_value()) // "this expected does NOT hold a success — it holds an error"
+    {
+        const std::string& message = validation_result.error();
+
+        std::cerr << message << '\n';
+
+        throw std::runtime_error(message);
+    }
+}
+
 } // end sigmf_io namespace
