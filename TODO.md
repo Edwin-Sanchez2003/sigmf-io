@@ -2,6 +2,7 @@
 
 ## Pre 1.0.0 updates
 * Write final test cases to validate interface functions correctly.
+* Final code review & cleanup.
 * Test by dog-fooding in test projects.
 
 ## Continuous Interface Design
