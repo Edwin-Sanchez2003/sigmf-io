@@ -99,6 +99,44 @@ void Metadata::add_annotation(const Annotation& annotation)
     this->annotations.push_back(std::move(a));
 }
 
+// get all annotations that completely or partially overlap with the sample rang:  [sample_start, sample_stop)
+std::vector<Annotation> Metadata::get_annotations_in_range(int64_t sample_start, int64_t sample_stop)
+{
+    std::vector<Annotation> anns;
+
+    for (const Annotation& ann : this->annotations)
+    {
+        const int64_t ann_start = ann.sample_start();
+        const int64_t ann_end   = ann_start + ann.sample_count().value_or(0);
+
+        if (ann_start < sample_stop && sample_start < ann_end)
+            anns.push_back(ann);
+    }
+    return anns;
+}
+
+// get all captures that completely or partially overlap with the sample range: [sample_start, sample_stop)
+std::vector<Capture> Metadata::get_captures_in_range(int64_t sample_start, int64_t sample_stop)
+{
+    std::vector<Capture> caps;
+
+    for (size_t i = 0; i < this->captures.size(); ++i)
+    {
+        const Capture& cap = this->captures[i];
+        const int64_t cap_start = cap.sample_start();
+
+        // A capture's end is the next capture's start, or "infinity" if it's the last one.
+        const bool has_next = (i + 1 < this->captures.size());
+        const int64_t cap_end = has_next ? this->captures[i + 1].sample_start()
+                                         : std::numeric_limits<int64_t>::max();
+
+        if (cap_start < sample_stop && sample_start < cap_end)
+            caps.push_back(cap);
+    }
+
+    return caps;
+}
+
 // Reports to the user if the metadata indicates that the dataset is non-conforming.
 // NOTE: This function is only valid for an on-disk Metadata file.
 bool Metadata::is_ncd() const

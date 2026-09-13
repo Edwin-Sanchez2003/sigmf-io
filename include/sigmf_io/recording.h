@@ -6,6 +6,8 @@
 
 #include <jsoncons/json.hpp>
 
+#include "sigmf_io/capture.h"
+#include "sigmf_io/annotation.h"
 #include "sigmf_io/dataset.h"
 #include "sigmf_io/metadata.h"
 
@@ -30,13 +32,10 @@ public:
     std::vector<OutputT> get_samples(const int64_t sample_start = 0, int64_t sample_count = -1, const int64_t channel = 1);
 
     template <typename OutputT>
-    std::vector<OutputT> get_capture_samples(const int64_t capture_idx, const int64_t channel = 1);
-
-    template <typename OutputT>
     std::vector<OutputT> get_samples(const Annotation& annotation, const int64_t channel = 1);
 
-    // TODO: Get all annotations strictly within/overlapping with a given capture/set of captures.
-    // TODO: Get the capture an annotation starts in/ends in/ all captures an annotation overlaps with.
+    template <typename OutputT>
+    std::vector<OutputT> get_capture_samples(const int64_t capture_idx, const int64_t channel = 1);
 };
 
 template <typename OutputT>

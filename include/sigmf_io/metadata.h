@@ -44,11 +44,14 @@ public:
 
     bool is_ncd() const; // checks if its a ncd using the metadata.
 
-    // TODO: implement functions to add captures & Annotations -> needed for enforcing strictness for the validators...
     void add_capture(const Capture& capture);
     void add_annotation(const Annotation& annotation);
 
-    // TODO: implement functions to update ValidationLevel -> needs to propagate to Global/Captures/Annotations...
+    // get all annotations that completely or partially overlap with the sample range: [sample_start, sample_stop)
+    std::vector<Annotation> get_annotations_in_range(int64_t sample_start, int64_t sample_stop);
+    // get all captures that completely or partially overlap with the sample range: [sample_start, sample_stop)
+    std::vector<Capture> get_captures_in_range(int64_t sample_start, int64_t sample_stop);
+
     void set_validation_context(ValidationContext validation_context);
     const ValidationContext& validation_context() const { return this->validation_context_; }
 

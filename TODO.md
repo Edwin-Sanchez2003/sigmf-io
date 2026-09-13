@@ -1,25 +1,21 @@
 # TODO List
 
 ## Pre 1.0.0 updates
-* Settle into read-only for Datasets/raw signal data, with Metadata being editable. It is assumed the user will use built-in C++ support or their own task-specific interface to generate signal data & write to disk (or just basic C++ file I/O), with Metadata being written alongside it. Maybe write helper functions if there is a good case for them.
-* ~update metadata interfaces to be lighter-weight facades of jsoncons::json objects, basically just extra methods on top of the object that are sigmf-specific. Make sure they are still composable.~
-* refine separation between schema enforcement & metadata/recording classes.
-* ~Implement `void set_validation_context(ValidationContext validation_context);` in Metadata class (& decide if this & the getter are needed in the other data classes).~
-    * ~The set function should also guard against nullptr + STRICT or nullptr + LAZY.~
-    * ~Should metadata own a schema validator? Must be decided at runtime, since the user can pick a schema version to enforce.~
-    * User has options for:
-        - ~No schema validation (disabled).~
-        - ~Only validate on-write (lazy).~
-        - ~validate at set-time (strict).~
-    * ~Need to implement schema validation levels into global, capture, annotation, and metadata classes.~
-    * Need to come up with an error message structure, so user can understand why their dataset fails the specification.
-* Refine dataset / samples interfaces for Dataset & Recording - right now, it uses std::vector\<T\>, which may not be the standard interface for what others want to use in their code -> is there a more general container, or can I define a container interface that a user can ingest into their preferred container type? Maybe include a basic vector interface for straight-forward usage, then provide a more generic interface for extensibility... Maybe this is a 1.1.0 update...
-* ~Go ahead & implement is_ncd on top of Recording... & Metadata?~
-* Finish final planned convenience functions within Recording (get annotations within a set of captures, get captures within a set of annotations).
-* Need to be consistent about specifying the sigmf_io namespace within the sigmf_io classes or not -> currently a wierd mix of both and it makes the code hard to read...
-* Will probably need to go back and make sure that the interface is air-tight for specification validation... otherwise defeats the purpose...
+* Write final test cases to validate interface functions correctly.
+* Test by dog-fooding in test projects.
 
-## Initial Interface Design
+## Continuous Interface Design
+* Need to be consistent about specifying the sigmf_io namespace within the sigmf_io classes or not -> currently a wierd mix of both and it makes the code hard to read...
+* Add function to generate sigmf meta and sigmf data file paths for the user.
+* Will probably need to go back and make sure that the interface is air-tight for specification validation... otherwise defeats the purpose...
+* Metadata needs to try to use the spec validator that matches the version the global field specified!
+* Need to come up with an error message structure, so user can understand why their dataset fails the specification.
+* Consider adding functions on Dataset to handle:
+    - getting raw data from file, no channel de-interleaving for multi-channel files (user wants to do things themselves? may not be that useful...).
+    - get only the I or only the Q channels from a given channel in the dataset, rather than a vector of interleaved IQ samples. Some algorithms/libraries may use this, so having it may simplify the user's life.
+* Lots of functions on lots of classes probably don't belong to the class.
+    - update the ValidationContext struct to a class and implement common methods there.
+    - Many methods on Metadata & Recording could probably be static methods or be completely removed from the class entirely and be free functions the user can use without having to first build a valid Metadata or Recording or Dataset object (or, make them static methods on the class).
 * **Read vs. Write API:** Current API does not strongly define read vs. write interfaces for the convenience classes. There is currently no support for writing baked into the API for raw signal data (only supports writing SigMF Metadata files).
 * **Per-Value Set-Time Spec Validation:** Have per-value checks for set-time validation. Have jsoncons's json schema validation for document-wide checks. Also hand-roll functions to check across multiple fields.
     - subschema for global, annotation, captures, geolocation, etc?
