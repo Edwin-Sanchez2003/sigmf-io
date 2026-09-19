@@ -43,13 +43,13 @@ TEST_CASE("Metadata constructs from a fully populated json object", "[metadata]"
     REQUIRE(meta.global.sample_rate().has_value());
     REQUIRE(meta.global.sample_rate().value() == 1000000);
 
-    REQUIRE(meta.captures.size() == 1);
-    REQUIRE(meta.captures.at(0).sample_start() == 0);
+    REQUIRE(meta.captures().size() == 1);
+    REQUIRE(meta.captures().at(0).sample_start() == 0);
 
-    REQUIRE(meta.annotations.size() == 1);
-    REQUIRE(meta.annotations.at(0).sample_start() == 0);
-    REQUIRE(meta.annotations.at(0).sample_count().has_value());
-    REQUIRE(meta.annotations.at(0).sample_count().value() == 100);
+    REQUIRE(meta.annotations().size() == 1);
+    REQUIRE(meta.annotations().at(0).sample_start() == 0);
+    REQUIRE(meta.annotations().at(0).sample_count().has_value());
+    REQUIRE(meta.annotations().at(0).sample_count().value() == 100);
 }
 
 
@@ -61,8 +61,8 @@ TEST_CASE("Metadata defaults missing captures and annotations to empty vectors",
 
     sigmf_io::Metadata meta(j);
 
-    REQUIRE(meta.captures.empty());
-    REQUIRE(meta.annotations.empty());
+    REQUIRE(meta.captures().empty());
+    REQUIRE(meta.annotations().empty());
     REQUIRE(meta.global.datatype() == "cf32_le");
 }
 
@@ -82,8 +82,8 @@ TEST_CASE("Metadata::to_json round-trips through parsing", "[metadata]")
 
     // Re-constructing from the dump should reproduce the same object.
     sigmf_io::Metadata reloaded(dumped);
-    REQUIRE(reloaded.captures.size() == meta.captures.size());
-    REQUIRE(reloaded.annotations.size() == meta.annotations.size());
+    REQUIRE(reloaded.captures().size() == meta.captures().size());
+    REQUIRE(reloaded.annotations().size() == meta.annotations().size());
 }
 
 
@@ -95,7 +95,7 @@ TEST_CASE("Metadata converts via jsoncons json_conv_traits (.is / .as)", "[metad
 
     sigmf_io::Metadata meta = j.as<sigmf_io::Metadata>();
     REQUIRE(meta.global.datatype() == "cf32_le");
-    REQUIRE(meta.captures.size() == 1);
+    REQUIRE(meta.captures().size() == 1);
 
     // An object missing the required "global" key should not report as convertible.
     jsoncons::json not_metadata(jsoncons::json_object_arg);
@@ -137,7 +137,7 @@ TEST_CASE("Metadata::save writes a reloadable .sigmf-meta file", "[metadata][io]
 
     sigmf_io::Metadata reloaded(out_path.string());
     REQUIRE(reloaded.global.datatype() == meta.global.datatype());
-    REQUIRE(reloaded.captures.size() == meta.captures.size());
+    REQUIRE(reloaded.captures().size() == meta.captures().size());
 
     std::filesystem::remove(out_path);
 }

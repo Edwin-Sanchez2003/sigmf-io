@@ -1,6 +1,7 @@
 #include "sigmf_io/metadata.h"
 
 #include <fstream>
+#include <algorithm>
 #include <filesystem>
 #include <stdexcept>
 #include <expected>
@@ -15,12 +16,25 @@
 
 namespace sigmf_io {
 
+std::vector<Capture> Metadata::sort_by_sample_start(std::vector<Capture> caps)
+{
+    std::stable_sort(caps.begin(), caps.end(),
+                     [](const Capture& a, const Capture& b) { return a.sample_start() < b.sample_start(); });
+    return caps;
+}
+
+std::vector<Annotation> Metadata::sort_by_sample_start(std::vector<Annotation> anns)
+{
+    std::stable_sort(anns.begin(), anns.end(),
+                     [](const Annotation& a, const Annotation& b) { return a.sample_start() < b.sample_start(); });
+    return anns;
+}
 
 // Passes validation context set at construction to global, captures, and annotations.
 void Metadata::propagate_validation_context() {
     global.set_validation_context(this->validation_context_);
-    for (Capture& c : captures)    c.set_validation_context(this->validation_context_);
-    for (Annotation& a : annotations) a.set_validation_context(this->validation_context_);
+    for (Capture& c : this->captures_)    c.set_validation_context(this->validation_context_);
+    for (Annotation& a : this->annotations_) a.set_validation_context(this->validation_context_);
 }
 
 void Metadata::set_validation_context(ValidationContext validation_context)
@@ -38,23 +52,29 @@ void Metadata::set_validation_context(ValidationContext validation_context)
 }
 
 Metadata::Metadata(
-    const Global& g,
-    const std::vector<Capture>& caps,
-    const std::vector<Annotation>& anns,
+    Global g,
+    std::vector<Capture> caps,
+    std::vector<Annotation> anns,
     ValidationContext validation_context
-) : global(g),
-    captures(caps),
-    annotations(anns)
+    ) : global(std::move(g)),
+    captures_(Metadata::sort_by_sample_start(std::move(caps))),
+    annotations_(Metadata::sort_by_sample_start(std::move(anns)))
 {
     this->set_validation_context(std::move(validation_context));
     propagate_validation_context();
+
+    // check against schema at load-time, if STRICT mode is enabled.
+    if(this->validation_context_.validator && this->validation_context_.level == ValidationLevel::STRICT)
+        sigmf_io::SpecValidatorBase::raise_errors(this->validation_context_.validator->check_metadata(*this));
 }
 
 
 Metadata::Metadata(const jsoncons::json& meta, ValidationContext validation_context)
     : global(meta.get_value_or<sigmf_io::Global>("global", sigmf_io::Global())),
-    captures(meta.get_value_or<std::vector<sigmf_io::Capture>>("captures", std::vector<sigmf_io::Capture>{})),
-    annotations(meta.get_value_or<std::vector<sigmf_io::Annotation>>("annotations", std::vector<sigmf_io::Annotation>{}))
+    captures_(Metadata::sort_by_sample_start(
+          meta.get_value_or<std::vector<sigmf_io::Capture>>("captures", std::vector<sigmf_io::Capture>{}))),
+    annotations_(Metadata::sort_by_sample_start(
+          meta.get_value_or<std::vector<sigmf_io::Annotation>>("annotations", std::vector<sigmf_io::Annotation>{})))
 {
     this->set_validation_context(std::move(validation_context));
     propagate_validation_context();
@@ -71,40 +91,113 @@ Metadata::Metadata(const std::string& meta_path, ValidationContext validation_co
     this->meta_path_ = meta_path;
 }
 
-void Metadata::add_capture(const Capture& capture)
+const Capture& Metadata::capture_at(std::size_t index) const
 {
-    Capture c = capture;
-    c.set_validation_context(this->validation_context_);
-
-    if (this->validation_context_.level == ValidationLevel::STRICT)
-    {
-        SpecValidatorBase::raise_errors(
-            this->validation_context_.validator->check_capture(c));
-    }
-
-    this->captures.push_back(std::move(c));
+    return this->captures_.at(index);
 }
 
-void Metadata::add_annotation(const Annotation& annotation)
+const Annotation& Metadata::annotation_at(std::size_t index) const
 {
-    Annotation a = annotation;
-    a.set_validation_context(this->validation_context_);
+    return this->annotations_.at(index);
+}
+
+void Metadata::add_capture(Capture capture)
+{
+    capture.set_validation_context(this->validation_context_);
 
     if (this->validation_context_.level == ValidationLevel::STRICT)
     {
         SpecValidatorBase::raise_errors(
-            this->validation_context_.validator->check_annotation(a));
+            this->validation_context_.validator->check_capture(capture));
     }
 
-    this->annotations.push_back(std::move(a));
+    this->insert_sorted(this->captures_, std::move(capture));
+}
+
+void Metadata::add_annotation(Annotation annotation)
+{
+    annotation.set_validation_context(this->validation_context_);
+
+    if (this->validation_context_.level == ValidationLevel::STRICT)
+    {
+        SpecValidatorBase::raise_errors(
+            this->validation_context_.validator->check_annotation(annotation));
+    }
+
+    this->insert_sorted(this->annotations_, std::move(annotation));
+}
+
+
+void Metadata::remove_capture(std::size_t index)
+{
+    if (index >= this->captures_.size())
+        throw std::out_of_range(
+            "Metadata::remove_capture: index out of range: " + std::to_string(index));
+    this->captures_.erase(this->captures_.begin() + static_cast<std::ptrdiff_t>(index));
+}
+
+void Metadata::remove_annotation(std::size_t index)
+{
+    if (index >= this->annotations_.size())
+        throw std::out_of_range(
+            "Metadata::remove_annotation: index out of range: " + std::to_string(index));
+    this->annotations_.erase(this->annotations_.begin() + static_cast<std::ptrdiff_t>(index));
+}
+
+void Metadata::update_capture(std::size_t index, Capture capture)
+{
+    // check if index is valid.
+    if (index >= this->captures_.size())
+        throw std::out_of_range(
+            "Metadata::update_capture: index out of range: " + std::to_string(index));
+
+    // validate capture according to current validation settings.
+    capture.set_validation_context(this->validation_context_);
+    if (this->validation_context_.level == ValidationLevel::STRICT)
+    {
+        SpecValidatorBase::raise_errors(
+            this->validation_context_.validator->check_capture(capture));
+    }
+
+    // insert in the correct order within the metadata.
+    this->captures_.erase(this->captures_.begin() + static_cast<std::ptrdiff_t>(index));
+    Metadata::insert_sorted(this->captures_, std::move(capture));
+}
+
+void Metadata::update_annotation(std::size_t index, Annotation annotation)
+{
+    if (index >= this->annotations_.size())
+        throw std::out_of_range(
+            "Metadata::update_annotation: index out of range: " + std::to_string(index));
+
+    annotation.set_validation_context(this->validation_context_);
+    if (this->validation_context_.level == ValidationLevel::STRICT)
+    {
+        SpecValidatorBase::raise_errors(
+            this->validation_context_.validator->check_annotation(annotation));
+    }
+
+    this->annotations_.erase(this->annotations_.begin() + static_cast<std::ptrdiff_t>(index));
+    Metadata::insert_sorted(this->annotations_, std::move(annotation));
+}
+
+// Returns the index of the capture containing sample_idx, throwing if none does.
+// Assumes this->captures is sorted ascending by sample_start (required by SigMF spec).
+int64_t Metadata::find_capture_containing(int64_t sample_idx) const
+{
+    std::vector<int64_t> cap_idxs = this->get_captures_in_range(sample_idx, sample_idx + 1);
+    if (cap_idxs.empty())
+        throw std::runtime_error(
+            "No capture found containing sample index " + std::to_string(sample_idx));
+    return cap_idxs.front();
 }
 
 // get all annotations that completely or partially overlap with the sample rang:  [sample_start, sample_stop)
-std::vector<Annotation> Metadata::get_annotations_in_range(int64_t sample_start, int64_t sample_stop)
+std::vector<Annotation> Metadata::get_annotations_in_range(int64_t sample_start, int64_t sample_stop) const
 {
     std::vector<Annotation> anns;
 
-    for (const Annotation& ann : this->annotations)
+    for (const Annotation& ann : this->annotations_)
     {
         const int64_t ann_start = ann.sample_start();
         const int64_t ann_end   = ann_start + ann.sample_count().value_or(0);
@@ -115,23 +208,23 @@ std::vector<Annotation> Metadata::get_annotations_in_range(int64_t sample_start,
     return anns;
 }
 
-// get all captures that completely or partially overlap with the sample range: [sample_start, sample_stop)
-std::vector<Capture> Metadata::get_captures_in_range(int64_t sample_start, int64_t sample_stop)
+// gets the indices of all captures that completely or partially overlap with the sample range: [sample_start, sample_stop)
+std::vector<int64_t> Metadata::get_captures_in_range(int64_t sample_start, int64_t sample_stop) const
 {
-    std::vector<Capture> caps;
+    std::vector<int64_t> caps;
 
-    for (size_t i = 0; i < this->captures.size(); ++i)
+    for (size_t i = 0; i < this->captures_.size(); ++i)
     {
-        const Capture& cap = this->captures[i];
+        const Capture& cap = this->captures_[i];
         const int64_t cap_start = cap.sample_start();
 
         // A capture's end is the next capture's start, or "infinity" if it's the last one.
-        const bool has_next = (i + 1 < this->captures.size());
-        const int64_t cap_end = has_next ? this->captures[i + 1].sample_start()
+        const bool has_next = (i + 1 < this->captures_.size());
+        const int64_t cap_end = has_next ? this->captures_[i + 1].sample_start()
                                          : std::numeric_limits<int64_t>::max();
 
         if (cap_start < sample_stop && sample_start < cap_end)
-            caps.push_back(cap);
+            caps.push_back(i);
     }
 
     return caps;
@@ -160,7 +253,7 @@ bool Metadata::is_ncd() const
     if(this->global.trailing_bytes() > 0)
         return true;
 
-    for(const Capture& cap : this->captures)
+    for(const Capture& cap : this->captures_)
         // if ANY capture has non-zero header_bytes, the dataset is non-conforming.
         if(cap.header_bytes() > 0)
             return true;
@@ -203,8 +296,8 @@ jsoncons::json Metadata::to_json() const
 {
     jsoncons::json meta(jsoncons::json_object_arg);
     meta.insert_or_assign("global", this->global);
-    meta.insert_or_assign("captures", this->captures);
-    meta.insert_or_assign("annotations", this->annotations);
+    meta.insert_or_assign("captures", this->captures_);
+    meta.insert_or_assign("annotations", this->annotations_);
     return meta;
 }
 

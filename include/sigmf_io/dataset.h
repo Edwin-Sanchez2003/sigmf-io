@@ -61,7 +61,7 @@ public:
     // Retrieves a vector of samples converted to std::complex<double> given a range of samples and a channel.
     template <typename OutputT>
     std::vector<OutputT> get_samples(
-        const std::vector<Capture>& captures = {}, const int64_t sample_start = 0, int64_t sample_count = -1, const int64_t channel = 1);
+        const std::vector<Capture>& captures = {}, const int64_t sample_start = 0, int64_t sample_count = -1, const int64_t channel = 1) const;
 
     // NOTE: Should I add a method to get multiple channels at the same time (ie. just give the user a contiguous block of samples,
     // across all channels? In case it's too slow to ask for each channel one-at-a-time, since they're interleaved?
@@ -114,7 +114,7 @@ private:
 
     // converts a vector of type InputT to type OutputT.
     template <typename InputT, typename OutputT>
-    std::vector<OutputT> convert(const std::vector<InputT>& in);
+    std::vector<OutputT> convert(const std::vector<InputT>& in) const;
 };
 
 
@@ -226,7 +226,7 @@ std::vector<T> Dataset::load_samples(
 
 
 template <typename InputT, typename OutputT>
-std::vector<OutputT> Dataset::convert(const std::vector<InputT>& in) {
+std::vector<OutputT> Dataset::convert(const std::vector<InputT>& in) const {
     using InnerOutputT = inner_type_t<OutputT>;
     using InnerInputT  = inner_type_t<InputT>;
 
@@ -265,7 +265,7 @@ std::vector<OutputT> Dataset::convert(const std::vector<InputT>& in) {
 
 template <typename OutputT>
 std::vector<OutputT> Dataset::get_samples(
-    const std::vector<Capture>& captures, const int64_t sample_start, int64_t sample_count, const int64_t channel)
+    const std::vector<Capture>& captures, const int64_t sample_start, int64_t sample_count, const int64_t channel) const
 {
     // NOTE: sample_start = 0, sample_count = 0 passes through silently - returns an empty array.
 
