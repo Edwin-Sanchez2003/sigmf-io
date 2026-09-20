@@ -5,6 +5,14 @@
 * Final code review & cleanup.
 * Test by dog-fooding in test projects.
 
+### Extra Fixes/Additions
+* **Validator** 
+    - Warning Mode: Allow a user to validate the schema with/out throwing errors. Validator object tracks/stores errors as they occur, so the user can investigate in other ways or simply log the exceptional conditions.
+        - Is this needed? User can already get errors using the Validator interface...
+    - inter-field validation: Some SigMF fields are only valid when other fields exist and are valid, etc. Add these checks to the final validation of the file in the validator.
+* C++ Native SigMF Namespace field constants - need to provide common fields as constants so users don't have to type them out (and potentially mis-spell them).
+
+
 ## Continuous Interface Design
 * free functions to do searches through metadata/recordings??? Regex expressions, JSONPointer/JSONPath/JMESPath to filter down annotations, find certain fields, etc. This should work for individual data objects, entire metadata files, metadata fields, directories of metadata, and collections/archives.
 * Need to be consistent about specifying the sigmf_io namespace within the sigmf_io classes or not -> currently a wierd mix of both and it makes the code hard to read...
