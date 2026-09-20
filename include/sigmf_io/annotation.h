@@ -9,7 +9,6 @@
 
 #include "sigmf_io/json_base.h"
 #include "sigmf_io/uuid.h"
-#include "sigmf_io/validation_context.h"
 
 namespace sigmf_io {
 

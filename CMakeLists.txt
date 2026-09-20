@@ -74,6 +74,7 @@ add_library(sigmf_io STATIC
     include/sigmf_io/validation_context.h
     src/sigmf_io/validation_context.cpp
     src/sigmf_io/spec_validator_factory.cpp
+    include/sigmf_io/constants.h
 )
 
 add_dependencies(sigmf_io sigmf_schema_header)

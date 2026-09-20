@@ -13,6 +13,7 @@
 #include "sigmf_io/capture.h"         // pulls in capture_traits.h
 #include "sigmf_io/annotation.h"      // pulls in annotation_traits.h
 #include "sigmf_io/spec_validator_base.h"
+#include "sigmf_io/constants.h"
 
 namespace sigmf_io {
 
@@ -70,11 +71,11 @@ Metadata::Metadata(
 
 
 Metadata::Metadata(const jsoncons::json& meta, ValidationContext validation_context)
-    : global(meta.get_value_or<sigmf_io::Global>("global", sigmf_io::Global())),
+    : global(meta.get_value_or<sigmf_io::Global>(constants::GLOBAL, sigmf_io::Global())),
     captures_(Metadata::sort_by_sample_start(
-          meta.get_value_or<std::vector<sigmf_io::Capture>>("captures", std::vector<sigmf_io::Capture>{}))),
+          meta.get_value_or<std::vector<sigmf_io::Capture>>(constants::CAPTURES, std::vector<sigmf_io::Capture>{}))),
     annotations_(Metadata::sort_by_sample_start(
-          meta.get_value_or<std::vector<sigmf_io::Annotation>>("annotations", std::vector<sigmf_io::Annotation>{})))
+          meta.get_value_or<std::vector<sigmf_io::Annotation>>(constants::ANNOTATIONS, std::vector<sigmf_io::Annotation>{})))
 {
     this->set_validation_context(std::move(validation_context));
     propagate_validation_context();
@@ -295,9 +296,9 @@ jsoncons::json Metadata::load_json(const std::string& meta_path)
 jsoncons::json Metadata::to_json() const
 {
     jsoncons::json meta(jsoncons::json_object_arg);
-    meta.insert_or_assign("global", this->global);
-    meta.insert_or_assign("captures", this->captures_);
-    meta.insert_or_assign("annotations", this->annotations_);
+    meta.insert_or_assign(constants::GLOBAL, this->global);
+    meta.insert_or_assign(constants::CAPTURES, this->captures_);
+    meta.insert_or_assign(constants::ANNOTATIONS, this->annotations_);
     return meta;
 }
 

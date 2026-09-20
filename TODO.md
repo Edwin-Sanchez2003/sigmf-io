@@ -3,14 +3,16 @@
 ## Pre 1.0.0 updates
 * Write final test cases to validate interface functions correctly.
 * Final code review & cleanup.
+* Document example usage for most common use-cases in README (simple docs for now).
 * Test by dog-fooding in test projects.
 
 ### Extra Fixes/Additions
 * **Validator** 
     - Warning Mode: Allow a user to validate the schema with/out throwing errors. Validator object tracks/stores errors as they occur, so the user can investigate in other ways or simply log the exceptional conditions.
-        - Is this needed? User can already get errors using the Validator interface...
+        - Is this needed? User can already get errors using the Validator interface... might be worth to just make sure the existing interface is sufficient/add convenience functions for logging, etc.
     - inter-field validation: Some SigMF fields are only valid when other fields exist and are valid, etc. Add these checks to the final validation of the file in the validator.
-* C++ Native SigMF Namespace field constants - need to provide common fields as constants so users don't have to type them out (and potentially mis-spell them).
+* ~C++ Native SigMF Namespace field constants - need to provide common fields as constants so users don't have to type them out (and potentially mis-spell them).~
+    - ~integrate into rest of source code.~
 
 
 ## Continuous Interface Design
