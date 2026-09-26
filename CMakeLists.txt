@@ -4,8 +4,8 @@ include(GNUInstallDirs)
 
 # Template header to track versioning of sigmf_io for library users.
 configure_file(
-    ${CMAKE_SOURCE_DIR}/include/sigmf_io/lib_version.h.in
-    ${CMAKE_BINARY_DIR}/include/sigmf_io/lib_version.h
+    ${PROJECT_SOURCE_DIR}/include/sigmf_io/lib_version.h.in
+    ${PROJECT_BINARY_DIR}/include/sigmf_io/lib_version.h
 )
 
 set(CMAKE_CXX_STANDARD 23)
@@ -32,8 +32,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(jsoncons)
 
 # ── Embed the SigMF schema as a generated header ──────────────────
-set(SIGMF_SCHEMA_SRC ${CMAKE_SOURCE_DIR}/static/sigmf-schema.json)
-set(SIGMF_SCHEMA_GEN ${CMAKE_BINARY_DIR}/include/sigmf_io/sigmf_schema_data.h)
+set(SIGMF_SCHEMA_SRC ${PROJECT_SOURCE_DIR}/static/sigmf-schema.json)
+set(SIGMF_SCHEMA_GEN ${PROJECT_BINARY_DIR}/include/sigmf_io/sigmf_schema_data.h)
 
 add_custom_command(
     OUTPUT ${SIGMF_SCHEMA_GEN}
@@ -41,8 +41,8 @@ add_custom_command(
             -DIN_FILE=${SIGMF_SCHEMA_SRC}
             -DOUT_FILE=${SIGMF_SCHEMA_GEN}
             -DVAR_NAME=SIGMF_SCHEMA_JSON
-            -P ${CMAKE_SOURCE_DIR}/cmake/EmbedFile.cmake
-    DEPENDS ${SIGMF_SCHEMA_SRC} ${CMAKE_SOURCE_DIR}/cmake/EmbedFile.cmake
+            -P ${PROJECT_SOURCE_DIR}/cmake/EmbedFile.cmake
+    DEPENDS ${SIGMF_SCHEMA_SRC} ${PROJECT_SOURCE_DIR}/cmake/EmbedFile.cmake
     COMMENT "Embedding sigmf-schema.json into header"
 )
 
@@ -79,6 +79,11 @@ add_library(sigmf_io STATIC
 
 add_dependencies(sigmf_io sigmf_schema_header)
 
+add_library(sigmf_io::sigmf_io ALIAS sigmf_io)
+
+# Notifies users of the library that this repo uses C++ 23.
+target_compile_features(sigmf_io PUBLIC cxx_std_23)
+
 target_link_libraries(sigmf_io
     PUBLIC mio::mio
            jsoncons
@@ -86,13 +91,13 @@ target_link_libraries(sigmf_io
 
 target_include_directories(sigmf_io
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 # ── Tests ──────────────────────────────────────────────────────────────
-option(BUILD_TESTS "Build the test suite" ON)
+option(BUILD_TESTS "Build the test suite" ${PROJECT_IS_TOP_LEVEL})
 
 if(BUILD_TESTS)
     enable_testing()
@@ -108,6 +113,6 @@ install(TARGETS sigmf_io
 install(DIRECTORY include/sigmf_io
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-install(FILES ${CMAKE_BINARY_DIR}/include/sigmf_io/lib_version.h
+install(FILES ${PROJECT_BINARY_DIR}/include/sigmf_io/lib_version.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sigmf_io
 )
