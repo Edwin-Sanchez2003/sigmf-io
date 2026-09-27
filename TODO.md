@@ -6,6 +6,8 @@
 * Document example usage for most common use-cases in README (simple docs for now).
 * Test by dog-fooding in test projects.
 
+* Need to add size() to Recording -> should pass captures from metadata implicitly, user only specifies channel... current Dataset requires user to get the captures from the metadata manually, increasing risk of incorrect usage...
+
 ### Extra Fixes/Additions
 * **Validator** 
     - Warning Mode: Allow a user to validate the schema with/out throwing errors. Validator object tracks/stores errors as they occur, so the user can investigate in other ways or simply log the exceptional conditions.
